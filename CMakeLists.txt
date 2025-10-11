@@ -13,8 +13,10 @@ set(CMAKE_BUILD_RPATH_USE_ORIGIN TRUE)
 # This assumes the SDL source is available in src/SDL
 add_subdirectory(src/SDL EXCLUDE_FROM_ALL)
 
-#Static link SDL to prevent missing libraries
-set(SDL_STATIC ON)
+#Static link SDL to prevent missing libraries in dest OS
+#Leave turned off because the program will be compiled in the dest OS
+#when OFF there is no need to install more libraries
+#set(SDL_STATIC OFF)
 
 # Set ImGui sources
 set(SOURCES ./src/ImGui/backends/imgui_impl_sdlrenderer3.cpp ./src/ImGui/backends/imgui_impl_sdl3.cpp ./src/ImGui/imgui.cpp ./src/ImGui/imgui_demo.cpp ./src/ImGui/imgui_draw.cpp ./src/ImGui/imgui_tables.cpp ./src/ImGui/imgui_widgets.cpp )
