@@ -8,18 +8,24 @@
 
 static SDL_Window *window = NULL;
 SDL_Renderer* renderer = NULL;
+float main_scale;
 
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
     /* Create the window */
-
-    SDL_CreateWindowAndRenderer("Algorimtos de Paginación", 1200, 700, 0, &window, &renderer);
+    main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
+    SDL_WindowFlags window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+    SDL_CreateWindowAndRenderer("Algorimtos de Paginación", 1200*main_scale, 700*main_scale, window_flags, &window, &renderer);
     if (window == nullptr || renderer == nullptr) {
         SDL_Log("Couldn't create window or renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
+
+    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    SDL_SetWindowMinimumSize(window, 640,360);    
     SDL_ShowWindow(window);
+          
     
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
