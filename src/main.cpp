@@ -13,7 +13,8 @@ SDL_Renderer* renderer = NULL;
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
     /* Create the window */
-    SDL_CreateWindowAndRenderer("Hello World", 1200, 700, 0, &window, &renderer);
+
+    SDL_CreateWindowAndRenderer("Algorimtos de Paginación", 1200, 700, 0, &window, &renderer);
     if (window == nullptr || renderer == nullptr) {
         SDL_Log("Couldn't create window or renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
@@ -26,7 +27,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -53,18 +54,21 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 
 // Our state            
 bool show_demo_window = true;   
-bool otra_window = true;   
+bool win1 = true;   
 
 
 
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
+
+    ImGuiIO io = ImGui::GetIO();    
+
     if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED){
         SDL_Delay(10); //Sleep if minimize       
     }
 
-    ImGuiIO io = ImGui::GetIO();
+    
 
     // Start the Dear ImGui frame
     ImGui_ImplSDLRenderer3_NewFrame();
@@ -73,18 +77,21 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
     // === Prepare ImGui windows
     if (show_demo_window){
-        ImGui::ShowDemoWindow(&show_demo_window);                               
+        ImGui::ShowDemoWindow(&show_demo_window);                                       
     }
 
     //Window
     static float scale = 1.0f; //static hace que sea global
-    {
-        ImGui::Begin("Otra window");  
-        ImVec2 tamano = {400,100};
-        ImGui::SetWindowSize("Otra window",tamano);      
+    if(win1){{
+        ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);        
+        ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings |
+                                ImGuiWindowFlags_NoCollapse;                                
+        //ImGuiWindowFlags flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize; disable for development    
+        ImGui::SetNextWindowPos(ImVec2(0,0), ImGuiCond_Once);
+        ImGui::Begin(" ", nullptr, flags);                  
         ImGui::SliderFloat("slider float", &scale, 1.0f, 10.0f, "scale = %.2f");        
         ImGui::End();
-    }
+    }}
             
     ImGui::Render(); //finish setting ImGui windows
 
