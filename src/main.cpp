@@ -15,7 +15,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
     /* Create the window */
     main_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
-    SDL_WindowFlags window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+    SDL_WindowFlags window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY; // | SDL_WINDOW_MAXIMIZED;
     SDL_CreateWindowAndRenderer("Algorimtos de Paginación", 1200*main_scale, 700*main_scale, window_flags, &window, &renderer);
     if (window == nullptr || renderer == nullptr) {
         SDL_Log("Couldn't create window or renderer: %s", SDL_GetError());
@@ -36,7 +36,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
+    ImGui::StyleColorsDark();    
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
@@ -69,17 +69,23 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 {
 
     ImGuiIO io = ImGui::GetIO();    
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.FontSizeBase = 14; 
+    style.WindowPadding = ImVec2(30,10);
+    style.ItemSpacing = ImVec2(50,10);
+
+    
 
     if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED){
         SDL_Delay(10); //Sleep if minimize       
     }
 
-    
+    ImVec2 viewportSize = ImGui::GetMainViewport()->Size;
 
     // Start the Dear ImGui frame
     ImGui_ImplSDLRenderer3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
-    ImGui::NewFrame();    
+    ImGui::NewFrame();        
 
     // === Prepare ImGui windows
     if (show_demo_window){
@@ -89,14 +95,35 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     //Window
     static float scale = 1.0f; //static hace que sea global
     if(win1){{
-        ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);        
+        ImGui::SetNextWindowSize(viewportSize);        
         ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings |
                                 ImGuiWindowFlags_NoCollapse;                                
         //ImGuiWindowFlags flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize; disable for development    
         ImGui::SetNextWindowPos(ImVec2(0,0), ImGuiCond_Once);
-        ImGui::Begin(" ", nullptr, flags);                  
+        ImGui::Begin(" ", nullptr, flags);                          
+        
+        ImGui::PushFont(nullptr, style.FontSizeBase * 2.f);
+        ImGui::Text("Simulador de Algoritmos de Paginación");        
+        ImGui::PopFont();        
+        
+        ImGui::Dummy(ImVec2(viewportSize.x, 10)); //padding
+        ImGui::PushFont(nullptr, style.FontSizeBase * 1.5f);
+        ImGui::SeparatorText("Configuración");
+        ImGui::PopFont();        
+        ImGui::Dummy(ImVec2(viewportSize.x, 10)); //padding
+
+
+
         ImGui::SliderFloat("slider float", &scale, 1.0f, 10.0f, "scale = %.2f");        
-        ImGui::End();
+        ImGui::Button("file", ImVec2(60,20));
+        
+        ImGui::Dummy(ImVec2(viewportSize.x, 10)); //padding
+        ImGui::PushFont(nullptr, style.FontSizeBase * 1.5f);
+        ImGui::SeparatorText("Entrada");
+        ImGui::PopFont();        
+        ImGui::Dummy(ImVec2(viewportSize.x, 10)); //padding
+
+        ImGui::End();        
     }}
             
     ImGui::Render(); //finish setting ImGui windows
