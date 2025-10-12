@@ -6,9 +6,29 @@
 #include "./ImGui/backends/imgui_impl_sdlrenderer3.h"
 #include <stdio.h>
 
+
+
+
+// File Handling
+
+static const SDL_DialogFileFilter filters[] = {
+    { "Instruction List", "instr" }, 
+    { "All", "*" }   //DEBUG
+};
+
+void openFile(void* userdata, const char* const* filelist, int filter){
+    printf("%s", filelist[0]);
+}
+
+
+
+
 static SDL_Window *window = NULL;
 SDL_Renderer* renderer = NULL;
 float main_scale;
+
+ ImGuiWindowFlags main_window_flags;         
+
 
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
@@ -32,11 +52,17 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     ImGui::CreateContext();        
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls    
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();    
+
+    main_window_flags |= ImGuiWindowFlags_NoSavedSettings;
+    main_window_flags |= ImGuiWindowFlags_NoCollapse;
+    //DEBUG: disable for developtment
+    //main_window_flags |= ImGuiWindowFlags_NoMove;
+    //main_window_flags |= ImGuiWindowFlags_NoResize;
+                                
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
@@ -67,12 +93,16 @@ bool win1 = true;
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
-
+    ImVec2 viewportSize = ImGui::GetMainViewport()->Size;
+    float scalex = 1;//viewportSize.x/640;
+    float scaley = 1;//viewportSize.x/640;
     ImGuiIO io = ImGui::GetIO();    
     ImGuiStyle& style = ImGui::GetStyle();
     style.FontSizeBase = 14; 
-    style.WindowPadding = ImVec2(30,10);
-    style.ItemSpacing = ImVec2(50,10);
+    style.WindowPadding = ImVec2(30*scalex,10*scaley);
+    style.ItemSpacing = ImVec2(10*scalex,10*scaley);        
+    style.FontScaleMain = scaley;
+    
 
     
 
@@ -80,7 +110,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         SDL_Delay(10); //Sleep if minimize       
     }
 
-    ImVec2 viewportSize = ImGui::GetMainViewport()->Size;
+    
 
     // Start the Dear ImGui frame
     ImGui_ImplSDLRenderer3_NewFrame();
@@ -92,36 +122,57 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         ImGui::ShowDemoWindow(&show_demo_window);                                       
     }
 
-    //Window
-    static float scale = 1.0f; //static hace que sea global
-    if(win1){{
-        ImGui::SetNextWindowSize(viewportSize);        
-        ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings |
-                                ImGuiWindowFlags_NoCollapse;                                
-        //ImGuiWindowFlags flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize; disable for development    
+    //Window    
+    if(win1){{        
+        ImGui::SetNextWindowSize(viewportSize);                                             
         ImGui::SetNextWindowPos(ImVec2(0,0), ImGuiCond_Once);
-        ImGui::Begin(" ", nullptr, flags);                          
+        ImGui::Begin(" ", nullptr, main_window_flags);                          
         
         ImGui::PushFont(nullptr, style.FontSizeBase * 2.f);
         ImGui::Text("Simulador de Algoritmos de Paginación");        
         ImGui::PopFont();        
         
-        ImGui::Dummy(ImVec2(viewportSize.x, 10)); //padding
+        ImGui::Dummy(ImVec2(viewportSize.x, 1*scaley)); //padding        
         ImGui::PushFont(nullptr, style.FontSizeBase * 1.5f);
         ImGui::SeparatorText("Configuración");
         ImGui::PopFont();        
-        ImGui::Dummy(ImVec2(viewportSize.x, 10)); //padding
+        ImGui::Dummy(ImVec2(viewportSize.x, 1*scaley)); //padding        
 
+        ImGui::Indent(10*scalex);                
+                
+        ImGui::AlignTextToFramePadding();                                
+        ImGui::Text("Semilla: ");
+        ImGui::SameLine(150*scalex);
+        ImGui::SetNextItemWidth(300*scalex);
+        static int semilla = 911;
+        ImGui::InputInt("##semilla", &semilla); 
 
+        ImGui::AlignTextToFramePadding();                        
+        ImGui::Text("Algoritmo: ");
+        ImGui::SameLine(150*scalex);       
+        static int algoritmo = 0; 
+        ImGui::RadioButton("FIFO", &algoritmo, 0);
+        ImGui::SameLine(0, 15*scalex); 
+        ImGui::RadioButton("Second Chance", &algoritmo, 1);
+        ImGui::SameLine(0, 15*scalex);
+        ImGui::RadioButton("MRU", &algoritmo, 2);
+        ImGui::SameLine(0, 15*scalex);
+        ImGui::RadioButton("Random", &algoritmo, 3);
 
-        ImGui::SliderFloat("slider float", &scale, 1.0f, 10.0f, "scale = %.2f");        
-        ImGui::Button("file", ImVec2(60,20));
+        ImGui::Unindent(10*scalex);
         
-        ImGui::Dummy(ImVec2(viewportSize.x, 10)); //padding
+        ImGui::Dummy(ImVec2(viewportSize.x, 1*scaley)); //padding
         ImGui::PushFont(nullptr, style.FontSizeBase * 1.5f);
         ImGui::SeparatorText("Entrada");
         ImGui::PopFont();        
-        ImGui::Dummy(ImVec2(viewportSize.x, 10)); //padding
+        ImGui::Dummy(ImVec2(viewportSize.x, 1*scaley)); //padding
+
+        ImGui::Indent(10*scalex);
+        bool file_btn_pressed = ImGui::Button("file", ImVec2(60*scalex,20*scaley));
+        if(file_btn_pressed){
+            SDL_ShowOpenFileDialog(openFile, nullptr, window, filters, 2, nullptr, false); //DEBUG:poner 1 en realese
+        }
+        ImGui::Unindent(10*scalex);
 
         ImGui::End();        
     }}
@@ -136,16 +187,10 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     SDL_RenderClear(renderer);
     
     // Render SDL Graphics
-    int w = 0, h = 0;
-    float x, y;
+    int w = 0, h = 0;    
     //const float scale = 4.0f;
     SDL_GetRenderOutputSize(renderer, &w, &h);
-    SDL_SetRenderScale(renderer, scale, scale);
-    const char *message = "SDL funcionando :)";
-    x = ((w / scale) - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * SDL_strlen(message)) / 2;
-    y = ((h / scale) - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE) / 2;    
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderDebugText(renderer, x, y, message);
+    //SDL_SetRenderScale(renderer, scale, scale);
 
     //Render ImGui Graphics
     SDL_SetRenderScale(renderer, io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
@@ -167,3 +212,5 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
     SDL_Quit();
 
 }
+
+
