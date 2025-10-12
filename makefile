@@ -1,6 +1,16 @@
 
 
-.PHONY: all
+.PHONY: run build all compile
 
-all:
-	g++ src/main.cpp -o build/main
+
+
+all: compile
+
+compile: 
+	cmake --build build
+
+run:
+	./build/app/app
+
+build:
+	cmake -B build -S .
