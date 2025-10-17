@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-void create_operations();
+unsigned int create_operations(int num_processes, int num_ops);
 
 #define UTILS_IMPLMENTATION
 #include <stdio.h>
@@ -9,19 +9,12 @@ void create_operations();
 #include <time.h>
 #include <string.h>
 
-unsigned int seed = 1760652336;
-
-const char *file_path = "../../tmp/data";
-
-int num_ops = 15;
-int num_processes = 3;
 enum options {
   NEW,
   USE,
   DELETE,
   KILL
 };
-
 
 typedef struct {
   int op;
@@ -37,7 +30,6 @@ typedef struct{
   int size_ptrs;
 } Process;
 
-Process **processes;
 
 int get_random_ptr(Process *proc){
   return ((proc->num_ptrs > 0) ? (proc->ptrs[rand() % proc->num_ptrs]) : -1);
@@ -55,8 +47,6 @@ int delete_ptr(Process *proc){
   return ptr;
 }
 
-int ptr_count = 0;
-
 typedef struct {
   int pid;
   int num_op;
@@ -65,14 +55,36 @@ typedef struct {
 typedef struct {
   char **text;
   ProcRef *proc_ref;
+  int size;
 } Instr;
 
-void create_operations(){
+void insert_op(Instr *instr, int index, int pid){
+  char buff[100];
+  ProcRef tmp_proc_ref;
+  for(int i = instr->size; i > index; --i){
+    strcpy(instr->text[i], instr->text[i-1]);
+    instr->proc_ref[i] = instr->proc_ref[i-1];
+  }
+  sprintf(buff, "kill(%d)\n", pid);
+  strcpy(instr->text[index], buff);
+
+  tmp_proc_ref.pid = pid-1;
+  tmp_proc_ref.num_op = -1;
+  instr->proc_ref[index] = tmp_proc_ref;
+  instr->size++;
+}
+
+unsigned int create_operations(int num_processes, int num_ops){
+  char buff[100];
+  const char *file_path = "../../tmp/data";
+  Process **processes;
+  unsigned int seed = (unsigned int) time(0);
   srand(seed);
   processes = (Process **) malloc(sizeof(Process *) * num_processes);
   int standard_size = (num_ops / num_processes) + 2;
   Process *proc;
-  int op, ptr;
+  int op, ptr, proc_i, ptr_count = 0;
+
   for(int p = 0; p < num_processes; ++p){
     processes[p] = (Process *) malloc(sizeof(Process));
     proc = processes[p];
@@ -84,11 +96,14 @@ void create_operations(){
     proc->num_ops = 0;
   }
 
-  int proc_i;
   Instr *instr = (Instr *) malloc(sizeof(Instr));
   instr->text = (char **) malloc(sizeof(char *) * num_ops);
   instr->proc_ref = (ProcRef *) malloc(sizeof(ProcRef) * num_ops);
-  char buff[100];
+
+  for(int i = 0; i < num_ops; ++i){
+    instr->text[i] = (char *) malloc(100);
+  }
+
   for(int op_i = 0; op_i < num_ops-num_processes; ++op_i){
     proc_i = rand() % num_processes;
     proc = processes[proc_i];
@@ -101,56 +116,36 @@ void create_operations(){
       continue;
     }
 
-    instr->text[op_i] = (char *) malloc(100);
-
     Operation new_op;
     switch(op){
       case NEW:
         ptr_count++;
         new_op.op = op;
         new_op.arg = ptr_count;
-        proc->ops[proc->num_ops] = new_op;
-        proc->ptrs[proc->num_ptrs] = ptr_count;
-        
+        proc->ops[proc->num_ops++] = new_op;
+        proc->ptrs[proc->num_ptrs++] = ptr_count;
         sprintf(buff, "new(%d, %d)\n", proc_i + 1, (rand() % 100000) + 1);
-        
-        proc->num_ops++;
-        proc->num_ptrs++;
         break;
+
       case USE:
         new_op.op = op;
         new_op.arg = ptr;
-        proc->ops[proc->num_ops] = new_op;
-          
+        proc->ops[proc->num_ops++] = new_op;
         sprintf(buff, "use(%d)\n", ptr);
-          
-        proc->num_ops++;
         break;
 
       case DELETE:
         new_op.op = op;
         new_op.arg = ptr;
-        proc->ops[proc->num_ops] = new_op;
+        proc->ops[proc->num_ops++] = new_op;
         delete_ptr(proc);  
         sprintf(buff, "delete(%d)\n", ptr);
-        
-
-        proc->num_ops++;
-        break;
-      case KILL:
-        new_op.op = op;
-        new_op.arg = proc_i;
-        proc->ops[proc->num_ops] = new_op;
-        
-        sprintf(buff, "kill(%d)\n", proc_i);
-        
-        proc->num_ops++;
         break;
     }
     strcpy(instr->text[op_i], buff);
     ProcRef proc_ref = {proc_i, proc->num_ops};
     instr->proc_ref[op_i] = proc_ref;
-    strcpy(buff, "");
+    instr->size++;
 
     if(proc->num_ops + 2 > proc->size_ops){
       proc->size_ops *= 2;
@@ -161,17 +156,27 @@ void create_operations(){
     }
   }
   FILE *f = fopen(file_path, "w");
- 
-  for(int op_i = 0; op_i < num_ops-num_processes; ++op_i){
-    ProcRef p_ref = instr->proc_ref[op_i];
-    proc = processes[p_ref.pid];
-    if(p_ref.num_op == proc->num_ops){
-      fprintf(f, instr->text[op_i]);
-      fprintf(f, "kill(%d)\n", p_ref.pid + 1);
-    } else {
-      fprintf(f, instr->text[op_i]);
+  
+  // If some process doesn't have any operation we need add a kill operation
+  // This validation doesn't work in the next for loop
+  int index;
+  for(int proc_i = 0; proc_i < num_processes; proc_i++){
+    proc = processes[proc_i];
+    if(proc->num_ops == 0){
+       insert_op(instr, (rand() % instr->size), proc_i + 1);
     }
   }
-}
 
-#endif // OPTIMAL_H
+  for(int op_i = 0; op_i < instr->size; ++op_i){
+    ProcRef p_ref = instr->proc_ref[op_i];
+    proc = processes[p_ref.pid];
+    
+    fprintf(f, instr->text[op_i]);
+
+    if(p_ref.num_op == proc->num_ops){
+      fprintf(f, "kill(%d)\n", p_ref.pid + 1);
+    }
+  }
+  return seed;
+}
+#endif
