@@ -6,6 +6,7 @@ project(so-proyecto2)
 # This makes sure that the dynamic library goes into the build directory automatically.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/app$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/app/libs$<CONFIGURATION>")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) 
 
 # This makes rpath relative to the binary so its independent of the system and the directory
 set(CMAKE_BUILD_RPATH_USE_ORIGIN TRUE)
