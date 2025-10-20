@@ -1,4 +1,5 @@
 #include "SDL3/SDL_dialog.h"
+#include "SDL3/SDL_video.h"
 #include <cstddef>
 #include <cstring>
 #define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
@@ -55,6 +56,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
 
   SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
   SDL_SetWindowMinimumSize(window, 854, 480);
+  SDL_SetWindowSize(window, 1280, 720);
   SDL_ShowWindow(window);
 
   // Setup Dear ImGui context
@@ -95,7 +97,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 
 // Our state
 bool show_demo_window = true;
-bool win1 = true;
+bool setup_window = true;
+bool simul_window = false;
 
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate) {
@@ -106,8 +109,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
   ImGuiStyle &style = ImGui::GetStyle();
   style.FontSizeBase = 15;
   style.WindowPadding = ImVec2(30 * scalex, 10 * scaley);
-  style.ItemSpacing = ImVec2(10 * scalex, 15 * scaley);
+  style.ItemSpacing = ImVec2(10 * scalex, 12 * scaley);
   style.FontScaleMain = scaley;
+  style.CellPadding = ImVec2(0, 0);
 
   if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) {
     SDL_Delay(10); // Sleep if minimize
@@ -124,16 +128,16 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
   }
 
   // Window
-  if (win1) {
+  if (setup_window) {
     ImGui::SetNextWindowSize(viewportSize);
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
     ImGui::Begin(" ", nullptr, main_window_flags);
 
-    ImGui::PushFont(nullptr, style.FontSizeBase * 2.f);
-    ImGui::Text("Simulador de Algoritmos de Paginación");
-    ImGui::PopFont();
+    // ImGui::PushFont(nullptr, style.FontSizeBase * 2.f);
+    // ImGui::Text("Simulador de Algoritmos de Paginación");
+    // ImGui::PopFont();
 
-    ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
+    // ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
     ImGui::PushFont(nullptr, style.FontSizeBase * 1.5f);
     ImGui::SeparatorText("Configuración");
     ImGui::PopFont();
@@ -217,8 +221,64 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     bool simul_btn_pressed =
         ImGui::Button("Iniciar Simulación", ImVec2(180 * scalex, 20 * scaley));
     if (simul_btn_pressed) {
+      setup_window = false;
+      simul_window = true;
       // TODO: conectar este boton
     }
+
+    ImGui::Unindent(10 * scalex);
+
+    ImGui::End();
+  }
+
+  if (simul_window) {
+    ImGui::SetNextWindowSize(viewportSize);
+    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
+    ImGui::Begin(" ", nullptr, main_window_flags);
+
+    // ImGui::PushFont(nullptr, style.FontSizeBase * 2.f);
+    // ImGui::Text("Simulador de Algoritmos de Paginación");
+    // ImGui::PopFont();
+
+    // ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
+    ImGui::PushFont(nullptr, style.FontSizeBase * 1.5f);
+    ImGui::Text("Simulación");
+    ImGui::PopFont();
+    ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
+
+    ImGui::Indent(10 * scalex);
+
+    ImGui::BeginTable("##ram-optimo", 1, ImGuiTableFlags_Borders);
+    ImGui::TableSetupColumn(" RAM Óptimo");
+    ImGui::TableHeadersRow();
+    ImGui::TableNextColumn();
+    {
+      ImGui::BeginTable("##ram-optimo-int", 100, ImGuiTableFlags_Borders);
+      ImGui::TableNextRow(0, 20);
+      for (int i = 0; i < 100; i++) {
+        ImGui::TableNextColumn();
+        if (i < 30) {
+          ImU32 cell_bg_color = ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 1.f));
+          ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, cell_bg_color);
+        }
+      }
+      ImGui::EndTable();
+    }
+    ImGui::EndTable();
+
+    ImGui::BeginTable("##ram-algoritmo", 1, ImGuiTableFlags_Borders);
+    ImGui::TableSetupColumn(" RAM Algoritmo");
+    ImGui::TableHeadersRow();
+    ImGui::TableNextColumn();
+    {
+      ImGui::BeginTable("##ram-algoritmo-int", 100, ImGuiTableFlags_Borders);
+      ImGui::TableNextRow(0, 20);
+      for (int i = 0; i < 100; i++) {
+        ImGui::TableNextColumn();
+      }
+      ImGui::EndTable();
+    }
+    ImGui::EndTable();
 
     ImGui::Unindent(10 * scalex);
 
