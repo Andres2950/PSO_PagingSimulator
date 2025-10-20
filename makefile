@@ -6,11 +6,11 @@
 
 all: compile
 
+run: compile
+	./build/app/app
+
 compile: 
 	cmake --build build
-
-run:
-	./build/app/app
 
 build:
 	cmake -B build -S .
