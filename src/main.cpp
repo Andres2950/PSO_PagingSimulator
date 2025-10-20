@@ -1,5 +1,4 @@
 #include "SDL3/SDL_dialog.h"
-#include "imgui_internal.h"
 #include <cstddef>
 #include <cstring>
 #define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
@@ -22,12 +21,14 @@ static const SDL_DialogFileFilter filters[] = {
 void openFile(void *userdata, const char *const *filelist, int filter) {
   if (filelist != nullptr && filelist[0] != nullptr) {
     strncpy(path, filelist[0], 4096);
+    // TODO: conectar esto
   }
 }
 
 void saveFile(void *userdata, const char *const *filelist, int filter) {
   if (filelist != nullptr && filelist[0] != nullptr) {
     printf("%s", filelist[0]);
+    // TODO:conectar esto
   }
 }
 
@@ -211,6 +212,14 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
       }
       ImGui::EndPopup();
     }
+
+    ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
+    bool simul_btn_pressed =
+        ImGui::Button("Iniciar Simulación", ImVec2(180 * scalex, 20 * scaley));
+    if (simul_btn_pressed) {
+      // TODO: conectar este boton
+    }
+
     ImGui::Unindent(10 * scalex);
 
     ImGui::End();
