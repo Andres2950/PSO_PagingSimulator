@@ -1,3 +1,6 @@
+#include "SDL3/SDL_dialog.h"
+#include "imgui_internal.h"
+#include <cstddef>
 #include <cstring>
 #define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
 #include "./ImGui/backends/imgui_impl_sdl3.h"
@@ -17,7 +20,15 @@ static const SDL_DialogFileFilter filters[] = {
 };
 
 void openFile(void *userdata, const char *const *filelist, int filter) {
-  strncpy(path, filelist[0], 4096);
+  if (filelist != nullptr && filelist[0] != nullptr) {
+    strncpy(path, filelist[0], 4096);
+  }
+}
+
+void saveFile(void *userdata, const char *const *filelist, int filter) {
+  if (filelist != nullptr && filelist[0] != nullptr) {
+    printf("%s", filelist[0]);
+  }
 }
 
 static SDL_Window *window = NULL;
@@ -92,9 +103,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
   float scaley = 1; // viewportSize.x/640;
   ImGuiIO io = ImGui::GetIO();
   ImGuiStyle &style = ImGui::GetStyle();
-  style.FontSizeBase = 14;
+  style.FontSizeBase = 15;
   style.WindowPadding = ImVec2(30 * scalex, 10 * scaley);
-  style.ItemSpacing = ImVec2(10 * scalex, 10 * scaley);
+  style.ItemSpacing = ImVec2(10 * scalex, 15 * scaley);
   style.FontScaleMain = scaley;
 
   if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) {
@@ -150,15 +161,55 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
     ImGui::AlignTextToFramePadding();
     ImGui::Text("Archivo de Instrucciones: ");
-    ImGui::SameLine(250 * scalex);
-    ImGui::SetNextItemWidth(400);
+    ImGui::SameLine(0, 10 * scalex);
+    ImGui::SetNextItemWidth(330);
     ImGui::InputText("##input1", path, 4096, ImGuiInputTextFlags_ReadOnly);
-    ImGui::SameLine(0, 20 * scalex);
-    bool file_btn_pressed =
+    ImGui::SameLine(0, 5 * scalex);
+    bool load_btn_pressed =
         ImGui::Button("Cargar", ImVec2(100 * scalex, 20 * scaley));
-    if (file_btn_pressed) {
+    if (load_btn_pressed) {
       SDL_ShowOpenFileDialog(openFile, nullptr, window, filters, 2, nullptr,
                              false); // DEBUG:poner 1 en realese
+    }
+    ImGui::SameLine(0, 5 * scalex);
+    bool generate_btn_pressed =
+        ImGui::Button("Generar", ImVec2(100 * scalex, 20 * scaley));
+    if (generate_btn_pressed) {
+      ImGui::OpenPopup("Generar Lista de Instrucciones");
+    }
+
+    ImGui::SetNextWindowSize(ImVec2(280, 150));
+    if (ImGui::BeginPopupModal("Generar Lista de Instrucciones")) {
+      ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
+      ImGui::AlignTextToFramePadding();
+      ImGui::Text("Procesos: ");
+      ImGui::SameLine(150 * scalex);
+      ImGui::SetNextItemWidth(100 * scalex);
+      static int procesos = 101;
+      ImGui::InputInt("##procesos", &procesos);
+
+      ImGui::AlignTextToFramePadding();
+      ImGui::Text("Operaciones: ");
+      ImGui::SameLine(150 * scalex);
+      ImGui::SetNextItemWidth(100 * scalex);
+      static int operaciones = 1000;
+      ImGui::InputInt("##operaciones", &operaciones);
+
+      ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
+
+      bool generate_pop_btn_pressed =
+          ImGui::Button("Generar", ImVec2(100 * scalex, 20 * scaley));
+      if (generate_pop_btn_pressed) {
+        SDL_ShowSaveFileDialog(saveFile, nullptr, window, filters, 2, nullptr);
+        ImGui::CloseCurrentPopup();
+      }
+      ImGui::SameLine(0, 10 * scalex);
+      bool cancel_pop_btn_pressed =
+          ImGui::Button("Cancelar", ImVec2(100 * scalex, 20 * scaley));
+      if (cancel_pop_btn_pressed) {
+        ImGui::CloseCurrentPopup();
+      }
+      ImGui::EndPopup();
     }
     ImGui::Unindent(10 * scalex);
 
