@@ -61,6 +61,8 @@ int main(int argc, char* argv[]){
         requests->next();
     }
 
+    printf("Time: %d\n", state.currentTime);
+
 
     delete state.memory;
     delete state.disk;

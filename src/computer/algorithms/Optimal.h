@@ -64,7 +64,7 @@ class Optimal: public Algorithm {
             state.memory->goToPos(to_remove_pag);
             Page removed = state.memory->remove();
             state.disk->append(removed);
-            state.currentTime = FAULT_COST;
+            state.currentTime += FAULT_COST;
             futureRequests->goToPos(petition_i);
             state.memory->insert(futureRequests->getElement());
             
