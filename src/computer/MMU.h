@@ -11,7 +11,7 @@ class MMU {
     public: 
         static inline int ptr_count = 0;
         List<Page>* memory;
-        List<Page>* disc;
+        List<Page>* disk;
         //no lista de enteros algo diferente
         //Table debe contener todos los punteros
         // es una Dictionary <ptr_id, ptr_pages>
@@ -27,7 +27,7 @@ class MMU {
            // Por defecto el array se crea de 1024
            // Pero tiene la funcion expand incluida y se usa automaticamente
            // Entonces sirve perfectamente como infinito
-           disc = new ArrayList<Page>();
+           disk = new ArrayList<Page>();
            ptr_table = new HashTable<int, ArrayList<Page>>;
         }
         ~MMU() {
