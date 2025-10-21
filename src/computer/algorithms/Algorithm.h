@@ -8,6 +8,7 @@ typedef struct {
     List<Page>* memory;
     List<Page>* disk;
     int currentTime;
+    int to_insert_i;
 } StatePerron;
 
 class Algorithm {

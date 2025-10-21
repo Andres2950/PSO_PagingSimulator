@@ -1,9 +1,12 @@
 #ifndef PAGE_H
 #define PAGE_H
 
+#include <bits/types/idtype_t.h>
+#include <iostream>
+#include <string.h>
+
 class Page {
     public:
-        static inline int id_counter = 0;
         int id;
         int m_addr;
         int l_addr;
@@ -12,12 +15,25 @@ class Page {
         int load_t;
         int mark;
 
-    Page(int m_addr, int l_addr, int d_addr){
+    Page(int id, int m_addr, int l_addr, int d_addr){
         this->m_addr = m_addr;
         this->l_addr = l_addr;
         this->d_addr = d_addr;
-        id_counter++;
-        this->id = id_counter; 
+        this->id = id; 
+    }
+    Page(){
+        this->m_addr = -1;
+        this->l_addr = -1;
+        this->d_addr = -1;
+        this->id = -1; 
+    }
+
+    bool operator==(const Page& otro) const {
+        return id == otro.id;
+    }
+    friend std::ostream& operator<<(std::ostream& os, const Page& page) {
+        os << "Page(" << page.id << ")";
+        return os;
     }
 };
 

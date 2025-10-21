@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <string>
-#include "algorithms/optimal.h"
+
+#include "computer/algorithms/Algorithm.h"
+#include "computer/algorithms/Optimal.h"
 #include "data_structures/List.h"
 #include "data_structures/ArrayList.h"
+#include "computer/Page.h"
 
 using std::string;
 
@@ -15,23 +18,51 @@ void hello_world(string s){
 int main(int argc, char* argv[]){
     hello_world("print");
 
-    List<int>* l = new ArrayList<int>();
-
+    List<Page>* requests = new ArrayList<Page>();
     
     //peticiones = [3,1,4,8,5,9,3,2,5,4]
-    l->append(3);
-    l->append(1);
-    l->append(4);
-    l->append(8);
-    l->append(5);
-    l->append(9);
-    l->append(3);
-    l->append(2);
-    l->append(5);
-    l->append(4);
+    requests->append(Page(3, 0, 0, 0));
+    requests->append(Page(1, 0, 0, 0));
+    requests->append(Page(4, 0, 0, 0));
+    requests->append(Page(8, 0, 0, 0));
+    requests->append(Page(5, 0, 0, 0));
+    requests->append(Page(9, 0, 0, 0));
+    requests->append(Page(3, 0, 0, 0));
+    requests->append(Page(2, 0, 0, 0));
+    requests->append(Page(5, 0, 0, 0));
+    requests->append(Page(4, 0, 0, 0));
     
-    optimal(2, *l);
+    printf("### OPTIMAL ###\n");
+    StatePerron state;
+    state.currentTime = 0;
+    state.disk = new ArrayList<Page>();
+    state.memory = new ArrayList<Page>(2);
 
-    delete l;
+    int k = 2;
+
+    //Inserta y remueve las cosas hasta que se llene el cache
+    for (int i = 0; i < k; ++i) {
+        requests->goToStart();
+        state.memory->goToStart();
+        state.memory->append(requests->remove());
+        state.to_insert_i = i;
+    }
+
+    printf("Starting cache: ");
+    state.memory->print();
+    printf("\n");
+
+    Algorithm* optimal = new Optimal(requests);
+
+    requests->goToStart();
+    while(!requests->atEnd()){
+        state.to_insert_i++;
+        optimal->execute(requests->getElement(), state);
+        requests->next();
+    }
+
+
+    delete state.memory;
+    delete state.disk;
     return 0;
 }

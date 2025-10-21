@@ -6,8 +6,9 @@
 #include "../Page.h"
 #include "../../data_structures/List.h"
 #include "../../data_structures/ArrayList.h"
+#include "../../constants.h"
 
-class Optimal: Algorithm {
+class Optimal: public Algorithm {
     private:
         // No esoty seguro de como hacer con esto
         // Por ahora voy a dejarlo como una lista de Page
@@ -17,17 +18,15 @@ class Optimal: Algorithm {
         Optimal(List<Page>* futureRequests){
             this->futureRequests = futureRequests;
         }
-        ~Optimal() {
-            delete futureRequests;
-        }
         // Solo para insertar una pagina, supone que la RAM ya esta llena
         // Supone que el i dentro de la lista de las páginas es el mismo que el id
         void execute(Page to_insert, StatePerron& state) {
-            int petition_i = to_insert.id;
+            int petition_i = state.to_insert_i;
             futureRequests->goToPos(petition_i);
             // if pe in cache
             if (state.memory->contains(futureRequests->getElement())) {
                 printf("HIT: %d\n", futureRequests->getElement().id);
+                state.currentTime += HIT_COST;
                 return;
             }
     
@@ -65,8 +64,11 @@ class Optimal: Algorithm {
             state.memory->goToPos(to_remove_pag);
             Page removed = state.memory->remove();
             state.disk->append(removed);
+            state.currentTime = FAULT_COST;
             futureRequests->goToPos(petition_i);
             state.memory->insert(futureRequests->getElement());
+            
+            printf("Cache:");
             state.memory->print();
             printf("\n");
         }
