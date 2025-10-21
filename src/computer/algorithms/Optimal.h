@@ -23,7 +23,7 @@ class Optimal: public Algorithm {
         int execute(Page to_insert, StatePerron& state) {
             // if pe in cache
             if (state.memory->contains(to_insert)) {
-                printf("HIT: %d\n", futureRequests->getElement().id);
+                printf("HIT: %d\n", to_insert.id);
                 state.currentTime += HIT_COST;
                 return HIT_COST;
             }
