@@ -97,8 +97,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 
 // Our state
 bool show_demo_window = true;
-bool setup_window = true;
-bool simul_window = false;
+bool setup_window = false;
+bool simul_window = true;
 
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate) {
@@ -107,11 +107,11 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
   float scaley = 1; // viewportSize.x/640;
   ImGuiIO io = ImGui::GetIO();
   ImGuiStyle &style = ImGui::GetStyle();
-  style.FontSizeBase = 15;
+  style.FontSizeBase = 14;
   style.WindowPadding = ImVec2(30 * scalex, 10 * scaley);
   style.ItemSpacing = ImVec2(10 * scalex, 12 * scaley);
   style.FontScaleMain = scaley;
-  style.CellPadding = ImVec2(0, 0);
+  style.CellPadding = ImVec2(2, 2);
 
   if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) {
     SDL_Delay(10); // Sleep if minimize
@@ -236,11 +236,6 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
     ImGui::Begin(" ", nullptr, main_window_flags);
 
-    // ImGui::PushFont(nullptr, style.FontSizeBase * 2.f);
-    // ImGui::Text("Simulador de Algoritmos de Paginación");
-    // ImGui::PopFont();
-
-    // ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
     ImGui::PushFont(nullptr, style.FontSizeBase * 1.5f);
     ImGui::Text("Simulación");
     ImGui::PopFont();
@@ -248,12 +243,17 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
     ImGui::Indent(10 * scalex);
 
+    // RAM Section
+    style.CellPadding.x = 0;
     ImGui::BeginTable("##ram-optimo", 1, ImGuiTableFlags_Borders);
     ImGui::TableSetupColumn(" RAM Óptimo");
     ImGui::TableHeadersRow();
+    style.CellPadding.y = 0;
     ImGui::TableNextColumn();
     {
-      ImGui::BeginTable("##ram-optimo-int", 100, ImGuiTableFlags_Borders);
+      ImGui::BeginTable("##ram-optimo-int", 100,
+                        ImGuiTableFlags_BordersOuterH |
+                            ImGuiTableFlags_BordersInnerV);
       ImGui::TableNextRow(0, 20);
       for (int i = 0; i < 100; i++) {
         ImGui::TableNextColumn();
@@ -264,6 +264,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
       }
       ImGui::EndTable();
     }
+    style.CellPadding = ImVec2(2, 2);
     ImGui::EndTable();
 
     ImGui::BeginTable("##ram-algoritmo", 1, ImGuiTableFlags_Borders);
@@ -280,8 +281,53 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     }
     ImGui::EndTable();
 
-    ImGui::Unindent(10 * scalex);
+    ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
 
+    // MMU Section
+
+    float width_avail = ImGui::GetContentRegionAvail().x;
+    ImGui::BeginTable("##split", 3, ImGuiTableFlags_SizingFixedFit);
+    ImGui::TableSetupColumn(nullptr, 0, width_avail * 0.45);
+    ImGui::TableSetupColumn(nullptr, 0, width_avail * 0.1);
+    ImGui::TableSetupColumn(nullptr, 0, width_avail * 0.45);
+
+    ImGui::TableNextColumn();
+    {
+      ImGui::SeparatorText("Óptimo");
+      ImGui::BeginTable("##mmu-optimo", 8,
+                        ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg |
+                            ImGuiTableFlags_ScrollY,
+                        ImVec2(0, 270));
+
+      ImGui::TableSetupColumn("Page ID");
+      ImGui::TableSetupColumn("PID");
+      ImGui::TableSetupColumn("Loaded");
+      ImGui::TableSetupColumn("M-Addr");
+      ImGui::TableSetupColumn("M-Addr");
+      ImGui::TableSetupColumn("D-Addr");
+      ImGui::TableSetupColumn("Loaded T");
+      ImGui::TableSetupColumn("Mark");
+      ImGui::TableHeadersRow();
+
+      ImGui::TableNextColumn();
+      for (int i = 0; i < 100; i++) {
+        ImGui::TableNextRow(20);
+        ImGui::TableNextColumn();
+        ImGui::Text("xd");
+      }
+      ImGui::EndTable();
+    }
+
+    ImGui::TableNextColumn();
+    ImGui::TableNextColumn();
+    {
+      ImGui::SeparatorText("Algoritmo");
+      ImGui::Text("duplicado");
+    }
+
+    ImGui::EndTable();
+
+    ImGui::Unindent(10 * scalex);
     ImGui::End();
   }
 
