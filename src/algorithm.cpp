@@ -23,16 +23,16 @@ int main(int argc, char* argv[]){
     List<Page>* requests = new ArrayList<Page>();
     
     //peticiones = [3,1,4,8,5,9,3,2,5,4]
-    requests->append(Page(3, 0, 0, 0));
-    requests->append(Page(1, 0, 0, 0));
-    requests->append(Page(4, 0, 0, 0));
-    requests->append(Page(8, 0, 0, 0));
-    requests->append(Page(5, 0, 0, 0));
-    requests->append(Page(9, 0, 0, 0));
-    requests->append(Page(3, 0, 0, 0));
-    requests->append(Page(2, 0, 0, 0));
-    requests->append(Page(5, 0, 0, 0));
-    requests->append(Page(4, 0, 0, 0));
+    requests->append(Page(3));
+    requests->append(Page(1));
+    requests->append(Page(4));
+    requests->append(Page(8));
+    requests->append(Page(5));
+    requests->append(Page(9));
+    requests->append(Page(3));
+    requests->append(Page(2));
+    requests->append(Page(5));
+    requests->append(Page(4));
     
     int k = 2;
     

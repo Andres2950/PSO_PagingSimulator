@@ -60,6 +60,13 @@ class Optimal: public Algorithm {
                     }
                 }
             }
+            // HACER COSITAS PARA METER LA PAGINA 
+            /*
+            int disk_index = -1;
+            if ((disk_index = state.disk->indexOf(to_insert)) != -1){
+                state.disk->goToPos(disk_index);
+                state.disk->remove();
+            }
             //cache[to_remove_pag] = peticiones
             state.memory->goToPos(to_remove_pag);
             Page removed = state.memory->remove();
@@ -67,6 +74,8 @@ class Optimal: public Algorithm {
             state.currentTime += FAULT_COST;
             futureRequests->goToPos(petition_i);
             state.memory->insert(futureRequests->getElement());
+            */
+            replace_page(to_insert, state);
             
             printf("Cache:");
             state.memory->print();

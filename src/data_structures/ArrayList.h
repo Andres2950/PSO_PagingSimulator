@@ -72,6 +72,13 @@ public:
             throw runtime_error("No current element.");
         return elements[pos];
     }
+    E& getElementRef(){
+        if (size == 0)
+            throw runtime_error("List is empty.");
+        if (size == pos)
+            throw runtime_error("No current element.");
+        return elements[pos];
+    }
     void goToStart(){
         pos = 0;
     }

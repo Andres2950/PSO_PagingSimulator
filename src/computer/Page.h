@@ -20,19 +20,28 @@ class Page {
         this->l_addr = l_addr;
         this->d_addr = d_addr;
         this->id = id; 
+        mark = 0;
+    }
+    Page(int id) {
+        this->id = id;
+        this->m_addr = -1;
+        this->l_addr = -1;
+        this->d_addr = -1;
+        mark=0;
     }
     Page(){
         this->m_addr = -1;
         this->l_addr = -1;
         this->d_addr = -1;
         this->id = -1; 
+        mark = 0;
     }
 
     bool operator==(const Page& otro) const {
         return id == otro.id;
     }
     friend std::ostream& operator<<(std::ostream& os, const Page& page) {
-        os << "Page(" << page.id << ")";
+        os << "Page(" << page.id << << ", mark=" << page.mark << ")";
         return os;
     }
 };
