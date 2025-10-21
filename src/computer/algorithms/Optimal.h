@@ -20,14 +20,14 @@ class Optimal: public Algorithm {
         }
         // Solo para insertar una pagina, supone que la RAM ya esta llena
         // Supone que el i dentro de la lista de las páginas es el mismo que el id
-        void execute(Page to_insert, StatePerron& state) {
+        int execute(Page to_insert, StatePerron& state) {
             int petition_i = state.to_insert_i;
             futureRequests->goToPos(petition_i);
             // if pe in cache
             if (state.memory->contains(to_insert)) {
                 printf("HIT: %d\n", futureRequests->getElement().id);
                 state.currentTime += HIT_COST;
-                return;
+                return HIT_COST;
             }
     
             int to_remove_pag = 0;
@@ -60,17 +60,14 @@ class Optimal: public Algorithm {
                     }
                 }
             }
-            //cache[to_remove_pag] = peticiones
-            state.memory->goToPos(to_remove_pag);
-            Page removed = state.memory->remove();
-            state.disk->append(removed);
+            replace_page(to_insert, state.memory->getPos(), state);
             state.currentTime += FAULT_COST;
-            futureRequests->goToPos(petition_i);
-            state.memory->insert(futureRequests->getElement());
             
             printf("Cache:");
             state.memory->print();
             printf("\n");
+            
+            return FAULT_COST;
         }
 };
 
