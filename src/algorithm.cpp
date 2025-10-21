@@ -40,12 +40,12 @@ int main(int argc, char* argv[]){
 
     int k = 2;
 
-    //Inserta y remueve las cosas hasta que se llene el cache
+    //Inserta las cosas hasta que se llene el cache
+    state.memory->goToStart();
     for (int i = 0; i < k; ++i) {
-        requests->goToStart();
-        state.memory->goToStart();
-        state.memory->append(requests->remove());
+        state.memory->append(requests->getElement());
         state.to_insert_i = i;
+        requests->next();
     }
 
     printf("Starting cache: ");
