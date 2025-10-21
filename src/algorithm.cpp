@@ -51,21 +51,11 @@ int main(int argc, char* argv[]){
     printf("### OPTIMAL ###\n");
     StatePerron state;
     state.currentTime = 0;
+    state.to_insert_i = 0;
     state.disk = new ArrayList<Page>();
     state.memory = new ArrayList<Page>(2);
-    //Inserta las cosas hasta que se llene el cache
     state.memory->goToStart();
     requests->goToStart();
-    for (int i = 0; i < k; ++i) {
-        state.memory->append(requests->getElement());
-        state.to_insert_i = i;
-        requests->next();
-        state.currentTime += FAULT_COST;
-    }
-    printf("Starting cache: ");
-    state.memory->print();
-    printf("\n");
-
     Algorithm* optimal = new Optimal(otherRequests);
     while(!requests->atEnd()){
         state.to_insert_i++;
@@ -78,21 +68,11 @@ int main(int argc, char* argv[]){
    
     printf("### FIFO ###\n");
     state.currentTime = 0;
+    state.to_insert_i = 0;
     state.disk = new ArrayList<Page>();
     state.memory = new ArrayList<Page>(2);
-    //Inserta las cosas hasta que se llene el cache
     state.memory->goToStart();
     requests->goToStart();
-    for (int i = 0; i < k; ++i) {
-        state.memory->append(requests->getElement());
-        state.to_insert_i = i;
-        requests->next();
-        state.currentTime += FAULT_COST;
-    }
-    printf("Starting cache: ");
-    state.memory->print();
-    printf("\n");
-
     Algorithm* fifo = new FIFO();
     while(!requests->atEnd()){
         state.to_insert_i++;
@@ -105,21 +85,11 @@ int main(int argc, char* argv[]){
     
     printf("### SECOND CHANCE ###\n");
     state.currentTime = 0;
+    state.to_insert_i = 0;
     state.disk = new ArrayList<Page>();
     state.memory = new ArrayList<Page>(2);
-    //Inserta las cosas hasta que se llene el cache
     state.memory->goToStart();
     requests->goToStart();
-    for (int i = 0; i < k; ++i) {
-        state.memory->append(requests->getElement());
-        state.to_insert_i = i;
-        requests->next();
-        state.currentTime += FAULT_COST;
-    }
-    printf("Starting cache: ");
-    state.memory->print();
-    printf("\n");
-
     Algorithm* second_chance = new SecondChance();
     while(!requests->atEnd()){
         state.to_insert_i++;

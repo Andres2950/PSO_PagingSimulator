@@ -22,6 +22,19 @@ class SecondChance: public Algorithm {
                 //to_insert.mark = 1;
                 return HIT_COST;
             }
+            if (state.memory->getSize() < MEMORY_SIZE){
+                int index = state.memory->getSize();
+                to_insert.m_addr = index;
+                to_insert.is_loaded = 1;
+                to_insert.load_t = 0;
+                to_insert.mark = 0;
+                state.memory->append(to_insert);
+                state.currentTime += FAULT_COST;
+                printf("Cache:");
+                state.memory->print();
+                printf("\n");
+                return FAULT_COST;
+            }
             
             state.memory->goToStart(); //El primero que se inserto
             while (true){

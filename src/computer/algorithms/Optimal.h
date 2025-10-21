@@ -21,19 +21,33 @@ class Optimal: public Algorithm {
         // Solo para insertar una pagina, supone que la RAM ya esta llena
         // Supone que el i dentro de la lista de las páginas es el mismo que el id
         int execute(Page to_insert, StatePerron& state) {
-            int petition_i = state.to_insert_i;
-            futureRequests->goToPos(petition_i);
             // if pe in cache
             if (state.memory->contains(to_insert)) {
-                printf("HIT: %d\n", futureRequests->getElement().id);
+                printf("HIT: %d\n", to_insert.id);
                 state.currentTime += HIT_COST;
                 return HIT_COST;
             }
+
+            if (state.memory->getSize() < MEMORY_SIZE){
+                int index = state.memory->getSize();
+                to_insert.m_addr = index;
+                to_insert.is_loaded = 1;
+                to_insert.load_t = 0;
+                state.memory->append(to_insert);
+                state.currentTime += FAULT_COST;
+                printf("Cache:");
+                state.memory->print();
+                printf("\n");
+                return FAULT_COST;
+            }
+
+            int petition_i = state.to_insert_i;
+            futureRequests->goToPos(petition_i);
     
             int to_remove_pag = 0;
             int to_remove = -1;
             //for pag_i, pag in enumerate(cache)
-            for (int pag_i = 0; pag_i < state.memory->getSize(); ++pag_i) {
+            for (int pag_i = 0; pag_i < MEMORY_SIZE; ++pag_i) {
                 List<int>* tmp = new ArrayList<int>();
                 // tmp = peticiones[pe_i:]
                 for (int i = petition_i; i < futureRequests->getSize(); ++i) {
