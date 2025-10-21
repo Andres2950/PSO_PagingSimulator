@@ -24,7 +24,7 @@ class Optimal: public Algorithm {
             int petition_i = state.to_insert_i;
             futureRequests->goToPos(petition_i);
             // if pe in cache
-            if (state.memory->contains(futureRequests->getElement())) {
+            if (state.memory->contains(to_insert)) {
                 printf("HIT: %d\n", futureRequests->getElement().id);
                 state.currentTime += HIT_COST;
                 return;
