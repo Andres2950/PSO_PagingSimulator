@@ -7,11 +7,11 @@
 #include "../../data_structures/List.h"
 #include "Algorithm.h"
 
-class SecondChance: Algorithm {
+class SecondChance: public Algorithm {
     public:
         SecondChance(){}
         // Solo para insertar una pagina, supone que la RAM ya esta llena
-        void execute(Page to_insert, StatePerron& state){
+        int execute(Page to_insert, StatePerron& state){
             int mem_index = state.memory->indexOf(to_insert);
             if (mem_index != -1) {
                 printf("HIT: %d\n", to_insert.id);
@@ -20,11 +20,12 @@ class SecondChance: Algorithm {
                 Page& page = state.memory->getElementRef();
                 page.mark = 1;
                 //to_insert.mark = 1;
-                return;
+                return HIT_COST;
             }
             
             state.memory->goToStart(); //El primero que se inserto
             while (true){
+                if (state.memory->atEnd()) state.memory->goToStart();
                 Page& page = state.memory->getElementRef();
                 // can be removed
                 if(page.mark == 0) {
@@ -32,46 +33,17 @@ class SecondChance: Algorithm {
                 } else {
                     // expire the mark
                     page.mark = 0;
-                    if (state.memory->atEnd())
-                        state.memory->goToStart();
-                    else 
-                        state.memory->next();
+                    state.memory->next();
                 }
             }
-            /*
-            //Si se encuentra la pagina en disco, se quita
-            Page insert;
-            int disk_index = state.disk->indexOf(to_insert);
-            if (disk_index != -1){
-                state.disk->goToPos(disk_index);
-                insert = state.disk->remove();
-                insert.d_addr = -1;
-            } else {
-                // Si la pagin a no esta en disco
-                // Significa que es una nueva pagina, creada con new 
-                // Esto se maneja fuera de la funcion
-                // Simplemente se asigna al lugar
-                insert = to_insert;
-            }
-            
-            // Para asignarle la direccion fisica en memoria a la pagina
-            // No estoy seguro de como manejar la direccion logica
-            state.memory->goToEnd();
-            insert.m_addr = state.memory->getPos();
-            insert.is_loaded = true;
 
-            Page removed = state.memory->remove();
-            state.disk->append(removed);
-            state.memory->append(insert);
-            state.currentTime += FAULT_COST;
-            */
-
-            replace_page(to_insert, state);
+            replace_page(to_insert, state.memory->getSize()-1, state);
              
+            state.currentTime += FAULT_COST;
             printf("Cache:");
             state.memory->print();
             printf("\n");
-            
+            return FAULT_COST;
         };
 };
 

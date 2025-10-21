@@ -27,7 +27,7 @@ class Page {
         this->m_addr = -1;
         this->l_addr = -1;
         this->d_addr = -1;
-        mark=0;
+        mark = 0;
     }
     Page(){
         this->m_addr = -1;
@@ -41,7 +41,7 @@ class Page {
         return id == otro.id;
     }
     friend std::ostream& operator<<(std::ostream& os, const Page& page) {
-        os << "Page(" << page.id << << ", mark=" << page.mark << ")";
+        os << "Page(" << page.id << ", mark=" << page.mark << ")";
         return os;
     }
 };

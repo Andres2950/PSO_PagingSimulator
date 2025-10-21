@@ -18,10 +18,10 @@ class Algorithm {
         // Solo para insertar una pagina, supone que la RAM ya esta llena
         // Se pasa el estado por referencia para modificar lo que hay adentro\
         // Asi no hay que tocar nada luego de llamar al algoritmo
-        virtual void execute(Page to_insert, StatePerron& state) =0;
+        virtual int execute(Page to_insert, StatePerron& state) =0;
 
         // Esta funcion supone que el pos interno de memory apunta a la pagina que se va a reemplazar
-        void replace_page(Page to_insert, StatePerron& state) {
+        void replace_page(Page to_insert, int insert_in, StatePerron& state) {
             Page inserting;
             int disk_index = state.disk->indexOf(to_insert);
             //Si esta en disco, se saca
@@ -44,14 +44,12 @@ class Algorithm {
             removed.load_t = -1; // El tiempo que llevaba cargada la pagina se remueve
             state.disk->append(removed);
             
-            // en la misma posicion de antes se inserta la nueva ppagina
+            // se inserta donde se quiere
             inserting.is_loaded = 1;
             inserting.m_addr = state.memory->getPos();
             inserting.load_t = 0; //La nueva pagina lleva 0 segundos cargada
+            state.memory->goToPos(insert_in);
             state.memory->insert(inserting);
-
-            //Tiempo de la falla
-            state.currentTime += FAULT_COST;
         }
 };
 

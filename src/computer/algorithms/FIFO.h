@@ -10,16 +10,16 @@ class FIFO: public Algorithm {
     public:
         FIFO(){}
         // Solo para insertar una pagina, supone que la RAM ya esta llena
-        void execute(Page to_insert, StatePerron& state) {
+        int execute(Page to_insert, StatePerron& state) {
             if (state.memory->contains(to_insert)) {
                 printf("HIT: %d\n", to_insert.id);
                 state.currentTime += HIT_COST;
-                return;
+                return HIT_COST;
             }
 
-            /*
+            
             //Si se encuentra la pagina en disco, se quita
-            Page insert;
+           /* Page insert;
             int disk_index = state.disk->indexOf(to_insert);
             if (disk_index != -1){
                 state.disk->goToPos(disk_index);
@@ -35,12 +35,15 @@ class FIFO: public Algorithm {
             state.disk->append(removed);
             state.memory->append(insert);
             state.currentTime += FAULT_COST;*/
-            replace_page(to_insert, state);
-
+            state.memory->goToStart();
+            replace_page(to_insert, state.memory->getSize()-1, state);
+            
             printf("Cache:");
             state.memory->print();
             printf("\n");
-            
+            state.currentTime += FAULT_COST;
+
+            return FAULT_COST;
         }
 };
 
