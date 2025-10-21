@@ -16,8 +16,19 @@ class FIFO: public Algorithm {
                 state.currentTime += HIT_COST;
                 return HIT_COST;
             }
+            if (state.memory->getSize() < MEMORY_SIZE){
+                int index = state.memory->getSize();
+                to_insert.m_addr = index;
+                to_insert.is_loaded = 1;
+                to_insert.load_t = 0;
+                state.memory->append(to_insert);
+                state.currentTime += FAULT_COST;
+                printf("Cache:");
+                state.memory->print();
+                printf("\n");
+                return FAULT_COST;
+            }
 
-            
             //Si se encuentra la pagina en disco, se quita
            /* Page insert;
             int disk_index = state.disk->indexOf(to_insert);
