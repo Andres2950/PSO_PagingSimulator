@@ -312,7 +312,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
           ImGui::TableSetupColumn("Page ID");
           ImGui::TableSetupColumn("PID");
           ImGui::TableSetupColumn("Loaded");
-          ImGui::TableSetupColumn("M-Addr");
+          ImGui::TableSetupColumn("L-Addr");
           ImGui::TableSetupColumn("M-Addr");
           ImGui::TableSetupColumn("D-Addr");
           ImGui::TableSetupColumn("Loaded T");
