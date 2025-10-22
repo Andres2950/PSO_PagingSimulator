@@ -244,29 +244,36 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     ImGui::Indent(10 * scalex);
 
     // RAM Section
+
     style.CellPadding.x = 0;
-    ImGui::BeginTable("##ram-optimo", 1, ImGuiTableFlags_Borders);
-    ImGui::TableSetupColumn(" RAM Óptimo");
-    ImGui::TableHeadersRow();
-    style.CellPadding.y = 0;
-    ImGui::TableNextColumn();
-    {
-      ImGui::BeginTable("##ram-optimo-int", 100,
-                        ImGuiTableFlags_BordersOuterH |
-                            ImGuiTableFlags_BordersInnerV);
-      ImGui::TableNextRow(0, 20);
-      for (int i = 0; i < 100; i++) {
-        ImGui::TableNextColumn();
-        if (i < 30) {
-          ImU32 cell_bg_color = ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 1.f));
-          ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, cell_bg_color);
+    if (ImGui::BeginTable("##ram-optimo", 1, ImGuiTableFlags_Borders)) {
+
+      ImGui::TableSetupColumn(" RAM Óptimo");
+      ImGui::TableHeadersRow();
+      style.CellPadding.y = 0;
+      ImGui::TableNextColumn();
+      {
+        if (ImGui::BeginTable("##ram-optimo-int", 100,
+                              ImGuiTableFlags_BordersOuterH |
+                                  ImGuiTableFlags_BordersInnerV)) {
+
+          ImGui::TableNextRow(0, 20);
+          for (int i = 0; i < 100; i++) {
+            ImGui::TableNextColumn();
+            if (i < 30) {
+              ImU32 cell_bg_color =
+                  ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 1.f));
+              ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, cell_bg_color);
+            }
+          }
+          ImGui::EndTable();
         }
       }
+      style.CellPadding = ImVec2(2, 2);
       ImGui::EndTable();
     }
-    style.CellPadding = ImVec2(2, 2);
-    ImGui::EndTable();
 
+    // TODO: hacer esta tabla igual a la del optimo
     ImGui::BeginTable("##ram-algoritmo", 1, ImGuiTableFlags_Borders);
     ImGui::TableSetupColumn(" RAM Algoritmo");
     ImGui::TableHeadersRow();
@@ -286,47 +293,49 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     // MMU Section
 
     float width_avail = ImGui::GetContentRegionAvail().x;
-    ImGui::BeginTable("##split", 3, ImGuiTableFlags_SizingFixedFit);
-    ImGui::TableSetupColumn(nullptr, 0, width_avail * 0.45);
-    ImGui::TableSetupColumn(nullptr, 0, width_avail * 0.1);
-    ImGui::TableSetupColumn(nullptr, 0, width_avail * 0.45);
-
-    ImGui::TableNextColumn();
-    {
-      ImGui::SeparatorText("Óptimo");
-      ImGui::BeginTable("##mmu-optimo", 8,
-                        ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg |
-                            ImGuiTableFlags_ScrollY,
-                        ImVec2(0, 270));
-
-      ImGui::TableSetupColumn("Page ID");
-      ImGui::TableSetupColumn("PID");
-      ImGui::TableSetupColumn("Loaded");
-      ImGui::TableSetupColumn("M-Addr");
-      ImGui::TableSetupColumn("M-Addr");
-      ImGui::TableSetupColumn("D-Addr");
-      ImGui::TableSetupColumn("Loaded T");
-      ImGui::TableSetupColumn("Mark");
-      ImGui::TableHeadersRow();
+    if (ImGui::BeginTable("##split", 3, ImGuiTableFlags_SizingFixedFit)) {
+      ImGui::TableSetupColumn(nullptr, 0, width_avail * 0.45);
+      ImGui::TableSetupColumn(nullptr, 0, width_avail * 0.1);
+      ImGui::TableSetupColumn(nullptr, 0, width_avail * 0.45);
 
       ImGui::TableNextColumn();
-      for (int i = 0; i < 100; i++) {
-        ImGui::TableNextRow(20);
-        ImGui::TableNextColumn();
-        ImGui::Text("xd");
+      {
+        ImGui::SeparatorText("Óptimo");
+        if (ImGui::BeginTable("##mmu-optimo", 8,
+                              ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg |
+                                  ImGuiTableFlags_ScrollY,
+                              ImVec2(0, 270))) {
+
+          ImGui::TableSetupColumn("Page ID");
+          ImGui::TableSetupColumn("PID");
+          ImGui::TableSetupColumn("Loaded");
+          ImGui::TableSetupColumn("M-Addr");
+          ImGui::TableSetupColumn("M-Addr");
+          ImGui::TableSetupColumn("D-Addr");
+          ImGui::TableSetupColumn("Loaded T");
+          ImGui::TableSetupColumn("Mark");
+          // ImGui::TableHeadersRow();
+
+          ImGui::TableNextColumn();
+          for (int i = 0; i < 100; i++) {
+            ImGui::TableNextRow(20);
+            ImGui::TableNextColumn();
+            ImGui::Text("xd");
+          }
+          ImGui::EndTable();
+        }
       }
+
+      ImGui::TableNextColumn();
+      ImGui::TableNextColumn();
+      {
+        ImGui::SeparatorText("Algoritmo");
+        ImGui::Text("duplicado");
+        // TODO: copiar la primer columna aqui
+      }
+
       ImGui::EndTable();
     }
-
-    ImGui::TableNextColumn();
-    ImGui::TableNextColumn();
-    {
-      ImGui::SeparatorText("Algoritmo");
-      ImGui::Text("duplicado");
-    }
-
-    ImGui::EndTable();
-
     ImGui::Unindent(10 * scalex);
     ImGui::End();
   }
