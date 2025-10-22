@@ -301,11 +301,13 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
       ImGui::TableNextColumn();
       {
         ImGui::SeparatorText("Óptimo");
-        if (ImGui::BeginTable("##mmu-optimo", 8,
-                              ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg |
-                                  ImGuiTableFlags_ScrollY,
-                              ImVec2(0, 270))) {
-
+        if (ImGui::BeginTable(
+                "##mmu-optimo", 8,
+                ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg |
+                    ImGuiTableFlags_ScrollY | ImGuiTableFlags_ScrollX |
+                    ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable |
+                    ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedSame,
+                ImVec2(0, 270))) {
           ImGui::TableSetupColumn("Page ID");
           ImGui::TableSetupColumn("PID");
           ImGui::TableSetupColumn("Loaded");
@@ -314,7 +316,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
           ImGui::TableSetupColumn("D-Addr");
           ImGui::TableSetupColumn("Loaded T");
           ImGui::TableSetupColumn("Mark");
-          // ImGui::TableHeadersRow();
+          ImGui::TableHeadersRow();
 
           ImGui::TableNextColumn();
           for (int i = 0; i < 100; i++) {
