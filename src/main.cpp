@@ -33,10 +33,10 @@ void saveFile(void *userdata, const char *const *filelist, int filter) {
   }
 }
 
+// SDL variables
 static SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 float main_scale;
-
 ImGuiWindowFlags main_window_flags;
 
 /* This function runs once at startup. */
@@ -298,6 +298,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
       ImGui::TableSetupColumn(nullptr, 0, width_avail * 0.1);
       ImGui::TableSetupColumn(nullptr, 0, width_avail * 0.45);
 
+      // MMU Óptimo
       ImGui::TableNextColumn();
       {
         ImGui::SeparatorText("Óptimo");
@@ -324,6 +325,33 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
             ImGui::TableNextColumn();
             ImGui::Text("xd");
           }
+          ImGui::EndTable();
+        }
+
+        ImGui::Text("Procesos:");
+        ImGui::SameLine(0, 20);
+        ImGui::Text("245"); // TODO: change for real variable
+
+        ImGui::SameLine(300);
+        ImGui::Text("Tiempo de Simulación:");
+        ImGui::SameLine(0, 20);
+        ImGui::Text("245s"); // TODO: change for real variable
+
+        if (ImGui::BeginTable("##optimo-ram-kb", 4, ImGuiTableFlags_Borders)) {
+          ImGui::TableSetupColumn("RAM kB");
+          ImGui::TableSetupColumn("RAM %");
+          ImGui::TableSetupColumn("V-RAM kB");
+          ImGui::TableSetupColumn("V-RAM %");
+          ImGui::TableHeadersRow();
+          ImGui::TableNextColumn();
+          ImGui::Text("12"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("12"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("12"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("12"); // TODO:change for real variable
+
           ImGui::EndTable();
         }
       }
