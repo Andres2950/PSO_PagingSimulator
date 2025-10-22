@@ -328,14 +328,20 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
           ImGui::EndTable();
         }
 
-        ImGui::Text("Procesos:");
-        ImGui::SameLine(0, 20);
-        ImGui::Text("245"); // TODO: change for real variable
+        if (ImGui::BeginTable("##detalles-tabla", 3, ImGuiTableFlags_Borders)) {
+          ImGui::TableSetupColumn("Procesos");
+          ImGui::TableSetupColumn("Tiempo de Simulación");
+          ImGui::TableSetupColumn("Fragmentación");
+          ImGui::TableHeadersRow();
+          ImGui::TableNextColumn();
+          ImGui::Text("23"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("15s"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("45kB"); // TODO:change for real variable
 
-        ImGui::SameLine(300);
-        ImGui::Text("Tiempo de Simulación:");
-        ImGui::SameLine(0, 20);
-        ImGui::Text("245s"); // TODO: change for real variable
+          ImGui::EndTable();
+        }
 
         if (ImGui::BeginTable("##optimo-ram-kb", 4, ImGuiTableFlags_Borders)) {
           ImGui::TableSetupColumn("RAM kB");
@@ -351,6 +357,35 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
           ImGui::Text("12"); // TODO:change for real variable
           ImGui::TableNextColumn();
           ImGui::Text("12"); // TODO:change for real variable
+
+          ImGui::EndTable();
+        }
+
+        if (ImGui::BeginTable("##pagloaded-table", 2,
+                              ImGuiTableFlags_Borders)) {
+          ImGui::TableSetupColumn("Páginas Cargadas");
+          ImGui::TableSetupColumn("Páginas No Cargadas");
+          ImGui::TableHeadersRow();
+          ImGui::TableNextColumn();
+          ImGui::Text("12"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("1%%"); // TODO:change for real variable
+
+          ImGui::EndTable();
+        }
+
+        if (ImGui::BeginTable("##thrashing-table", 2,
+                              ImGuiTableFlags_Borders)) {
+          ImGui::TableSetupColumn("Thrashing T");
+          ImGui::TableSetupColumn("Thrashing %");
+          ImGui::TableHeadersRow();
+          ImGui::TableNextColumn();
+          ImGui::TableSetBgColor(
+              ImGuiTableBgTarget_CellBg,
+              ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 1.f)));
+          ImGui::Text("12s"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("1%%"); // TODO:change for real variable
 
           ImGui::EndTable();
         }
