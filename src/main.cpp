@@ -133,13 +133,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
     ImGui::Begin(" ", nullptr, main_window_flags);
 
-    // ImGui::PushFont(nullptr, style.FontSizeBase * 2.f);
-    // ImGui::Text("Simulador de Algoritmos de Paginación");
-    // ImGui::PopFont();
-
-    // ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
-    ImGui::PushFont(nullptr, style.FontSizeBase * 1.5f);
-    ImGui::SeparatorText("Configuración");
+    ImGui::PushFont(nullptr, style.FontSizeBase * 2.f);
+    ImGui::Text("Configuración");
+    ImGui::Separator();
     ImGui::PopFont();
     ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
 
@@ -162,12 +158,14 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     ImGui::SameLine(0, 20 * scalex);
     ImGui::RadioButton("MRU", &algoritmo, 2);
     ImGui::SameLine(0, 20 * scalex);
-    ImGui::RadioButton("Random", &algoritmo, 3);
+    ImGui::RadioButton("LRU", &algoritmo, 3);
+    ImGui::SameLine(0, 20 * scalex);
+    ImGui::RadioButton("Random", &algoritmo, 4);
 
     ImGui::AlignTextToFramePadding();
     ImGui::Text("Archivo de Instrucciones: ");
     ImGui::SameLine(0, 10 * scalex);
-    ImGui::SetNextItemWidth(330);
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.9f - 200);
     ImGui::InputText("##input1", path, 4096, ImGuiInputTextFlags_ReadOnly);
     ImGui::SameLine(0, 5 * scalex);
     bool load_btn_pressed =
