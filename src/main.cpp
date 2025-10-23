@@ -97,8 +97,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 
 // Our state
 bool show_demo_window = true;
-bool setup_window = false;
-bool simul_window = true;
+bool setup_window = true;
+bool simul_window = false;
 
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate) {
@@ -236,12 +236,11 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
     ImGui::Begin(" ", nullptr, main_window_flags);
 
-    ImGui::PushFont(nullptr, style.FontSizeBase * 1.5f);
+    ImGui::PushFont(nullptr, style.FontSizeBase * 2.f);
     ImGui::Text("Simulación");
     ImGui::PopFont();
+    ImGui::Separator();
     ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
-
-    ImGui::Indent(10 * scalex);
 
     // RAM Section
 
@@ -273,22 +272,33 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
       ImGui::EndTable();
     }
 
-    // TODO: hacer esta tabla igual a la del optimo
-    ImGui::BeginTable("##ram-algoritmo", 1, ImGuiTableFlags_Borders);
-    ImGui::TableSetupColumn(" RAM Algoritmo");
-    ImGui::TableHeadersRow();
-    ImGui::TableNextColumn();
-    {
-      ImGui::BeginTable("##ram-algoritmo-int", 100, ImGuiTableFlags_Borders);
-      ImGui::TableNextRow(0, 20);
-      for (int i = 0; i < 100; i++) {
-        ImGui::TableNextColumn();
+    style.CellPadding.x = 0;
+    if (ImGui::BeginTable("##ram-algoritmo", 1, ImGuiTableFlags_Borders)) {
+
+      ImGui::TableSetupColumn(" RAM Algoritmo");
+      ImGui::TableHeadersRow();
+      style.CellPadding.y = 0;
+      ImGui::TableNextColumn();
+      {
+        if (ImGui::BeginTable("##ram-algoritmo-int", 100,
+                              ImGuiTableFlags_BordersOuterH |
+                                  ImGuiTableFlags_BordersInnerV)) {
+
+          ImGui::TableNextRow(0, 20);
+          for (int i = 0; i < 100; i++) {
+            ImGui::TableNextColumn();
+            if (i < 50) {
+              ImU32 cell_bg_color =
+                  ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 1.f));
+              ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, cell_bg_color);
+            }
+          }
+          ImGui::EndTable();
+        }
       }
+      style.CellPadding = ImVec2(2, 2);
       ImGui::EndTable();
     }
-    ImGui::EndTable();
-
-    ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
 
     // MMU Section
 
@@ -303,7 +313,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
       {
         ImGui::SeparatorText("Óptimo");
         if (ImGui::BeginTable(
-                "##mmu-optimo", 8,
+                "##mmu-tabla-opt", 8,
                 ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg |
                     ImGuiTableFlags_ScrollY | ImGuiTableFlags_ScrollX |
                     ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable |
@@ -328,7 +338,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
           ImGui::EndTable();
         }
 
-        if (ImGui::BeginTable("##detalles-tabla", 3, ImGuiTableFlags_Borders)) {
+        if (ImGui::BeginTable("##detalles-tabla-opt", 3,
+                              ImGuiTableFlags_Borders)) {
           ImGui::TableSetupColumn("Procesos");
           ImGui::TableSetupColumn("Tiempo de Simulación");
           ImGui::TableSetupColumn("Fragmentación");
@@ -343,7 +354,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
           ImGui::EndTable();
         }
 
-        if (ImGui::BeginTable("##optimo-ram-kb", 4, ImGuiTableFlags_Borders)) {
+        if (ImGui::BeginTable("##ram-detalles-opt", 4,
+                              ImGuiTableFlags_Borders)) {
           ImGui::TableSetupColumn("RAM kB");
           ImGui::TableSetupColumn("RAM %");
           ImGui::TableSetupColumn("V-RAM kB");
@@ -361,7 +373,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
           ImGui::EndTable();
         }
 
-        if (ImGui::BeginTable("##pagloaded-table", 2,
+        if (ImGui::BeginTable("##pages-table-opt", 2,
                               ImGuiTableFlags_Borders)) {
           ImGui::TableSetupColumn("Páginas Cargadas");
           ImGui::TableSetupColumn("Páginas No Cargadas");
@@ -374,7 +386,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
           ImGui::EndTable();
         }
 
-        if (ImGui::BeginTable("##thrashing-table", 2,
+        if (ImGui::BeginTable("##thrashing-table-opt", 2,
                               ImGuiTableFlags_Borders)) {
           ImGui::TableSetupColumn("Thrashing T");
           ImGui::TableSetupColumn("Thrashing %");
@@ -395,13 +407,98 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
       ImGui::TableNextColumn();
       {
         ImGui::SeparatorText("Algoritmo");
-        ImGui::Text("duplicado");
-        // TODO: copiar la primer columna aqui
-      }
+        if (ImGui::BeginTable(
+                "##mmu-tabla-alg", 8,
+                ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg |
+                    ImGuiTableFlags_ScrollY | ImGuiTableFlags_ScrollX |
+                    ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable |
+                    ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedSame,
+                ImVec2(0, 270))) {
+          ImGui::TableSetupColumn("Page ID");
+          ImGui::TableSetupColumn("PID");
+          ImGui::TableSetupColumn("Loaded");
+          ImGui::TableSetupColumn("L-Addr");
+          ImGui::TableSetupColumn("M-Addr");
+          ImGui::TableSetupColumn("D-Addr");
+          ImGui::TableSetupColumn("Loaded T");
+          ImGui::TableSetupColumn("Mark");
+          ImGui::TableHeadersRow();
 
+          ImGui::TableNextColumn();
+          for (int i = 0; i < 100; i++) {
+            ImGui::TableNextRow(20);
+            ImGui::TableNextColumn();
+            ImGui::Text("dx");
+          }
+          ImGui::EndTable();
+        }
+
+        if (ImGui::BeginTable("##detalles-tabla-alg", 3,
+                              ImGuiTableFlags_Borders)) {
+          ImGui::TableSetupColumn("Procesos");
+          ImGui::TableSetupColumn("Tiempo de Simulación");
+          ImGui::TableSetupColumn("Fragmentación");
+          ImGui::TableHeadersRow();
+          ImGui::TableNextColumn();
+          ImGui::Text("23"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("15s"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("45kB"); // TODO:change for real variable
+
+          ImGui::EndTable();
+        }
+
+        if (ImGui::BeginTable("##ram-detalles-alg", 4,
+                              ImGuiTableFlags_Borders)) {
+          ImGui::TableSetupColumn("RAM kB");
+          ImGui::TableSetupColumn("RAM %");
+          ImGui::TableSetupColumn("V-RAM kB");
+          ImGui::TableSetupColumn("V-RAM %");
+          ImGui::TableHeadersRow();
+          ImGui::TableNextColumn();
+          ImGui::Text("12"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("12"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("12"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("12"); // TODO:change for real variable
+
+          ImGui::EndTable();
+        }
+
+        if (ImGui::BeginTable("##pages-table-alg", 2,
+                              ImGuiTableFlags_Borders)) {
+          ImGui::TableSetupColumn("Páginas Cargadas");
+          ImGui::TableSetupColumn("Páginas No Cargadas");
+          ImGui::TableHeadersRow();
+          ImGui::TableNextColumn();
+          ImGui::Text("12"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("1%%"); // TODO:change for real variable
+
+          ImGui::EndTable();
+        }
+
+        if (ImGui::BeginTable("##thrashing-table-alg", 2,
+                              ImGuiTableFlags_Borders)) {
+          ImGui::TableSetupColumn("Thrashing T");
+          ImGui::TableSetupColumn("Thrashing %");
+          ImGui::TableHeadersRow();
+          ImGui::TableNextColumn();
+          ImGui::TableSetBgColor(
+              ImGuiTableBgTarget_CellBg,
+              ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 1.f)));
+          ImGui::Text("12s"); // TODO:change for real variable
+          ImGui::TableNextColumn();
+          ImGui::Text("1%%"); // TODO:change for real variable
+
+          ImGui::EndTable();
+        }
+      }
       ImGui::EndTable();
     }
-    ImGui::Unindent(10 * scalex);
     ImGui::End();
   }
 
