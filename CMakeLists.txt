@@ -23,7 +23,7 @@ add_subdirectory(src/SDL EXCLUDE_FROM_ALL)
 set(SOURCES ./src/ImGui/backends/imgui_impl_sdlrenderer3.cpp ./src/ImGui/backends/imgui_impl_sdl3.cpp ./src/ImGui/imgui.cpp ./src/ImGui/imgui_demo.cpp ./src/ImGui/imgui_draw.cpp ./src/ImGui/imgui_tables.cpp ./src/ImGui/imgui_widgets.cpp )
 
 
-set(SOURCES ${SOURCES} ./src/gui/setup_window.h )
+set(SOURCES ${SOURCES} ./src/gui/setup_window.cpp ./src/gui/simul_window.cpp )
 
 # Create executable target
 add_executable(app ./src/main.cpp ${SOURCES})
@@ -32,4 +32,4 @@ add_executable(app ./src/main.cpp ${SOURCES})
 target_link_libraries(app PUBLIC SDL3::SDL3)
 
 # Link headers
-target_include_directories(app PUBLIC  ./src/ImGui/backends ./src/ImGui ./src/gui)
+target_include_directories(app PUBLIC  ./src/ImGui/backends ./src/ImGui)
