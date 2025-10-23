@@ -51,6 +51,7 @@ void showSetupWindow(bool *open, ImGuiWindowFlags window_flags = 0) {
   ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
   ImGui::Begin(" ", nullptr, window_flags);
 
+  ImGui::Dummy(ImVec2(viewportSize.x, 0)); // padding
   ImGui::PushFont(nullptr, style.FontSizeBase * 2.f);
   ImGui::Text("Configuración");
   ImGui::Separator();

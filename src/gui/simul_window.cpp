@@ -11,6 +11,7 @@ void showSimulWindow(bool *open, ImGuiWindowFlags windowFlags = 0) {
   ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
   ImGui::Begin(" ", nullptr, windowFlags);
 
+  ImGui::Dummy(ImVec2(viewportSize.x, 0)); // padding
   ImGui::PushFont(nullptr, style.FontSizeBase * 2.f);
   ImGui::Text("Simulación");
   int text_height = ImGui::GetItemRectSize().y;

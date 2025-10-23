@@ -51,6 +51,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
   main_window_flags |= ImGuiWindowFlags_NoCollapse;
   main_window_flags |= ImGuiWindowFlags_NoMove;
   main_window_flags |= ImGuiWindowFlags_NoResize;
+  main_window_flags |= ImGuiWindowFlags_NoTitleBar;
 
   // Setup Platform/Renderer backends
   ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
