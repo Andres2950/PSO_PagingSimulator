@@ -238,7 +238,20 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
     ImGui::PushFont(nullptr, style.FontSizeBase * 2.f);
     ImGui::Text("Simulación");
+    int text_height = ImGui::GetItemRectSize().y;
     ImGui::PopFont();
+    ImGui::SameLine();
+    static bool start = false;
+    if (!start && ImGui::Button("Iniciar", ImVec2(0, text_height))) {
+      start = true;
+    }
+    if (start) {
+      if (ImGui::Button("Terminar", ImVec2(0, text_height))) {
+        start = false;
+        simul_window = false;
+        setup_window = true;
+      }
+    }
     ImGui::Separator();
     ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
 
