@@ -1,41 +1,16 @@
-#include "SDL3/SDL_dialog.h"
 #include "SDL3/SDL_video.h"
-#include <cstddef>
-#include <cstring>
 #define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
 #include "./ImGui/backends/imgui_impl_sdl3.h"
 #include "./ImGui/backends/imgui_impl_sdlrenderer3.h"
 #include "imgui.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
-#include <stdio.h>
 #include <stdlib.h>
 
-// File Handling
+#include "./gui/setup_window.h"
 
-char *path;
-
-static const SDL_DialogFileFilter filters[] = {
-    {"Instruction List", "instr"}, {"All", "*"} // DEBUG
-};
-
-void openFile(void *userdata, const char *const *filelist, int filter) {
-  if (filelist != nullptr && filelist[0] != nullptr) {
-    strncpy(path, filelist[0], 4096);
-    // TODO: conectar esto
-  }
-}
-
-void saveFile(void *userdata, const char *const *filelist, int filter) {
-  if (filelist != nullptr && filelist[0] != nullptr) {
-    printf("%s", filelist[0]);
-    // TODO:conectar esto
-  }
-}
-
-// SDL variables
-static SDL_Window *window = NULL;
-SDL_Renderer *renderer = NULL;
+static SDL_Window *window = nullptr;
+SDL_Renderer *renderer = nullptr;
 float main_scale;
 ImGuiWindowFlags main_window_flags;
 
@@ -80,8 +55,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
   ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
   ImGui_ImplSDLRenderer3_Init(renderer);
 
-  // Initialize vars
-  path = (char *)calloc(sizeof(char), 4096);
   return SDL_APP_CONTINUE;
 }
 
@@ -129,104 +102,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
   // Window
   if (setup_window) {
-    ImGui::SetNextWindowSize(viewportSize);
-    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
-    ImGui::Begin(" ", nullptr, main_window_flags);
-
-    ImGui::PushFont(nullptr, style.FontSizeBase * 2.f);
-    ImGui::Text("Configuración");
-    ImGui::Separator();
-    ImGui::PopFont();
-    ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
-
-    ImGui::Indent(10 * scalex);
-
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("Semilla: ");
-    ImGui::SameLine(150 * scalex);
-    ImGui::SetNextItemWidth(300 * scalex);
-    static int semilla = 911;
-    ImGui::InputInt("##semilla", &semilla);
-
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("Algoritmo: ");
-    ImGui::SameLine(150 * scalex);
-    static int algoritmo = 0;
-    ImGui::RadioButton("FIFO", &algoritmo, 0);
-    ImGui::SameLine(0, 20 * scalex);
-    ImGui::RadioButton("Second Chance", &algoritmo, 1);
-    ImGui::SameLine(0, 20 * scalex);
-    ImGui::RadioButton("MRU", &algoritmo, 2);
-    ImGui::SameLine(0, 20 * scalex);
-    ImGui::RadioButton("LRU", &algoritmo, 3);
-    ImGui::SameLine(0, 20 * scalex);
-    ImGui::RadioButton("Random", &algoritmo, 4);
-
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("Archivo de Instrucciones: ");
-    ImGui::SameLine(0, 10 * scalex);
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.9f - 200);
-    ImGui::InputText("##input1", path, 4096, ImGuiInputTextFlags_ReadOnly);
-    ImGui::SameLine(0, 5 * scalex);
-    bool load_btn_pressed =
-        ImGui::Button("Cargar", ImVec2(100 * scalex, 20 * scaley));
-    if (load_btn_pressed) {
-      SDL_ShowOpenFileDialog(openFile, nullptr, window, filters, 2, nullptr,
-                             false); // DEBUG:poner 1 en realese
-    }
-    ImGui::SameLine(0, 5 * scalex);
-    bool generate_btn_pressed =
-        ImGui::Button("Generar", ImVec2(100 * scalex, 20 * scaley));
-    if (generate_btn_pressed) {
-      ImGui::OpenPopup("Generar Lista de Instrucciones");
-    }
-
-    ImGui::SetNextWindowSize(ImVec2(280, 150));
-    if (ImGui::BeginPopupModal("Generar Lista de Instrucciones")) {
-      ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
-      ImGui::AlignTextToFramePadding();
-      ImGui::Text("Procesos: ");
-      ImGui::SameLine(150 * scalex);
-      ImGui::SetNextItemWidth(100 * scalex);
-      static int procesos = 101;
-      ImGui::InputInt("##procesos", &procesos);
-
-      ImGui::AlignTextToFramePadding();
-      ImGui::Text("Operaciones: ");
-      ImGui::SameLine(150 * scalex);
-      ImGui::SetNextItemWidth(100 * scalex);
-      static int operaciones = 1000;
-      ImGui::InputInt("##operaciones", &operaciones);
-
-      ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
-
-      bool generate_pop_btn_pressed =
-          ImGui::Button("Generar", ImVec2(100 * scalex, 20 * scaley));
-      if (generate_pop_btn_pressed) {
-        SDL_ShowSaveFileDialog(saveFile, nullptr, window, filters, 2, nullptr);
-        ImGui::CloseCurrentPopup();
-      }
-      ImGui::SameLine(0, 10 * scalex);
-      bool cancel_pop_btn_pressed =
-          ImGui::Button("Cancelar", ImVec2(100 * scalex, 20 * scaley));
-      if (cancel_pop_btn_pressed) {
-        ImGui::CloseCurrentPopup();
-      }
-      ImGui::EndPopup();
-    }
-
-    ImGui::Dummy(ImVec2(viewportSize.x, 1 * scaley)); // padding
-    bool simul_btn_pressed =
-        ImGui::Button("Iniciar Simulación", ImVec2(180 * scalex, 20 * scaley));
-    if (simul_btn_pressed) {
-      setup_window = false;
-      simul_window = true;
-      // TODO: conectar este boton
-    }
-
-    ImGui::Unindent(10 * scalex);
-
-    ImGui::End();
+    showSetupWindow(&setup_window);
+  } else {
+    simul_window = true;
   }
 
   if (simul_window) {
