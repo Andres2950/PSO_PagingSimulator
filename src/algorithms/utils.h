@@ -177,7 +177,7 @@ unsigned int create_operations(int num_processes, int num_ops){
       fprintf(f, "kill(%d)\n", p_ref.pid + 1);
     }
   }
-  // free all memory used
+  // Free all memory used
   for(int p = 0; p < num_processes; ++p){
     proc = processes[p];
     free(proc->ops);
