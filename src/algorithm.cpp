@@ -100,5 +100,22 @@ int main(int argc, char* argv[]){
     delete state.memory;
     delete state.disk;
 
+
+    printf("### MRU ###\n");
+    state.currentTime = 0;
+    state.to_insert_i = 0;
+    state.disk = new ArrayList<Page>();
+    state.memory = new ArrayList<Page>(2);
+    state.memory->goToStart();
+    requests->goToStart();
+    Algorithm* mru = new SecondChance();
+    while(!requests->atEnd()){
+        state.to_insert_i++;
+        mru->execute(requests->getElement(), state);
+        requests->next();
+    }
+    printf("Time: %d\n", state.currentTime);
+    delete state.memory;
+    delete state.disk;
     return 0;
 }
