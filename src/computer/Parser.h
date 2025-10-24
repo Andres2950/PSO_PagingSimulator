@@ -15,13 +15,14 @@ class Parser {
       unsigned int seed = create_operations(processes, operations);
       f = fopen("./tmp/data", "r");
       index = 0; 
-      while (c = (f) != EOF) content[index++] = c; 
+      while (c = fgetc(f) != EOF) content[index++] = c;
       index = 0;
-      optimal_mmu = new MMU(5);
+      //TODO lista de peticiones
+      //optimal_mmu = new MMU();
     }
-    ~Parser(){
+    /*~Parser(){
       delete ops;
-    }
+    }*/
   private:
     char buff[256];
     char token[256];
@@ -44,12 +45,12 @@ class Parser {
     void parse_new(){
       int pid = parse_num();
       int size = parse_num();
-      optimal_mmu->_new(pid, size);
+      //optimal_mmu->_new(pid, size);
     }
 
     void parse_use(){
       int ptr = parse_num();
-      optimal_mmu->use(ptr);
+      //optimal_mmu->use(ptr);
     }
 
     void parse_function(){

@@ -14,7 +14,7 @@ class Page {
         int is_loaded;
         int load_t;
         int mark;
-        static int id_counter = 1;
+        static inline int id_counter = 1;
 
     Page(int m_addr, int l_addr, int d_addr){
         this->m_addr = m_addr;
