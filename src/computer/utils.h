@@ -75,11 +75,11 @@ void insert_op(Instr *instr, int index, int pid){
 }
 
 unsigned int create_operations(int num_processes, int num_ops){
+  printf("ENTRAAAAAAAAAAAAAA\n");
   char buff[100];
   const char *file_path = "../../tmp/data";
   Process **processes;
   unsigned int seed = (unsigned int) time(0);
-  seed = 911;
   srand(seed);
   processes = (Process **) malloc(sizeof(Process *) * num_processes);
   int standard_size = (num_ops / num_processes) + 2;
@@ -100,6 +100,8 @@ unsigned int create_operations(int num_processes, int num_ops){
   Instr *instr = (Instr *) malloc(sizeof(Instr));
   instr->text = (char **) malloc(sizeof(char *) * num_ops);
   instr->proc_ref = (ProcRef *) malloc(sizeof(ProcRef) * num_ops);
+  instr->size = 0;
+  printf("tamanio de instr size: %d", instr->size);
 
   for(int i = 0; i < num_ops; ++i){
     instr->text[i] = (char *) malloc(100);
@@ -169,15 +171,20 @@ unsigned int create_operations(int num_processes, int num_ops){
   }
 
   for(int op_i = 0; op_i < instr->size; ++op_i){
+  printf("Tamanio %d\n", instr->size);
     ProcRef p_ref = instr->proc_ref[op_i];
+  printf("cantidad %d\n", instr->size);
     proc = processes[p_ref.pid];
+  printf("SALEEEEEEEEEEEEEE %d\n", instr->size);
     
     fprintf(f, instr->text[op_i]);
+  printf("SALEEEEEEEEEEEEEE %d\n", instr->size);
 
     if(p_ref.num_op == proc->num_ops){
       fprintf(f, "kill(%d)\n", p_ref.pid + 1);
     }
   }
+  printf("SALEEEEEEEEEEEEEE de todo\n");
   // Free all memory used
   for(int p = 0; p < num_processes; ++p){
     proc = processes[p];
