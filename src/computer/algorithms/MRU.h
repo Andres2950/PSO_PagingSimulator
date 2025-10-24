@@ -22,6 +22,10 @@ class MRU: public Algorithm {
                 to_insert.m_addr = index;
                 to_insert.is_loaded = 1;
                 to_insert.load_t = 0;
+<<<<<<< HEAD
+=======
+                to_insert.mark = 0;
+>>>>>>> Algoritmos
                 state.memory->append(to_insert);
                 state.currentTime += FAULT_COST;
                 printf("Cache:");
