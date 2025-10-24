@@ -118,7 +118,6 @@ void showSetupWindow(bool *open, ImGuiWindowFlags window_flags = 0) {
     if (generate_pop_btn_pressed) {
       SDL_ShowSaveFileDialog(saveFile, nullptr, window, filters, 2, nullptr);
       ImGui::CloseCurrentPopup();
-      printf("Procesos: %d y operaciones: %d", procesos, operaciones);
       parser = new Parser(algoritmo, procesos, operaciones); // first constructor, generate file
     }
     ImGui::SameLine(0, 10);

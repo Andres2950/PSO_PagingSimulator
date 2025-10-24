@@ -12,9 +12,9 @@ class Parser {
     
 
     Parser(int algorithm, int processes, int operations) {
-      create_operations(processes, operations);
-      f = fopen("../../tmp/data", "r");
-      //optimal_mmu = new MMU(5);
+      unsigned int seed = create_operations(processes, operations);
+      f = fopen("./tmp/data", "r");
+      optimal_mmu = new MMU(5);
     }
 
     ~Parser(){

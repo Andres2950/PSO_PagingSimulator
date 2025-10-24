@@ -65,9 +65,7 @@ void insert_op(Instr *instr, int index, int pid){
     strcpy(instr->text[i], instr->text[i-1]);
     instr->proc_ref[i] = instr->proc_ref[i-1];
   }
-  sprintf(buff, "kill(%d)\n", pid);
-  strcpy(instr->text[index], buff);
-
+  snprintf(instr->text[index], 100, "kill(%d)\n", pid);
   tmp_proc_ref.pid = pid-1;
   tmp_proc_ref.num_op = -1;
   instr->proc_ref[index] = tmp_proc_ref;
@@ -75,9 +73,8 @@ void insert_op(Instr *instr, int index, int pid){
 }
 
 unsigned int create_operations(int num_processes, int num_ops){
-  printf("ENTRAAAAAAAAAAAAAA\n");
   char buff[100];
-  const char *file_path = "../../tmp/data";
+  const char *file_path = "./tmp/data";
   Process **processes;
   unsigned int seed = (unsigned int) time(0);
   srand(seed);
@@ -91,7 +88,7 @@ unsigned int create_operations(int num_processes, int num_ops){
     proc = processes[p];
     proc->ops = (Operation *) malloc(sizeof(Operation) * standard_size);
     proc->size_ops = standard_size;
-    proc->ptrs = (int *) calloc((standard_size / 2) + 2, 4);
+    proc->ptrs = (int *) calloc((standard_size / 2) + 2, sizeof(int));
     proc->size_ptrs = (standard_size / 2) + 2;
     proc->num_ptrs = 0;
     proc->num_ops = 0;
@@ -101,7 +98,6 @@ unsigned int create_operations(int num_processes, int num_ops){
   instr->text = (char **) malloc(sizeof(char *) * num_ops);
   instr->proc_ref = (ProcRef *) malloc(sizeof(ProcRef) * num_ops);
   instr->size = 0;
-  printf("tamanio de instr size: %d", instr->size);
 
   for(int i = 0; i < num_ops; ++i){
     instr->text[i] = (char *) malloc(100);
@@ -145,19 +141,21 @@ unsigned int create_operations(int num_processes, int num_ops){
         sprintf(buff, "delete(%d)\n", ptr);
         break;
     }
-    strcpy(instr->text[op_i], buff);
+    strcpy(instr->text[instr->size], buff);
     ProcRef proc_ref = {proc_i, proc->num_ops};
-    instr->proc_ref[op_i] = proc_ref;
+    instr->proc_ref[instr->size] = proc_ref;
     instr->size++;
 
     if(proc->num_ops + 2 > proc->size_ops){
       proc->size_ops *= 2;
       proc->ops = (Operation *) realloc(proc->ops, sizeof(Operation) * proc->size_ops);
-    } else if(proc->num_ptrs + 2 > proc->size_ops){
+    }
+    if(proc->num_ptrs + 2 > proc->size_ops){
       proc->size_ptrs *= 2;
       proc->ptrs = (int *) realloc(proc->ptrs, sizeof(int) * proc->size_ptrs);
     }
   }
+
   FILE *f = fopen(file_path, "w");
   
   // If some process doesn't have any operation we need add a kill operation
@@ -171,20 +169,16 @@ unsigned int create_operations(int num_processes, int num_ops){
   }
 
   for(int op_i = 0; op_i < instr->size; ++op_i){
-  printf("Tamanio %d\n", instr->size);
     ProcRef p_ref = instr->proc_ref[op_i];
-  printf("cantidad %d\n", instr->size);
     proc = processes[p_ref.pid];
-  printf("SALEEEEEEEEEEEEEE %d\n", instr->size);
     
-    fprintf(f, instr->text[op_i]);
-  printf("SALEEEEEEEEEEEEEE %d\n", instr->size);
+    fprintf(f, "%s", instr->text[op_i]);
 
     if(p_ref.num_op == proc->num_ops){
       fprintf(f, "kill(%d)\n", p_ref.pid + 1);
     }
   }
-  printf("SALEEEEEEEEEEEEEE de todo\n");
+  fclose(f);
   // Free all memory used
   for(int p = 0; p < num_processes; ++p){
     proc = processes[p];
