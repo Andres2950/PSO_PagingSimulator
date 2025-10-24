@@ -10,12 +10,22 @@
 #include "algorithms/FIFO.h"
 #include "algorithms/Optimal.h"
 #include "algorithms/SecondChance.h"
+#include "../../constants.h"
+
+enum ALGORITHM {
+    FI_FO,
+    SECOND_CHANCE,
+    MRU,
+    LRU,
+    RANDOM
+}
 
 class MMU {
     public: 
-        static inline int ptr_count = 0;
-        List<Page>* memory;
-        List<Page>* disk;
+        int ptr_count = 0;
+        StatePerron state;
+        //List<Page>* memory;
+        //List<Page>* disk;
         Algorithm *algorithm;
         //no lista de enteros algo diferente
         //Table debe contener todos los punteros
@@ -26,35 +36,48 @@ class MMU {
         Dictionary<int, ArrayList<Page>*>* ptr_table;
 
         int _new(int pid, int size){
-          // retorna el ptr
-          return 0;
+            // retorna el ptr
+            int page_ammount = (size%PAGE_SIZE == 0)? size/PAGE_SIZE : size/PAGE_SIZE+1;
+            List<Page>* list = new ArrayList<Page>();
+            for (int i = 0; i < page_ammount; i++) {
+                Page* page = new Page();
+                list.append(page);
+                algorithm.execute(page, state);
+            }
+            return page;
         }
+        
 
         void use(int ptr){
-          // algo hace, guardar para el optimo?
+          // algo hace
         }
 
-        MMU(int algorithm){
+        MMU(ALGORITHM algorithm){
             //Memoria real de 100 paginas
            switch (algorithm){
-              case 0:
+              case FI_FO: 
                 break;
-              case 1:
+              case SECOND_CHANCE:
                 break;
-              case 2:
+              case MRU:
                 break;
-              case 3:
+              case LRU:
                 break;
-              case 4:
+              case RANDOM:
                 break;
-              case 5:
-                List<Page> *list = new ArrayList<Page>();
-                this->algorithm = new Optimal(list);
            }
-           memory = new ArrayList<Page>(100); 
-           disk = new ArrayList<Page>();
+           state.currentTime time = 0;
+           state.memory = new ArrayList<Page>(100); 
+           state.disk = new ArrayList<Page>();
            ptr_table = new HashTable<int, ArrayList<Page>*>;
         }
+        MMU(List<Page> future) {
+            algorithm = new Optimal(future);
+            memory = new ArrayList<Page>(100); 
+            disk = new ArrayList<Page>();
+            ptr_table = new HashTable<int, ArrayList<Page>*>;
+        }
+
         ~MMU() {
             delete memory;
             delete disk;

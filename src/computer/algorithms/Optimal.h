@@ -28,7 +28,7 @@ class Optimal: public Algorithm {
                 return HIT_COST;
             }
 
-            if (state.memory->getSize() < MEMORY_SIZE){
+            /*if (state.memory->getSize() < MEMORY_SIZE){
                 int index = state.memory->getSize();
                 to_insert.m_addr = index;
                 to_insert.is_loaded = 1;
@@ -39,8 +39,7 @@ class Optimal: public Algorithm {
                 state.memory->print();
                 printf("\n");
                 return FAULT_COST;
-            }
-
+            }*/
             int petition_i = state.to_insert_i;
             futureRequests->goToPos(petition_i);
     

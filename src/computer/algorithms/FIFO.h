@@ -16,7 +16,7 @@ class FIFO: public Algorithm {
                 state.currentTime += HIT_COST;
                 return HIT_COST;
             }
-            if (state.memory->getSize() < MEMORY_SIZE){
+            /*if (state.memory->getSize() < MEMORY_SIZE){
                 int index = state.memory->getSize();
                 to_insert.m_addr = index;
                 to_insert.is_loaded = 1;
@@ -27,7 +27,7 @@ class FIFO: public Algorithm {
                 state.memory->print();
                 printf("\n");
                 return FAULT_COST;
-            }
+            }*/
 
             state.memory->goToStart();
             replace_page(to_insert, state.memory->getSize()-1, state);

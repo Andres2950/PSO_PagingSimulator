@@ -14,21 +14,25 @@ class Parser {
     Parser(int algorithm, int processes, int operations) {
       unsigned int seed = create_operations(processes, operations);
       f = fopen("./tmp/data", "r");
+      index = 0; 
+      while (c = (f) != EOF) content[index++] = c; 
+      index = 0;
       optimal_mmu = new MMU(5);
     }
-
     ~Parser(){
       delete ops;
     }
   private:
     char buff[256];
     char token[256];
+    char content[4096];
+    int index; 
     char c;
     MMU *optimal_mmu;
     
     int parse_num(){
       int i = 0;
-      while((c = fgetc(f)) != ',', c != ')'){
+      while((c = content[index++]) != ',', c != ')'){
         buff[i++] = c;
       }
       buff[i] = '\0';
@@ -46,12 +50,11 @@ class Parser {
     void parse_use(){
       int ptr = parse_num();
       optimal_mmu->use(ptr);
-      // Guardarlo en algun lado para el optimo
     }
 
     void parse_function(){
       int i = 0;
-      while((c = fgetc(f)) != '('){
+      while((c = content[index++]) != '('){
         token[i++] = c;
       }
       token[i] = '\0';
@@ -63,8 +66,7 @@ class Parser {
         printf("no hay\n");
       }
 
-      fgetc(f); //skip al salto de linea
-
+      ++index; //skip al salto de linea
     }
     void next(){
       parse_function();

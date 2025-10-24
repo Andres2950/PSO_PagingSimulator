@@ -14,13 +14,14 @@ class Page {
         int is_loaded;
         int load_t;
         int mark;
+        static int id_counter = 1;
 
-    Page(int id, int m_addr, int l_addr, int d_addr){
+    Page(int m_addr, int l_addr, int d_addr){
         this->m_addr = m_addr;
         this->l_addr = l_addr;
         this->d_addr = d_addr;
-        this->id = id; 
         mark = 0;
+        id = id_counter++;
     }
     Page(int id) {
         this->id = id;
@@ -35,6 +36,7 @@ class Page {
         this->d_addr = -1;
         this->id = -1; 
         mark = 0;
+        id = id_counter++;
     }
 
     bool operator==(const Page& otro) const {

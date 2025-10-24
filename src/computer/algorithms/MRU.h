@@ -17,19 +17,18 @@ class MRU: public Algorithm {
                 state.currentTime += HIT_COST;
                 return HIT_COST;
             }
-            if (state.memory->getSize() < MEMORY_SIZE){
+            /*if (state.memory->getSize() < MEMORY_SIZE){
                 int index = state.memory->getSize();
                 to_insert.m_addr = index;
                 to_insert.is_loaded = 1;
                 to_insert.load_t = 0;
-                to_insert.mark = state.currentTime;
                 state.memory->append(to_insert);
                 state.currentTime += FAULT_COST;
                 printf("Cache:");
                 state.memory->print();
                 printf("\n");
                 return FAULT_COST;
-            }
+            }*/
 
             // To find the most recently used
             // The one that has the biggest timestamp
