@@ -21,7 +21,7 @@ enum ALGORITHM {
 }
 
 class MMU {
-    public: 
+    public:
         int ptr_count = 0;
         StatePerron state;
         //List<Page>* memory;
@@ -42,14 +42,29 @@ class MMU {
             for (int i = 0; i < page_ammount; i++) {
                 Page* page = new Page();
                 list.append(page);
+                // TODO: validar si hay espacio
                 algorithm.execute(page, state);
             }
-            return page;
+            ptr_table.insert(ptr_count, list);
+            ptr_count++;
+            return ptr_count-1;
         }
-        
 
         void use(int ptr){
-          // algo hace
+            List<Page>* pages = ptr_table.getValue(ptr);
+            for (pages->goToStart(); !pages->atEnd(); pages->next()){
+                Page page = pages->getElement();
+                // TODO: validar
+                algorithm.execute(page, state);
+            }
+        }
+
+        void delete(int ptr) {
+          List<Page>* pages = ptr_table.getValue(ptr);
+          for (pages->goToStart(); !pages->atEnd(); pages->next()){
+            page->getElement();
+            if (pages-)
+          }
         }
 
         MMU(ALGORITHM algorithm){
@@ -73,8 +88,8 @@ class MMU {
         }
         MMU(List<Page> future) {
             algorithm = new Optimal(future);
-            memory = new ArrayList<Page>(100); 
-            disk = new ArrayList<Page>();
+            state.memory = new ArrayList<Page>(100);
+            state.disk = new ArrayList<Page>();
             ptr_table = new HashTable<int, ArrayList<Page>*>;
         }
 
