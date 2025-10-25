@@ -82,23 +82,18 @@ class MMU {
             ArrayList<Page>* pages = ptr_table->getValue(ptr);
             for (pages->goToStart(); !pages->atEnd(); pages->next()){
                 Page page = pages->getElement();
-                if (state.memory->getSize() <= MEMORY_SIZE) {
-                    page.m_addr = state.memory->getSize();
-                    page.is_loaded = 1;
-                    page.load_t = 0;
-                    if (type_algo == _MRU || type_algo == _LRU) {
-                        page.mark = state.currentTime;
-                    }
-                    state.currentTime += HIT_COST;
-                    state.memory->append(page);
+                if (state.memory->contains(page)){
+                  page.load_t = 0;
+                  if (type_algo == _MRU || type_algo == _LRU) {
+                    page.mark = state.currentTime;
+                  }
+                  state.currentTime += HIT_COST;
                 } else {
-                    int t = algorithm->execute(page, state);
-                    //printf("EXECUTE\n");
-                    if (t == FAULT_COST) fault_time += t;
-                    state.currentTime += t;
+                  int t = algorithm->execute(page, state);
+                  if (t == FAULT_COST) fault_time += t;
+                  state.currentTime += t;
                 }
             }
-            //printf("use %d: %d\n", type_algo, state.currentTime);            
         }
 
         void _delete(int ptr) {
