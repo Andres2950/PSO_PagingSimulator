@@ -1,6 +1,7 @@
 #ifndef MMU_H
 #define MMU_H
 
+#include <stdio.h>
 #include "Page.h"
 #include "../data_structures/List.h"
 #include "../data_structures/ArrayList.h"
@@ -20,13 +21,15 @@ enum ALGORITHM {
     SECOND_CHANCE,
     _MRU,
     _LRU,
-    RANDOM
+    RANDOM,
+    OPTIMAL
 };
 
 class MMU {
     public:
         int page_id = 1, ptr_count = 1;
         int fault_time = 0;
+        ALGORITHM type_algo;
         StatePerron state;
         Algorithm *algorithm;
         Dictionary<int, ArrayList<Page>*>* ptr_table;
@@ -46,12 +49,16 @@ class MMU {
                 list->append(page);
                 assert(state.memory != nullptr);
                 if (state.memory->getSize() >= MEMORY_SIZE){
-                  int t =algorithm->execute(page, state);
-                  if (t == FAULT_COST) fault_time = t;
+                  int t = algorithm->execute(page, state);
+                  if (t == FAULT_COST) fault_time += t;
+                  state.currentTime += t;
                 } else {
                   page.m_addr = state.memory->getSize();
                   page.is_loaded = 1;
                   page.load_t = 0;
+                  if (type_algo == _MRU || type_algo == _LRU) {
+                    page.mark = state.currentTime;
+                  }
                   state.currentTime += HIT_COST;
                   state.memory->append(page); 
                 }
@@ -80,11 +87,16 @@ class MMU {
                     page.m_addr = state.memory->getSize();
                     page.is_loaded = 1;
                     page.load_t = 0;
+                    if (type_algo == _MRU || type_algo == _LRU) {
+                        page.mark = state.currentTime;
+                    }
                     state.currentTime += HIT_COST;
                     state.memory->append(page);
+                } else {
+                    int t = algorithm->execute(page, state);
+                    if (t == FAULT_COST) fault_time += t;
+                    state.currentTime += t;
                 }
-                int t = algorithm->execute(page, state);
-                if (t == FAULT_COST) fault_time = t;
             }
         }
 
@@ -137,20 +149,26 @@ class MMU {
            switch (algorithm){
               case FI_FO: 
                 this->algorithm = new FIFO();
+                printf("MMU TYPE FIFO\n");
                 break;
               case SECOND_CHANCE:
                 this->algorithm = new SecondChance();
+                printf("MMU TYPE SECOND CHANCE\n");
                 break;
               case _MRU:
                 this->algorithm = new MRU();
+                printf("MMU TYPE MRU\n");
                 break;
               case _LRU:
                 this->algorithm = new LRU();
+                printf("MMU TYPE LRU\n");
                 break;
               case RANDOM:
                 this->algorithm = new Random();
-                break;
+                printf("MMU TYPE RANDOM\n");
+                break; 
            }
+           type_algo = algorithm;
            state.memory = new ArrayList<Page>(100); 
            state.disk = new ArrayList<Page>();
            state.currentTime = 0;
@@ -158,7 +176,9 @@ class MMU {
            processes = new HashTable<int, ArrayList<int>*>();
         }
         MMU(ArrayList<int> future) {
+            printf("MMU TYPE OPTIMAl\n");
             algorithm = new Optimal(future);
+            type_algo = OPTIMAL;
             state.memory = new ArrayList<Page>(100);
             state.disk = new ArrayList<Page>();
             state.currentTime = 0;

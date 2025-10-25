@@ -23,8 +23,6 @@ class Optimal: public Algorithm {
         int execute(Page to_insert, StatePerron& state) {
             // if pe in cache
             if (state.memory->contains(to_insert)) {
-                printf("HIT: %d\n", to_insert.id);
-                state.currentTime += HIT_COST;
                 return HIT_COST;
             }
 
@@ -74,11 +72,6 @@ class Optimal: public Algorithm {
                 }
             }
             replace_page(to_insert, state.memory->getPos(), state);
-            state.currentTime += FAULT_COST;
-            
-            printf("Cache:");
-            state.memory->print();
-            printf("\n");
             
             return FAULT_COST;
         }

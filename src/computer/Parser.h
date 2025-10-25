@@ -28,6 +28,7 @@ class Parser {
       printf("\n");
       optimal_mmu = new MMU(pages);
       other_mmu = new MMU(algorithm);
+      printf("Tipo %d\n", algorithm);
       int count = 1;
       while(ops.content[ops.pos] != '\0'){
         next();

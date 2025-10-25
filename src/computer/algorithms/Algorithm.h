@@ -15,6 +15,7 @@ typedef struct {
 class Algorithm {
     public:
         Algorithm(){}
+        virtual ~Algorithm() = default;
         // Solo para insertar una pagina, supone que la RAM ya esta llena
         // Se pasa el estado por referencia para modificar lo que hay adentro\
         // Asi no hay que tocar nada luego de llamar al algoritmo
