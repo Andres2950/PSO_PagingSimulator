@@ -36,7 +36,7 @@ public:
     for (int i = 0; i < page_ammount; i++) {
       Page page = Page(page_id_counter++);
       page.l_addr = ptr_count;
-      page.timestamp = time; // TODO:cambiar esto
+     
 
       // Agregar en disco
       disk[page.id] = page;
@@ -61,6 +61,7 @@ public:
           fault_time += FAULT_COST;
       }
       ++current_page;
+      page.timestamp = time; // TODO:cambiar esto
     }
 
     process_ptrs_map.insert(ptr_count, pages_id);
