@@ -123,8 +123,8 @@ class MMU {
             for(process_ptrs->goToStart(); !process_ptrs->atEnd(); process_ptrs->next()){
               _delete(process_ptrs->getElement());
             }
+            processes->remove(pid);
           }
-          processes->remove(pid);
         }
 
         MMU(){}

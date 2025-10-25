@@ -30,7 +30,7 @@ class Parser {
         next();
         printf("############## CACHE OPS = %d################\n", count++);
         optimal_mmu->state.memory->print();
-        printf("###############################################\n");
+        printf("\n###############################################\n");
       }
     }
     ~Parser(){
