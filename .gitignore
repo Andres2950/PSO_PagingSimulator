@@ -1,6 +1,5 @@
 build/
 *.ini
 
-compile_commands.json
-
 .cache/
+
