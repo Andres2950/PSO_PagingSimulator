@@ -52,7 +52,7 @@ class MMU {
                 Page page = Page(page_id++);
                 list->append(page);
                 assert(state.memory != nullptr);
-                if (state.memory->getSize() > MEMORY_SIZE){
+                if (state.memory->getSize() >= MEMORY_SIZE){
                   int t = algorithm->execute(page, state);
                   //printf("EXECUTE\n");
                   if (t == FAULT_COST) fault_time += t;
@@ -98,7 +98,18 @@ class MMU {
                   }
                   state.currentTime += HIT_COST;
                 } else {
-                  int t = algorithm->execute(page, state);
+                  int t;
+                  if (state.memory->getSize() < MEMORY_SIZE) {
+                      page.timestamp = state.currentTime;
+                      if (type_algo == _MRU || type_algo == _LRU) {
+                        page.mark = state.currentTime;
+                      }
+                      page.m_addr = state.memory->getSize();
+                      state.memory->append(page);
+                      t = HIT_COST;
+                  } else {
+                    t = algorithm->execute(page, state);
+                  }  
                   if (t == FAULT_COST) fault_time += t;
                   state.currentTime += t;
                 }
