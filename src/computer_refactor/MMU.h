@@ -10,6 +10,7 @@
 class MMU {
 public:
   int page_id_counter = 1, ptr_count = 1;
+  int current_page = 0;
   int fault_time = 0;
   int time = 0;
   int type_algo;
@@ -59,6 +60,7 @@ public:
           time += FAULT_COST;
           fault_time += FAULT_COST;
       }
+      ++current_page;
     }
 
     process_ptrs_map.insert(ptr_count, pages_id);
@@ -101,6 +103,7 @@ public:
           time += FAULT_COST;
           fault_time += FAULT_COST;
         }
+        ++current_page;
     }
     update_times();
   }
