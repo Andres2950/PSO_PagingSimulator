@@ -10,29 +10,25 @@
 #include "algorithms/FIFO.h"
 #include "algorithms/Optimal.h"
 #include "algorithms/SecondChance.h"
+#include "algorithms/MRU.h"
+#include "algorithms/LRU.h"
+#include "algorithms/Random.h"
 #include "../../constants.h"
 
 enum ALGORITHM {
     FI_FO,
     SECOND_CHANCE,
-    MRU,
-    LRU,
+    _MRU,
+    _LRU,
     RANDOM
 };
 
 class MMU {
     public:
         int page_id = 1, ptr_count = 1;
+        int fault_time = 0;
         StatePerron state;
-        //List<Page>* memory;
-        //List<Page>* disk;
         Algorithm *algorithm;
-        //no lista de enteros algo diferente
-        //Table debe contener todos los punteros
-        // es una Dictionary <ptr_id, ptr_pages>
-        // Estoy usando un arraylist pq List necesita ser un puntero 
-        // El problema de eso es que HashTable no sabe si K y V son punteros entonces no los libera
-        // Entonces x eso uso el tipo concreto
         Dictionary<int, ArrayList<Page>*>* ptr_table;
         // TODO: lista enlazada
         Dictionary<int, ArrayList<int>*>* processes;
@@ -49,17 +45,17 @@ class MMU {
                 Page page = Page(page_id++);
                 list->append(page);
                 assert(state.memory != nullptr);
-                if (state.memory->getSize() => MEMORY_SIZE){
-                  algorithm->execute(page, state);
+                if (state.memory->getSize() >= MEMORY_SIZE){
+                  int t =algorithm->execute(page, state);
+                  if (t == FAULT_COST) fault_time = t;
                 } else {
-                  page.l_addr = ptr_count;
                   page.m_addr = state.memory->getSize();
                   page.is_loaded = 1;
                   page.load_t = 0;
                   state.currentTime += HIT_COST;
-                  
                   state.memory->append(page); 
                 }
+                page.l_addr = ptr_count;
             }
             ptr_table->insert(ptr_count, list);
             ArrayList<int>* process_ptr;
@@ -68,7 +64,6 @@ class MMU {
               process_ptr->append(ptr_count);
               //processes->setValue(pid, process_ptr);
             } else {
-              //TODO enlazada
               process_ptr = new ArrayList<int>(10);
               process_ptr->append(ptr_count);
               processes->insert(pid, process_ptr);
@@ -81,8 +76,15 @@ class MMU {
             ArrayList<Page>* pages = ptr_table->getValue(ptr);
             for (pages->goToStart(); !pages->atEnd(); pages->next()){
                 Page page = pages->getElement();
-                // TODO: validar
-                algorithm->execute(page, state);
+                if (state.memory->getSize() < MEMORY_SIZE) {
+                    page.m_addr = state.memory->getSize();
+                    page.is_loaded = 1;
+                    page.load_t = 0;
+                    state.currentTime += HIT_COST;
+                    state.memory->append(page);
+                }
+                int t = algorithm->execute(page, state);
+                if (t == FAULT_COST) fault_time = t;
             }
         }
 
@@ -134,14 +136,19 @@ class MMU {
             //Memoria real de 100 paginas
            switch (algorithm){
               case FI_FO: 
+                this->algorithm = new FIFO();
                 break;
               case SECOND_CHANCE:
+                this->algorithm = new SecondChance();
                 break;
-              case MRU:
+              case _MRU:
+                this->algorithm = new MRU();
                 break;
-              case LRU:
+              case _LRU:
+                this->algorithm = new LRU();
                 break;
               case RANDOM:
+                this->algorithm = new Random();
                 break;
            }
            state.currentTime = 0;
