@@ -16,20 +16,18 @@
 #include "algorithms/Random.h"
 #include "../../constants.h"
 
-enum ALGORITHM {
-    FI_FO,
-    SECOND_CHANCE,
-    _MRU,
-    _LRU,
-    RANDOM,
-    OPTIMAL
-};
+#define FI_FO 0
+#define SECOND_CHANCE 1
+#define _MRU 2
+#define _LRU 3
+#define RANDOM 4
+#define OPTIMAL 5
 
 class MMU {
     public:
         int page_id = 1, ptr_count = 1;
         int fault_time = 0;
-        ALGORITHM type_algo;
+        int type_algo;
         StatePerron state;
         Algorithm *algorithm;
         Dictionary<int, ArrayList<Page>*>* ptr_table;
@@ -43,13 +41,13 @@ class MMU {
                                                 : size/PAGE_SIZE+1);
 
             ArrayList<Page>* list = new ArrayList<Page>();       //Lista de paginas del ptr
-            
             for (int i = 0; i < page_ammount; i++) {
                 Page page = Page(page_id++);
                 list->append(page);
                 assert(state.memory != nullptr);
-                if (state.memory->getSize() >= MEMORY_SIZE){
+                if (state.memory->getSize() > MEMORY_SIZE){
                   int t = algorithm->execute(page, state);
+                  //printf("EXECUTE\n");
                   if (t == FAULT_COST) fault_time += t;
                   state.currentTime += t;
                 } else {
@@ -76,6 +74,7 @@ class MMU {
               processes->insert(pid, process_ptr);
             }
             ptr_count++;
+            //printf("new %d: %d\n", type_algo, state.currentTime);            
             return ptr_count-1;
         }
 
@@ -83,7 +82,7 @@ class MMU {
             ArrayList<Page>* pages = ptr_table->getValue(ptr);
             for (pages->goToStart(); !pages->atEnd(); pages->next()){
                 Page page = pages->getElement();
-                if (state.memory->getSize() < MEMORY_SIZE) {
+                if (state.memory->getSize() <= MEMORY_SIZE) {
                     page.m_addr = state.memory->getSize();
                     page.is_loaded = 1;
                     page.load_t = 0;
@@ -94,10 +93,12 @@ class MMU {
                     state.memory->append(page);
                 } else {
                     int t = algorithm->execute(page, state);
+                    //printf("EXECUTE\n");
                     if (t == FAULT_COST) fault_time += t;
                     state.currentTime += t;
                 }
             }
+            //printf("use %d: %d\n", type_algo, state.currentTime);            
         }
 
         void _delete(int ptr) {
@@ -130,6 +131,7 @@ class MMU {
               ptrs->remove();
             }
           }
+          //printf("delete %d: %d\n", type_algo, state.currentTime);            
         }
 
         void kill(int pid){
@@ -140,11 +142,10 @@ class MMU {
             }
             processes->remove(pid);
           }
+          //printf("kill %d: %d\n", type_algo, state.currentTime);            
         }
 
-        MMU(){}
-
-        MMU(ALGORITHM algorithm){
+        MMU(int algorithm, int xd){
             //Memoria real de 100 paginas
            switch (algorithm){
               case FI_FO: 
