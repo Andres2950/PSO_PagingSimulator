@@ -1,6 +1,7 @@
 #ifndef MMU_H
 #define MMU_H
 
+#include "../constants.h"
 #include "Page.h"
 #include <array>
 #include <map>
@@ -14,10 +15,31 @@ public:
   std::map<int, std::vector<int>> ptr_pageid_map;
   // TODO: lista enlazada
   std::map<int, std::vector<int>> process_ptrs_map;
-  std::array<int, 100> memory;
+  std::array<int, MEMORY_SIZE> memory;
   std::map<int, Page> disk;
 
-  virtual int _new(int pid, int size) = 0;
+  virtual int _new(int pid, int size) {
+    int page_ammount =
+        ((size % PAGE_SIZE == 0) ? size / PAGE_SIZE : size / PAGE_SIZE + 1);
+
+    // Crear paginas nuevas
+    std::vector<int> pages_id;
+    for (int i = 0; i < page_ammount; i++) {
+      Page page = Page(page_id++);
+      page.l_addr = ptr_count;
+      page.load_t = 0; // TODO:cambiar esto
+
+      // Agregar en disco
+      disk[page.id] = page;
+      pages_id.push_back(page.id);
+
+      // Agregar a RAM
+      for (int j = 0; j < MEMORY_SIZE; j++) {
+      }
+    }
+
+    return 1;
+  }
 
   virtual void use(int ptr) = 0;
 
