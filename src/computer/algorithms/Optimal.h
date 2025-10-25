@@ -13,10 +13,10 @@ class Optimal: public Algorithm {
         // No esoty seguro de como hacer con esto
         // Por ahora voy a dejarlo como una lista de Page
         // Pero deberia ser posible con una lista de int
-        List<Page>* futureRequests;
+        ArrayList<int> futurePages;
     public:
-        Optimal(List<Page>* futureRequests){
-            this->futureRequests = futureRequests;
+        Optimal(ArrayList<int> futurePages){
+            this->futurePages = futurePages;
         }
         // Solo para insertar una pagina, supone que la RAM ya esta llena
         // Supone que el i dentro de la lista de las páginas es el mismo que el id
@@ -41,31 +41,31 @@ class Optimal: public Algorithm {
                 return FAULT_COST;
             }*/
             int petition_i = state.to_insert_i;
-            futureRequests->goToPos(petition_i);
+            futurePages.goToPos(petition_i);
     
             int to_remove_pag = 0;
             int to_remove = -1;
             //for pag_i, pag in enumerate(cache)
             for (int pag_i = 0; pag_i < MEMORY_SIZE; ++pag_i) {
-                List<int>* tmp = new ArrayList<int>();
+                ArrayList<int> tmp;
                 // tmp = peticiones[pe_i:]
-                for (int i = petition_i; i < futureRequests->getSize(); ++i) {
-                    futureRequests->goToPos(i);
-                    tmp->append(futureRequests->getElement().id); 
+                for (int i = petition_i; i < futurePages.getSize(); ++i) {
+                    futurePages.goToPos(i);
+                    tmp.append(futurePages.getElement()); 
                 }
                 // if pag not int peticiones[pe_i:]
                 state.memory->goToPos(pag_i);
-                if (!tmp->contains(state.memory->getElement().id)){
+                if (!tmp.contains(state.memory->getElement().id)){
                     to_remove_pag = pag_i;
                     break;
                 }
-                delete tmp;
+                //delete tmp;
                 // for j in range(pe_i+1,len(peticiones)):
-                for (int j = petition_i+1; j < futureRequests->getSize(); ++j) {
+                for (int j = petition_i+1; j < futurePages.getSize(); ++j) {
                     // if peticiones[j] == pag
-                    futureRequests->goToPos(j);
+                    futurePages.goToPos(j);
                     state.memory->goToPos(pag_i);
-                    if (futureRequests->getElement().id == state.memory->getElement().id) {
+                    if (futurePages.getElement() == state.memory->getElement().id) {
                         if (to_remove < j) {
                             to_remove = j;
                             to_remove_pag = pag_i;

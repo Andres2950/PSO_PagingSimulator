@@ -22,7 +22,7 @@ enum ALGORITHM {
 
 class MMU {
     public:
-        int ptr_count = 0;
+        int page_id = 1, ptr_count = 1;
         StatePerron state;
         //List<Page>* memory;
         //List<Page>* disk;
@@ -38,32 +38,46 @@ class MMU {
         Dictionary<int, ArrayList<int>*>* processes;
 
         int _new(int pid, int size){
-            // retorna el ptr
-            int page_ammount = (size%PAGE_SIZE == 0)? size/PAGE_SIZE : size/PAGE_SIZE+1;
-            ArrayList<Page>* list = new ArrayList<Page>();
+            state.memory->getSize();
+            int page_ammount = ((size % PAGE_SIZE == 0) 
+                                                ? size/PAGE_SIZE 
+                                                : size/PAGE_SIZE+1);
+
+            ArrayList<Page>* list = new ArrayList<Page>();       //Lista de paginas del ptr
+            
             for (int i = 0; i < page_ammount; i++) {
-                Page page = Page();
+                Page page = Page(page_id++);
                 list->append(page);
-                // TODO: validar si hay espacio
-                algorithm->execute(page, state);
+                assert(state.memory != nullptr);
+                if (state.memory->getSize() == MEMORY_SIZE){
+                  algorithm->execute(page, state);
+                } else {
+                  page.l_addr = ptr_count;
+                  page.m_addr = state.memory->getSize();
+                  page.is_loaded = 1;
+                  page.load_t = 0;
+                  state.currentTime += HIT_COST;
+                  state.memory->append(page); 
+                }
             }
             ptr_table->insert(ptr_count, list);
-
             ArrayList<int>* process_ptr;
             if (processes->contains(pid)){
               process_ptr = processes->getValue(pid);
+              process_ptr->append(ptr_count);
+              //processes->setValue(pid, process_ptr);
             } else {
               //TODO enlazada
               process_ptr = new ArrayList<int>(10);
+              process_ptr->append(ptr_count);
               processes->insert(pid, process_ptr);
             }
-            process_ptr->append(ptr_count);
             ptr_count++;
             return ptr_count-1;
         }
 
         void use(int ptr){
-            List<Page>* pages = ptr_table->getValue(ptr);
+            ArrayList<Page>* pages = ptr_table->getValue(ptr);
             for (pages->goToStart(); !pages->atEnd(); pages->next()){
                 Page page = pages->getElement();
                 // TODO: validar
@@ -72,7 +86,7 @@ class MMU {
         }
 
         void _delete(int ptr) {
-          List<Page>* pages = ptr_table->getValue(ptr);
+          ArrayList<Page>* pages = ptr_table->getValue(ptr);
           int index;
           Page page;
           for (pages->goToStart(); !pages->atEnd(); pages->next()){
@@ -88,10 +102,32 @@ class MMU {
             state.currentTime += HIT_COST;
           }
           ptr_table->remove(ptr);
-          //TODO buscar el proceso y borrar el puntero
+          ArrayList<int>* pids = (ArrayList<int> *)processes->getKeys();
+          ArrayList<int> *ptrs;
+
+          int pos, pid;
+          for(pids->goToStart(); !pids->atEnd(); pids->next()){
+            pid = pids->getElement();
+            ptrs = processes->getValue(pid);
+            pos = ptrs->indexOf(ptr);
+            if(pos != -1){
+              ptrs->goToPos(pos);
+              ptrs->remove();
+            }
+          }
         }
 
+        void kill(int pid){
+          if(processes->contains(pid)){
+            ArrayList<int> *process_ptrs = processes->getValue(pid);
+            for(process_ptrs->goToStart(); !process_ptrs->atEnd(); process_ptrs->next()){
+              _delete(process_ptrs->getElement());
+            }
+          }
+          processes->remove(pid);
+        }
 
+        MMU(){}
 
         MMU(ALGORITHM algorithm){
             //Memoria real de 100 paginas
@@ -113,7 +149,7 @@ class MMU {
            ptr_table = new HashTable<int, ArrayList<Page>*>();
            processes = new HashTable<int, ArrayList<int>*>();
         }
-        MMU(List<Page>* future) {
+        MMU(ArrayList<int> future) {
             algorithm = new Optimal(future);
             state.memory = new ArrayList<Page>(100);
             state.disk = new ArrayList<Page>();

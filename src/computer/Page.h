@@ -21,7 +21,7 @@ class Page {
         this->l_addr = l_addr;
         this->d_addr = d_addr;
         mark = 0;
-        id = id_counter++;
+        //id = id_counter++;
     }
     Page(int id) {
         this->id = id;
@@ -36,7 +36,7 @@ class Page {
         this->d_addr = -1;
         this->id = -1; 
         mark = 0;
-        id = id_counter++;
+        //id = id_counter++;
     }
 
     bool operator==(const Page& otro) const {

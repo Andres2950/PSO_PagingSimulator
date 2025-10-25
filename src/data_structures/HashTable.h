@@ -173,7 +173,9 @@ public:
     }
     V getValue(K key) {
         checkExisting(key);
-        KVPair<K, V> p = buckets[h(key)].getElement();
+        ArrayList<KVPair<K, V>>& bucket = buckets[h(key)];
+        bucket.goToStart();
+        KVPair<K, V> p = bucket.getElement();
         return p.value;
     }
     //Busca la llave y asigna un nuevo valor
@@ -231,6 +233,7 @@ public:
                 cout << buckets[i].getElement() << " ";
                 buckets[i].next();
             }
+            buckets[i].goToStart();
         }
         cout << "]" << endl;
     }

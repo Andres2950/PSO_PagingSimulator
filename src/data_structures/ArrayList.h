@@ -23,7 +23,7 @@ private:
         for (int i = 0; i < size; i++){
             temp[i] = elements[i];
         }
-        delete elements;
+        delete [] elements;
         elements = temp;
     }
 
@@ -33,6 +33,34 @@ public:
         this->max = max;
         pos = size = 0;
     }
+
+    // Constructor de copia
+    ArrayList(const ArrayList<E>& other) {
+        max = other.max;
+        size = other.size;
+        pos = other.pos;
+        elements = new E[max];
+        for (int i = 0; i < size; i++) {
+            elements[i] = other.elements[i];
+        }
+    }
+
+    // Asignación por copia
+    ArrayList<E>& operator=(const ArrayList<E>& other) {
+        if (this != &other) {
+            delete[] elements;
+            max = other.max;
+            size = other.size;
+            pos = other.pos;
+            elements = new E[max];
+            for (int i = 0; i < size; i++) {
+                elements[i] = other.elements[i];
+            }
+        }
+        return *this;
+    }
+
+
     ~ArrayList(){
         delete [] elements;
     }
@@ -137,7 +165,8 @@ public:
     bool contains(E element){
         return indexOf(element) != -1;
     }
-
 };
+
+
 
 #endif // ARRAYLIST_H

@@ -73,10 +73,12 @@ void insert_op(Instr *instr, int index, int pid){
 }
 
 unsigned int create_operations(int num_processes, int num_ops){
+  num_processes = 3; num_ops = 15;
   char buff[100];
   const char *file_path = "./tmp/data";
   Process **processes;
   unsigned int seed = (unsigned int) time(0);
+  seed = 911;
   srand(seed);
   processes = (Process **) malloc(sizeof(Process *) * num_processes);
   int standard_size = (num_ops / num_processes) + 2;
