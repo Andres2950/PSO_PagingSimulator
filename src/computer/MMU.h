@@ -34,6 +34,13 @@ class MMU {
         // TODO: lista enlazada
         Dictionary<int, ArrayList<int>*>* processes;
 
+        void update_times(){
+            for(state.memory->goToStart(); !state.memory->atEnd(); state.memory->next()) {
+                Page page = state.memory->getElementRef();
+                page.load_t = state.currentTime - page.timestamp;
+            }
+        }
+
         int _new(int pid, int size){
             state.memory->getSize();
             int page_ammount = ((size % PAGE_SIZE == 0) 
@@ -74,7 +81,8 @@ class MMU {
               processes->insert(pid, process_ptr);
             }
             ptr_count++;
-            //printf("new %d: %d\n", type_algo, state.currentTime);            
+            //printf("new %d: %d\n", type_algo, state.currentTime);
+            update_times();
             return ptr_count-1;
         }
 
@@ -94,6 +102,7 @@ class MMU {
                   state.currentTime += t;
                 }
             }
+            update_times();
         }
 
         void _delete(int ptr) {
@@ -126,6 +135,7 @@ class MMU {
               ptrs->remove();
             }
           }
+          update_times();
           //printf("delete %d: %d\n", type_algo, state.currentTime);            
         }
 

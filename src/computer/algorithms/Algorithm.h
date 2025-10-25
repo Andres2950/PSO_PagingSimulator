@@ -43,12 +43,14 @@ class Algorithm {
             removed.is_loaded = 0;
             removed.m_addr = -1;
             removed.load_t = -1; // El tiempo que llevaba cargada la pagina se remueve
+            removed.timestamp = -1;
             state.disk->append(removed);
             
             // se inserta donde se quiere
             inserting.is_loaded = 1;
             inserting.m_addr = state.memory->getPos();
             inserting.load_t = 0; //La nueva pagina lleva 0 segundos cargada
+            removed.timestamp = state.currentTime;
             state.memory->goToPos(insert_in);
             state.memory->insert(inserting);
         }

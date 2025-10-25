@@ -12,6 +12,7 @@ class Page {
         int l_addr;
         int d_addr;
         int is_loaded;
+        int timestamp;
         int load_t;
         int mark;
         static inline int id_counter = 1;
