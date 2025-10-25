@@ -49,7 +49,7 @@ class MMU {
                 Page page = Page(page_id++);
                 list->append(page);
                 assert(state.memory != nullptr);
-                if (state.memory->getSize() == MEMORY_SIZE){
+                if (state.memory->getSize() => MEMORY_SIZE){
                   algorithm->execute(page, state);
                 } else {
                   page.l_addr = ptr_count;
@@ -57,6 +57,7 @@ class MMU {
                   page.is_loaded = 1;
                   page.load_t = 0;
                   state.currentTime += HIT_COST;
+                  
                   state.memory->append(page); 
                 }
             }

@@ -22,29 +22,29 @@ int main(int argc, char* argv[]){
     hello_world("print");
 
     List<Page>* requests = new ArrayList<Page>();
-    List<Page>* otherRequests = new ArrayList<Page>();
+    ArrayList<int> otherRequests = ArrayList<int>(); 
     
     //peticiones = [3,3,4,8,5,9,3,2,5,4]
     requests->append(Page(3));
-    otherRequests->append(Page(3));
+    otherRequests.append(3);
     requests->append(Page(3));
-    otherRequests->append(Page(3));
+    otherRequests.append(3);
     requests->append(Page(4));
-    otherRequests->append(Page(4));
+    otherRequests.append(4);
     requests->append(Page(8));
-    otherRequests->append(Page(8));
+    otherRequests.append(8);
     requests->append(Page(5));
-    otherRequests->append(Page(5));
+    otherRequests.append(5);
     requests->append(Page(9));
-    otherRequests->append(Page(9));
+    otherRequests.append(9);
     requests->append(Page(3));
-    otherRequests->append(Page(3));
+    otherRequests.append(3);
     requests->append(Page(2));
-    otherRequests->append(Page(2));
+    otherRequests.append(2);
     requests->append(Page(5));
-    otherRequests->append(Page(5));
+    otherRequests.append(5);
     requests->append(Page(4));
-    otherRequests->append(Page(4));
+    otherRequests.append(4);
     
     int k = 2;
     
@@ -56,12 +56,13 @@ int main(int argc, char* argv[]){
     state.memory = new ArrayList<Page>(2);
     state.memory->goToStart();
     requests->goToStart();
+    otherRequests.goToStart();
     Algorithm* optimal = new Optimal(otherRequests);
-    while(!requests->atEnd()){
+    /*while(!requests->atEnd()){
         state.to_insert_i++;
         optimal->execute(requests->getElement(), state);
         requests->next();
-    }
+    }*/
     printf("Time: %d\n", state.currentTime);
     delete state.memory;
     delete state.disk;
@@ -73,9 +74,11 @@ int main(int argc, char* argv[]){
     state.memory = new ArrayList<Page>(2);
     state.memory->goToStart();
     requests->goToStart();
+    printf("Size: %d\n", requests->getSize());
     Algorithm* fifo = new FIFO();
     while(!requests->atEnd()){
         state.to_insert_i++;
+        if (state.memory->getSize() < MEMORY_SIZE) {state.memory->append(requests->getElement());}
         fifo->execute(requests->getElement(), state);
         requests->next();
     }
@@ -93,6 +96,7 @@ int main(int argc, char* argv[]){
     Algorithm* second_chance = new SecondChance();
     while(!requests->atEnd()){
         state.to_insert_i++;
+        if (state.memory->getSize() < MEMORY_SIZE) {state.memory->append(requests->getElement());}
         second_chance->execute(requests->getElement(), state);
         requests->next();
     }
@@ -111,6 +115,7 @@ int main(int argc, char* argv[]){
     Algorithm* mru = new SecondChance();
     while(!requests->atEnd()){
         state.to_insert_i++;
+        if (state.memory->getSize() < MEMORY_SIZE) {state.memory->append(requests->getElement());}
         mru->execute(requests->getElement(), state);
         requests->next();
     }

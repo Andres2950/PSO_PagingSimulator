@@ -43,7 +43,8 @@ class LRU: public Algorithm {
                     pos = state.memory->getPos();
                 }
             }
-           
+          
+            to_insert.mark = state.currentTime;
             state.memory->goToPos(pos);
             replace_page(to_insert, state.memory->getPos(), state);
             
