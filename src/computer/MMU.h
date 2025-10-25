@@ -151,9 +151,9 @@ class MMU {
                 this->algorithm = new Random();
                 break;
            }
-           state.currentTime = 0;
            state.memory = new ArrayList<Page>(100); 
            state.disk = new ArrayList<Page>();
+           state.currentTime = 0;
            ptr_table = new HashTable<int, ArrayList<Page>*>();
            processes = new HashTable<int, ArrayList<int>*>();
         }
@@ -161,6 +161,7 @@ class MMU {
             algorithm = new Optimal(future);
             state.memory = new ArrayList<Page>(100);
             state.disk = new ArrayList<Page>();
+            state.currentTime = 0;
             ptr_table = new HashTable<int, ArrayList<Page>*>();
             processes = new HashTable<int, ArrayList<int>*>();
         }

@@ -2,7 +2,9 @@
 #define COMPUTER_H
 
 #include "MMU.h"
+#include "algorithms/Optimal.h"
 #include "utils.h"
+#include <experimental/filesystem>
 
 class Parser {
   public:
@@ -25,17 +27,25 @@ class Parser {
       pages.print();
       printf("\n");
       optimal_mmu = new MMU(pages);
+      other_mmu = new MMU(algorithm);
       int count = 1;
       while(ops.content[ops.pos] != '\0'){
         next();
         printf("############## CACHE OPS = %d################\n", count++);
+        printf("--- Optimal ---\n");
         optimal_mmu->state.memory->print();
+        printf("\ntime: %d\n", optimal_mmu->state.currentTime);
+        printf("--- Other ---\n");
+        other_mmu->state.memory->print();
+        printf("\ntime: %d\n", other_mmu->state.currentTime);
         printf("\n###############################################\n");
       }
     }
     ~Parser(){
       if(ops.content)
         free(ops.content);
+      delete optimal_mmu;
+      delete other_mmu;
     }
   private:
     typedef struct{
@@ -49,6 +59,7 @@ class Parser {
     char token[256];
     char c;
     MMU *optimal_mmu;
+    MMU *other_mmu;
     ArrayList<int> pages;
     ArrayList<int> ptr_pages;
     int page_id = 1, ptr_id = 1;
@@ -56,7 +67,7 @@ class Parser {
     void parse_for_optimal(){
       int i;
       int ptr_size, n_pages, pid, ptr, page_to_load;
-      printf("Contenido: \n %s", ops.content);
+      printf("Contenido:\n%s", ops.content);
       ops.pos = 0;
       while(ops.content[ops.pos] != '\0'){
         i = 0;
@@ -114,6 +125,7 @@ class Parser {
       int pid = parse_num();
       int size = parse_num();
       optimal_mmu->_new(pid, size);
+      other_mmu->_new(pid, size);
     }
 
     void parse_use(){
@@ -124,11 +136,13 @@ class Parser {
     void parse_delete(){
       int ptr = parse_num();
       optimal_mmu->_delete(ptr);
+      other_mmu->_delete(ptr);
     }
 
     void parse_kill(){
       int pid = parse_num();
       optimal_mmu->kill(pid);
+      other_mmu->kill(pid);
     }
 
     void parse_function(){
@@ -146,7 +160,7 @@ class Parser {
       } else if(strcmp(token, "kill") == 0){
         parse_kill();
       } else {
-        printf("Error: Invalid token or format\n");
+        printf("Error: Invalid token or format, found %s, expected 'new','use','delete' or 'kill'\n", token);
       }
 
       ops.pos++; //skip al salto de linea
