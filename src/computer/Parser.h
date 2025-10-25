@@ -13,6 +13,7 @@ class Parser {
       ops.content = (char *) malloc(sizeof(char) * 4090);
       ops.pos = 0;
       ops.max_size = 4090;
+      // TODO: agregar que use el archivo ingresado por el usuairo
       FILE *f = fopen("./tmp/data", "r");
       while ((c = fgetc(f)) != EOF) {
         ops.content[ops.pos++] = c;
