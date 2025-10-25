@@ -3,7 +3,8 @@
 
 #define HIT_COST 1
 #define FAULT_COST 5
-#define MEMORY_SIZE 10
+//Por alguna razon mete esto +1 entoces le puse -1 xd
+#define MEMORY_SIZE 99
 #define PAGE_SIZE 4000
 
 #endif
