@@ -78,15 +78,7 @@ public:
     for(int i = 0; i < pages.size(); i++){
         // Revisa si ya esta en RAM 
         Page page = disk.at(pages[i]);
-        bool added = false;
-        for (int j = 0; j < MEMORY_SIZE; j++) {
-            if (memory[j] == page.id) {
-                added = true;
-                time += HIT_COST;
-                break;
-            }
-        }
-        if (added) continue;
+        if (page.is_loaded) continue;
         // Revisar si hay espacio en la ram 
         for (int j = 0; j < MEMORY_SIZE; j++) {
           if (memory[j] == -1) {
