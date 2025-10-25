@@ -83,6 +83,7 @@ class MMU {
             ptr_count++;
             //printf("new %d: %d\n", type_algo, state.currentTime);
             update_times();
+            ++state.to_insert_i;
             return ptr_count-1;
         }
 
@@ -102,6 +103,7 @@ class MMU {
                   state.currentTime += t;
                 }
             }
+            ++state.to_insert_i;
             update_times();
         }
 
@@ -178,6 +180,7 @@ class MMU {
            state.memory = new ArrayList<Page>(100); 
            state.disk = new ArrayList<Page>();
            state.currentTime = 0;
+           state.to_insert_i = 0;
            ptr_table = new HashTable<int, ArrayList<Page>*>();
            processes = new HashTable<int, ArrayList<int>*>();
         }
@@ -188,6 +191,7 @@ class MMU {
             state.memory = new ArrayList<Page>(100);
             state.disk = new ArrayList<Page>();
             state.currentTime = 0;
+            state.to_insert_i = 0;
             ptr_table = new HashTable<int, ArrayList<Page>*>();
             processes = new HashTable<int, ArrayList<int>*>();
         }
