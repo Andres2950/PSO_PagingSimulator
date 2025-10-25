@@ -72,34 +72,36 @@ public:
     return ptr_count-1;
   }
 
-  void use(int ptr){
-    //se obtienen los ids
-    std::vector<int> pages = ptr_pageid_map.at(ptr);
-    for(int i = 0; i < pages.size(); i++){
-        // Revisa si ya esta en RAM 
-        Page page = disk.at(pages[i]);
-        if (page.is_loaded) continue;
-        // Revisar si hay espacio en la ram 
+void use(int ptr) {
+    std::vector<int> pageIds = ptr_pageid_map.at(ptr);
+    bool added;
+    for(int i = 0; i < pagesIds.size(); i++){
+      Page page = disk.at(pageIds[i]);
+      if(page.is_loaded){
+        total_time += HIT_COST;
+      } else {
+        added = false;
         for (int j = 0; j < MEMORY_SIZE; j++) {
-          if (memory[j] == -1) {
+          if(memory[j] == -1){
             page.m_addr = j;
             memory[j] = page.id;
+            total_time += HIT_COST;
             added = true;
-            time += HIT_COST;
             break;
           }
         }
-        // Si no hay espacio paginar
-        if (!added) {
+        if(!added){
           int to_remove = paging(page);
           memory[to_remove] = page.id;
           time += FAULT_COST;
           fault_time += FAULT_COST;
         }
-        ++current_page;
+        page.is_loaded = true;
+        page.timestamp = total_time;
+      }
     }
     update_times();
-  }
+  };
 
   void _delete(int ptr) {
     // Obtener page ids asociados con el puntero
