@@ -30,17 +30,6 @@ public:
     other_mmu = new Optimal_MMU(pages);
     printf("Tipo %d\n", algorithm);
     int count = 1;
-    while (ops.content[ops.pos] != '\0') {
-      next();
-      // printf("############## CACHE OPS = %d################\n", count++);
-      // printf("--- Optimal ---\n");
-      //
-      // printf("\ntime: %d\n", optimal_mmu->state.currentTime);
-      // printf("--- Other ---\n");
-      // other_mmu->state.memory->print();
-      // printf("\ntime: %d\n", other_mmu->state.currentTime);
-      // printf("\n###############################################\n");
-    }
   }
   ~Parser() {
     if (ops.content)
@@ -51,6 +40,11 @@ public:
 
   MMU *optimal_mmu;
   MMU *other_mmu;
+
+  bool executeInstruction() {
+    next();
+    return ops.content[ops.pos] != '\0';
+  }
 
 private:
   typedef struct {
