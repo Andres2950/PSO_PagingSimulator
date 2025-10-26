@@ -249,6 +249,9 @@ void showSimulWindow(bool *open, int algorithm, const char *filepath,
     ImGui::TableNextColumn();
     {
       ImGui::SeparatorText("Algoritmo");
+      auto mmu = parser->other_mmu;
+      auto disk = mmu->disk;
+      int loaded_pages = 0;
       if (ImGui::BeginTable(
               "##mmu-tabla-alg", 8,
               ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg |
@@ -267,10 +270,26 @@ void showSimulWindow(bool *open, int algorithm, const char *filepath,
         ImGui::TableHeadersRow();
 
         ImGui::TableNextColumn();
-        for (int i = 0; i < 100; i++) {
+        for (auto it = disk.begin(); it != disk.end(); it++) {
           ImGui::TableNextRow(0, 20);
           ImGui::TableNextColumn();
-          ImGui::Text("dx");
+          ImGui::Text("%d", it->second.id);
+          ImGui::TableNextColumn();
+          ImGui::Text("%d", it->second.pid);
+          ImGui::TableNextColumn();
+          const char *str = it->second.is_loaded ? " X " : "  ";
+          loaded_pages = it->second.is_loaded ? loaded_pages + 1 : loaded_pages;
+          ImGui::Text("%s", str);
+          ImGui::TableNextColumn();
+          ImGui::Text("%d", it->second.l_addr);
+          ImGui::TableNextColumn();
+          ImGui::Text("%d", it->second.m_addr);
+          ImGui::TableNextColumn();
+          ImGui::Text("%d", it->second.d_addr);
+          ImGui::TableNextColumn();
+          ImGui::Text("%d", it->second.load_t);
+          ImGui::TableNextColumn();
+          ImGui::Text("%d", it->second.mark);
         }
         ImGui::EndTable();
       }
@@ -282,11 +301,11 @@ void showSimulWindow(bool *open, int algorithm, const char *filepath,
         ImGui::TableSetupColumn("Fragmentación");
         ImGui::TableHeadersRow();
         ImGui::TableNextColumn();
-        ImGui::Text("23"); // TODO:change for real variable
+        ImGui::Text("%d", parser->totalProcesses - mmu->processes_murdered);
         ImGui::TableNextColumn();
-        ImGui::Text("15s"); // TODO:change for real variable
+        ImGui::Text("%ds", mmu->time);
         ImGui::TableNextColumn();
-        ImGui::Text("45kB"); // TODO:change for real variable
+        ImGui::Text("%dB", mmu->getFragmetation());
 
         ImGui::EndTable();
       }
@@ -298,14 +317,13 @@ void showSimulWindow(bool *open, int algorithm, const char *filepath,
         ImGui::TableSetupColumn("V-RAM %");
         ImGui::TableHeadersRow();
         ImGui::TableNextColumn();
-        ImGui::Text("12"); // TODO:change for real variable
+        ImGui::Text("%d", loaded_pages * PAGE_SIZE / 1000);
         ImGui::TableNextColumn();
-        ImGui::Text("12"); // TODO:change for real variable
+        ImGui::Text("%0.f", (float)loaded_pages / MEMORY_SIZE * 100);
         ImGui::TableNextColumn();
-        ImGui::Text("12"); // TODO:change for real variable
+        ImGui::Text("%ld", disk.size() * PAGE_SIZE / 1000);
         ImGui::TableNextColumn();
-        ImGui::Text("12"); // TODO:change for real variable
-
+        ImGui::Text("%0.f", (float)disk.size() / MEMORY_SIZE * 100);
         ImGui::EndTable();
       }
 
@@ -314,9 +332,9 @@ void showSimulWindow(bool *open, int algorithm, const char *filepath,
         ImGui::TableSetupColumn("Páginas No Cargadas");
         ImGui::TableHeadersRow();
         ImGui::TableNextColumn();
-        ImGui::Text("12"); // TODO:change for real variable
+        ImGui::Text("%d", loaded_pages);
         ImGui::TableNextColumn();
-        ImGui::Text("1%%"); // TODO:change for real variable
+        ImGui::Text("%ld", disk.size() - loaded_pages);
 
         ImGui::EndTable();
       }
@@ -327,11 +345,16 @@ void showSimulWindow(bool *open, int algorithm, const char *filepath,
         ImGui::TableSetupColumn("Thrashing %");
         ImGui::TableHeadersRow();
         ImGui::TableNextColumn();
-        ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg,
-                               ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 1.f)));
-        ImGui::Text("12s"); // TODO:change for real variable
+        float thrasing_percentage =
+            mmu->time != 0 ? (float)mmu->fault_time / mmu->time * 100 : 0;
+        if (thrasing_percentage >= 0.5) {
+          ImGui::TableSetBgColor(
+              ImGuiTableBgTarget_RowBg0,
+              ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 0.66f)));
+        }
+        ImGui::Text("%d", mmu->fault_time);
         ImGui::TableNextColumn();
-        ImGui::Text("1%%"); // TODO:change for real variable
+        ImGui::Text("%0.f", thrasing_percentage);
 
         ImGui::EndTable();
       }
