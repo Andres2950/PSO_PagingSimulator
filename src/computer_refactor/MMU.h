@@ -29,8 +29,7 @@ public:
   void update_times() {
     for (int i = 0; i < MEMORY_SIZE; ++i) {
       if (memory[i] != -1) {
-        Page page = disk.at(memory[i]);
-        page.load_t = time - page.timestamp;
+        disk[memory[i]].load_t = time - disk[memory[i]].timestamp;
       }
     }
   }
@@ -180,10 +179,12 @@ public:
     if (memory[index] != -1) {
       disk[memory[index]].m_addr = -1;
       disk[memory[index]].is_loaded = false;
+      disk[memory[index]].load_t = 0;
     }
 
     disk[pageId].m_addr = index;
     disk[pageId].is_loaded = true;
+    disk[pageId].load_t = 0;
     memory[index] = pageId;
   }
 
