@@ -9,6 +9,7 @@ public:
   std::vector<int> futureRequests;
   Optimal_MMU(std::vector<int> futureRequests) {
     this->futureRequests = futureRequests;
+    memory.fill(-1);
   }
   int paging(Page to_insert_page) {
     int to_remove_index = -1;
