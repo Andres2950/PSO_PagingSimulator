@@ -21,8 +21,10 @@ public:
 
   void update_times() {
     for (int i = 0; i < MEMORY_SIZE; ++i) {
-      Page page = disk.at(memory[i]);
-      page.load_t = time - page.timestamp;
+      if (memory[i] != -1) {
+        Page page = disk.at(memory[i]);
+        page.load_t = time - page.timestamp;
+      }
     }
   }
 
