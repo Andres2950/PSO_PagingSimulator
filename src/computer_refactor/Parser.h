@@ -114,9 +114,9 @@ class Parser {
         if (strcmp(token, "new") == 0){
           pid = parse_num();
           ptr_size = parse_num();
-          n_pages = ((ptr_size % 4000) == 0 
-                                        ? ptr_size / 4000 
-                                        : ptr_size / 4000 + 1);
+          n_pages = ((ptr_size % PAGE_SIZE) == 0 
+                                        ? ptr_size / PAGE_SIZE 
+                                        : ptr_size / PAGE_SIZE + 1);
           for(int p = 0; p < n_pages; ++p){
             pages.push_back(page_id++);
             ptr_pages.push_back(ptr_id);
