@@ -78,14 +78,14 @@ void use(int ptr) {
     for(int i = 0; i < pagesIds.size(); i++){
       Page page = disk.at(pageIds[i]);
       if(page.is_loaded){
-        total_time += HIT_COST;
+        time += HIT_COST;
       } else {
         added = false;
         for (int j = 0; j < MEMORY_SIZE; j++) {
           if(memory[j] == -1){
             page.m_addr = j;
             memory[j] = page.id;
-            total_time += HIT_COST;
+            time += HIT_COST;
             added = true;
             break;
           }
@@ -97,7 +97,7 @@ void use(int ptr) {
           fault_time += FAULT_COST;
         }
         page.is_loaded = true;
-        page.timestamp = total_time;
+        page.timestamp = time;
       }
     }
     update_times();
