@@ -8,7 +8,10 @@
 
 class Second_Chance_MMU: public MMU {
 public:
-    Second_Chance_MMU(){}
+    Second_Chance_MMU(){
+        for (int i = 0; i < MEMORY_SIZE; ++i)
+           memory[i] = -1;
+    }
     void mark_used_inRAM(Page page){
         page.mark = 1;
     }
