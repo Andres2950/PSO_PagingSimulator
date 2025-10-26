@@ -4,7 +4,6 @@
 #include "../constants.h"
 #include "Page.h"
 #include <array>
-#include <experimental/filesystem>
 #include <map>
 #include <vector>
 #include <xcb/xproto.h>
@@ -16,10 +15,12 @@ public:
   int fault_time = 0;
   int time = 0;
   int type_algo;
+  int processes_murdered = 0;
   std::map<int, std::vector<int>> ptr_pageid_map;
   std::map<int, std::vector<int>> process_ptrs_map;
   std::array<int, MEMORY_SIZE> memory;
   std::map<int, Page> disk;
+  std::map<int, int> ptr_fragm;
 
   virtual int paging(Page to_insert_page) = 0;
   virtual void mark_used(Page page) {}
@@ -78,6 +79,8 @@ public:
     process_ptrs_map[pid].push_back(ptr_count);
     // Asociar ptr a paginas
     ptr_pageid_map[ptr_count] = pages_id;
+
+    ptr_fragm[ptr_count] += size % 4000;
 
     ptr_count++;
     update_times();
@@ -138,6 +141,8 @@ public:
 
     // Borrar puntero
     ptr_pageid_map.erase(ptr);
+    ptr_fragm.erase(ptr);
+
     // No se borra de proccess_ptrs_map porque costaria buscarlo pero creo que
     // no da problemas
     time += HIT_COST;
@@ -146,8 +151,8 @@ public:
   }
 
   void kill(int pid) {
-    std::map<int, std::vector<int>>::iterator it_pid =
-        process_ptrs_map.find(pid);
+    processes_murdered++;
+    auto it_pid = process_ptrs_map.find(pid);
     if (it_pid == process_ptrs_map.end()) {
       // El proceso nunca usó new entonces no esta en la tabla y realmenete
       //  no hay nada que borrar
@@ -180,6 +185,14 @@ public:
     disk[pageId].m_addr = index;
     disk[pageId].is_loaded = true;
     memory[index] = pageId;
+  }
+
+  int getFragmetation() {
+    int total = 0;
+    for (auto it = ptr_fragm.begin(); it != ptr_fragm.end(); it++) {
+      total += it->second;
+    }
+    return total;
   }
 };
 

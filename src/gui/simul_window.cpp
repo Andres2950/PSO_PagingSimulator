@@ -185,11 +185,11 @@ void showSimulWindow(bool *open, int algorithm, const char *filepath,
         ImGui::TableSetupColumn("Fragmentación");
         ImGui::TableHeadersRow();
         ImGui::TableNextColumn();
-        ImGui::Text("23"); // TODO:change for real variable
+        ImGui::Text("n/a"); // TODO:change for real variable
         ImGui::TableNextColumn();
         ImGui::Text("%ds", mmu->time);
         ImGui::TableNextColumn();
-        ImGui::Text("45kB"); // TODO:change for real variable
+        ImGui::Text("%dB", mmu->getFragmetation());
 
         ImGui::EndTable();
       }
