@@ -3,8 +3,8 @@
 
 #define HIT_COST 1
 #define FAULT_COST 5
-#define MEMORY_SIZE 100
-#define PAGE_SIZE 4000
+#define MEMORY_SIZE 3
+#define PAGE_SIZE 1000
 
 // Algorithms
 #define ALG_FIFO 0

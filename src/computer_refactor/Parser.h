@@ -73,13 +73,13 @@ class Parser {
       next();
       printf("############## CACHE OPS = %d################\n", current_op++);
       printf("--- Optimal ---\n");
-      for(int i = 0; i < 100; ++i){
+      for(int i = 0; i < MEMORY_SIZE; ++i){
         printf("%d \t", optimal_mmu->memory[i]);
         if(i % 10 == 0) printf("\n");
       }
       printf("\n--- FIFO ---\n");
 
-      for(int i = 0; i < 100; ++i){
+      for(int i = 0; i < MEMORY_SIZE; ++i){
         printf("%d \t", other_mmu->memory[i]);
         if((i+i) % 10 == 0) printf("\n");
       }

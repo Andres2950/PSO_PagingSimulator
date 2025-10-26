@@ -75,7 +75,7 @@ void showSimulWindow(bool *open, int algorithm, const char *filepath,
     style.CellPadding.y = 0;
     ImGui::TableNextColumn();
     {
-      if (ImGui::BeginTable("##ram-optimo-int", 100,
+      if (ImGui::BeginTable("##ram-optimo-int", MEMORY_SIZE,
                             ImGuiTableFlags_BordersInnerV)) {
 
         ImGui::TableNextRow(0, 20);
@@ -83,7 +83,7 @@ void showSimulWindow(bool *open, int algorithm, const char *filepath,
           ImGui::TableNextColumn();
           if (parser->optimal_mmu->memory[i] != -1) {
             ImU32 cell_bg_color =
-                ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 1.f));
+                ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 0.9f));
             ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, cell_bg_color);
           }
         }
@@ -102,15 +102,15 @@ void showSimulWindow(bool *open, int algorithm, const char *filepath,
     style.CellPadding.y = 0;
     ImGui::TableNextColumn();
     {
-      if (ImGui::BeginTable("##ram-algoritmo-int", 100,
+      if (ImGui::BeginTable("##ram-algoritmo-int", MEMORY_SIZE,
                             ImGuiTableFlags_BordersInnerV)) {
 
         ImGui::TableNextRow(0, 20);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < MEMORY_SIZE; i++) {
           ImGui::TableNextColumn();
           if (parser->other_mmu->memory[i] != -1) {
             ImU32 cell_bg_color =
-                ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 1.f));
+                ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 0.9f));
             ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, cell_bg_color);
           }
         }
@@ -230,12 +230,15 @@ void showSimulWindow(bool *open, int algorithm, const char *filepath,
         ImGui::TableSetupColumn("Thrashing %");
         ImGui::TableHeadersRow();
         ImGui::TableNextColumn();
-        ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg,
-                               ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 1.f)));
-        ImGui::Text("%d", mmu->fault_time);
-        ImGui::TableNextColumn();
         float thrasing_percentage =
             mmu->time != 0 ? (float)mmu->fault_time / mmu->time * 100 : 0;
+        if (thrasing_percentage >= 0.5) {
+          ImGui::TableSetBgColor(
+              ImGuiTableBgTarget_RowBg0,
+              ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 0.66f)));
+        }
+        ImGui::Text("%d", mmu->fault_time);
+        ImGui::TableNextColumn();
         ImGui::Text("%0.f", thrasing_percentage);
 
         ImGui::EndTable();
