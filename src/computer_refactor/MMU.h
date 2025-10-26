@@ -144,6 +144,8 @@ public:
     // Borrar el proceso
     process_ptrs_map.erase(pid);
   }
+
+  virtual ~MMU() {};
 };
 
 #endif
