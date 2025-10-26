@@ -46,6 +46,7 @@ public:
     for (int i = 0; i < page_ammount; i++) {
       Page page = Page(page_id_counter++);
       page.l_addr = ptr_count;
+      page.pid = pid;
 
       // Agregar en disco
       disk[page.id] = page;
@@ -71,7 +72,6 @@ public:
       mark_used(page);
       page.timestamp = time;
       page.is_loaded = true;
-      page.pid = pid;
       ++current_page;
     }
 
