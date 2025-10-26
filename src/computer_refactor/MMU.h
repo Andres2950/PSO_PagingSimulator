@@ -6,6 +6,7 @@
 #include <array>
 #include <map>
 #include <vector>
+#include <xcb/xproto.h>
 
 class MMU {
 public:
@@ -48,8 +49,7 @@ public:
       bool added = false;
       for (int j = 0; j < MEMORY_SIZE; j++) {
         if (memory[j] == -1) {
-          page.m_addr = j;
-          memory[j] = page.id;
+          insertToMemory(j, page.id);
           added = true;
           time += HIT_COST;
           break;
@@ -58,7 +58,7 @@ public:
       // paginar
       if (!added) {
         int to_remove = paging(page);
-        memory[to_remove] = page.id;
+        insertToMemory(to_remove, page.id);
         time += FAULT_COST;
         fault_time += FAULT_COST;
       }
@@ -88,8 +88,7 @@ public:
         added = false;
         for (int j = 0; j < MEMORY_SIZE; j++) {
           if (memory[j] == -1) {
-            page.m_addr = j;
-            memory[j] = page.id;
+            insertToMemory(j, page.id);
             time += HIT_COST;
             added = true;
             page.timestamp = time;
@@ -98,12 +97,11 @@ public:
         }
         if (!added) {
           int to_remove = paging(page);
-          memory[to_remove] = page.id;
+          insertToMemory(to_remove, page.id);
           page.timestamp = time;
           time += FAULT_COST;
           fault_time += FAULT_COST;
         }
-        page.is_loaded = true;
       }
     }
     update_times();
@@ -132,14 +130,22 @@ public:
   }
 
   void kill(int pid) {
+    std::map<int, std::vector<int>>::iterator it_pid =
+        process_ptrs_map.find(pid);
+    if (it_pid == process_ptrs_map.end()) {
+      // El proceso nunca usó new entonces no esta en la tabla y realmenete
+      //  no hay nada que borrar
+      return;
+    }
+
     // Obtener los punteros asociados al vector
     std::vector ptrs = process_ptrs_map.at(pid);
 
     // Hacerle delete a los punteros
-    std::map<int, std::vector<int>>::iterator it;
+    std::map<int, std::vector<int>>::iterator it_ptr;
     for (int i = 0; i < ptrs.size(); i++) {
-      it = ptr_pageid_map.find(ptrs[i]);
-      if (it != ptr_pageid_map.end()) {
+      it_ptr = ptr_pageid_map.find(ptrs[i]);
+      if (it_ptr != ptr_pageid_map.end()) {
         _delete(ptrs[i]);
       }
     }
@@ -148,6 +154,17 @@ public:
   }
 
   virtual ~MMU() {};
+
+  void insertToMemory(int index, int pageId) {
+    if (memory[index] != -1) {
+      disk[memory[index]].m_addr = -1;
+      disk[memory[index]].is_loaded = false;
+    }
+
+    disk[pageId].m_addr = index;
+    disk[pageId].is_loaded = true;
+    memory[index] = pageId;
+  }
 };
 
 #endif
