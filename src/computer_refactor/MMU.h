@@ -87,17 +87,18 @@ void use(int ptr) {
             memory[j] = page.id;
             time += HIT_COST;
             added = true;
+            page.timestamp = time;
             break;
           }
         }
         if(!added){
           int to_remove = paging(page);
           memory[to_remove] = page.id;
+          page.timestamp = time;
           time += FAULT_COST;
           fault_time += FAULT_COST;
         }
         page.is_loaded = true;
-        page.timestamp = time;
       }
     }
     update_times();
