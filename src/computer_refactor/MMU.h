@@ -37,7 +37,7 @@ public:
 
   //TODO: esto tira IOT de un map::at, pero no se donde esta eso
   int _new(int pid, int size) {
-    printf("new\n");
+    printf("new(%d, %d)\n", pid, size);
     int page_ammount =
         ((size % PAGE_SIZE == 0) ? size / PAGE_SIZE : size / PAGE_SIZE + 1);
 

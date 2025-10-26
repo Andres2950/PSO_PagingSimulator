@@ -4,12 +4,15 @@
 #include <experimental/filesystem>
 #include "MMU.h"
 #include "concrete_MMUs/Optimal_MMU.h"
+#include "concrete_MMUs/FIFO_MMU.h"
+
 #include "utils.h"
 
 class Parser {
   public:
     MMU *optimal_mmu;
     MMU *other_mmu;
+    int current_op = 1;
     Parser(int algorithm, int processes, int operations) {
       unsigned int seed = create_operations(processes, operations);
       ops.content = (char *) malloc(sizeof(char) * 4090);
@@ -32,7 +35,8 @@ class Parser {
       optimal_mmu = new Optimal_MMU(pages);
       switch (algorithm) {
         case 0: // FIFO
-            //other_mmu = ...
+            other_mmu = new FIFO_MMU();
+            printf("Crea fifo\n");
             break; 
         case 1: // Second chance
             break;
@@ -43,7 +47,7 @@ class Parser {
         case 4: // Random
             break;
       }
-      //other_mmu = new MMU(algorithm, 0);
+      /*//other_mmu = new MMU(algorithm, 0);
       printf("Tipo %d\n", algorithm);
       int count = 1;
       while(ops.content[ops.pos] != '\0'){
@@ -56,7 +60,7 @@ class Parser {
         //other_mmu->state.memory->print();
         printf("\ntime: %d\n", other_mmu->time);
         printf("\n###############################################\n");
-      }
+      }*/
     }
     ~Parser(){
       if(ops.content)
@@ -65,7 +69,20 @@ class Parser {
       delete other_mmu;
     }
     bool executeInstruction() {
+      printf("############## NEXT()################\n");
       next();
+      printf("############## CACHE OPS = %d################\n", current_op++);
+      printf("--- Optimal ---\n");
+      for(int i = 0; i < 100; ++i){
+        printf("%d \t", optimal_mmu->memory[i]);
+        if(i % 10 == 0) printf("\n");
+      }
+      printf("\n--- FIFO ---\n");
+
+      for(int i = 0; i < 100; ++i){
+        printf("%d \t", other_mmu->memory[i]);
+        if((i+i) % 10 == 0) printf("\n");
+      }
       return ops.content[ops.pos] != '\0';
     }
   private:

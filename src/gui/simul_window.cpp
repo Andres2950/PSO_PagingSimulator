@@ -4,7 +4,7 @@
 
 void showSimulWindow(bool *open, ImGuiWindowFlags windowFlags = 0) {
   // State
-  static Parser *parser = new Parser(1, 10, 100);
+  static Parser *parser = new Parser(0, 10, 100);
 
   //  Common Variables
   ImGuiStyle style = ImGui::GetStyle();
@@ -24,7 +24,7 @@ void showSimulWindow(bool *open, ImGuiWindowFlags windowFlags = 0) {
   if (!start) {
     if (ImGui::Button("Iniciar", ImVec2(0, text_height))) {
       start = true;
-      parser = new Parser(1, 10, 100);
+      parser = new Parser(0, 10, 100);
     }
     ImGui::SameLine();
     if (ImGui::Button("Volver")) {

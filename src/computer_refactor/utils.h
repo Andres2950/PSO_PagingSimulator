@@ -73,7 +73,7 @@ void insert_op(Instr *instr, int index, int pid){
 }
 
 unsigned int create_operations(int num_processes, int num_ops){
-  num_processes = 3; num_ops = 15;
+  num_processes = 5; num_ops = 10;
   char buff[100];
   const char *file_path = "./tmp/data";
   Process **processes;

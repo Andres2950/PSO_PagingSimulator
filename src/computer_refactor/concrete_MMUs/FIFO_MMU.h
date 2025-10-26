@@ -6,7 +6,10 @@
 
 class FIFO_MMU: public MMU {
 public:
-    FIFO_MMU(){}
+    FIFO_MMU(){
+     for (int i = 0; i < MEMORY_SIZE; ++i)
+       memory[i] = -1;
+    }
     int paging(Page to_insert_page) {
         int to_remove_index = -1;
         int time_loaded = -1;
