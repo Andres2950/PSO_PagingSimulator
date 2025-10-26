@@ -3,7 +3,7 @@
 #include <SDL3/SDL.h>
 #include <cstdlib>
 #include <stdio.h>
-#include "../computer/Parser.h"
+#include "../computer_refactor/Parser.h"
 
 // State
 

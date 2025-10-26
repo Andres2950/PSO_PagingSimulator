@@ -1,10 +1,10 @@
 #ifndef COMPUTER_H
 #define COMPUTER_H
 
-#include "MMU.h"
-#include "algorithms/Optimal.h"
-#include "utils.h"
 #include <experimental/filesystem>
+#include "MMU.h"
+#include "concrete_MMUs/Optimal_MMU.h"
+#include "utils.h"
 
 class Parser {
   public:
@@ -24,22 +24,35 @@ class Parser {
       }
       ops.content[ops.pos] = '\0';
       parse_for_optimal();
-      printf("#########Paginas futuras#############\n");
-      pages.print();
+      //printf("#########Paginas futuras#############\n");
+      //pages.print();
       printf("\n");
-      optimal_mmu = new MMU(pages);
-      other_mmu = new MMU(algorithm, 0);
+      optimal_mmu = new Optimal_MMU(pages);
+      switch (algorithm) {
+        case 0: // FIFO
+            //other_mmu = ...
+            break; 
+        case 1: // Second chance
+            break;
+        case 2: // MRU
+            break; 
+        case 3: // LRU
+            break;
+        case 4: // Random
+            break;
+      }
+      //other_mmu = new MMU(algorithm, 0);
       printf("Tipo %d\n", algorithm);
       int count = 1;
       while(ops.content[ops.pos] != '\0'){
         next();
         printf("############## CACHE OPS = %d################\n", count++);
         printf("--- Optimal ---\n");
-        optimal_mmu->state.memory->print();
-        printf("\ntime: %d\n", optimal_mmu->state.currentTime);
+        //optimal_mmu->state.memory->print();
+        printf("\ntime: %d\n", optimal_mmu->time);
         printf("--- Other ---\n");
-        other_mmu->state.memory->print();
-        printf("\ntime: %d\n", other_mmu->state.currentTime);
+        //other_mmu->state.memory->print();
+        printf("\ntime: %d\n", other_mmu->time);
         printf("\n###############################################\n");
       }
     }
@@ -62,8 +75,8 @@ class Parser {
     char c;
     MMU *optimal_mmu;
     MMU *other_mmu;
-    ArrayList<int> pages;
-    ArrayList<int> ptr_pages;
+    std::vector<int> pages;
+    std::vector<int> ptr_pages;
     int page_id = 1, ptr_id = 1;
 
     void parse_for_optimal(){
@@ -84,27 +97,26 @@ class Parser {
                                         ? ptr_size / 4000 
                                         : ptr_size / 4000 + 1);
           for(int p = 0; p < n_pages; ++p){
-            pages.append(page_id++);
-            ptr_pages.append(ptr_id);
+            pages.push_back(page_id++);
+            ptr_pages.push_back(ptr_id);
           }
           ptr_id++;
         } else if(strcmp(token, "use") == 0){
           ptr = parse_num();
           int ptr_start_pos = -1, ptr_end_pos;
           
-          for(ptr_pages.goToStart(); !ptr_pages.atEnd(); ptr_pages.next()){
-            if(ptr_pages.getElement() == ptr){
+          for(int j = 0; j < ptr_pages.size(); ++j){
+            if(ptr_pages[j] == ptr){
               if(ptr_start_pos == -1)
-                ptr_start_pos = ptr_pages.getPos();
+                ptr_start_pos = j;
               else
-                ptr_end_pos = ptr_pages.getPos();
+                ptr_end_pos = j;
             }
           }
           // copia de nuevo todas las paginas a cargar del puntero
-          for(int i = ptr_start_pos; i <= ptr_end_pos; i++){
-            pages.goToPos(i);
-            page_to_load = pages.getElement();
-            pages.append(page_to_load);
+          for(int j = ptr_start_pos; j <= ptr_end_pos; ++j){
+            page_to_load = pages[j];
+            pages.push_back(page_to_load);
           }
         }
         while((c = ops.content[ops.pos++]) != '\n');
