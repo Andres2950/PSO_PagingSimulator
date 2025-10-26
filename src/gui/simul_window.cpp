@@ -185,7 +185,7 @@ void showSimulWindow(bool *open, int algorithm, const char *filepath,
         ImGui::TableSetupColumn("Fragmentación");
         ImGui::TableHeadersRow();
         ImGui::TableNextColumn();
-        ImGui::Text("n/a"); // TODO:change for real variable
+        ImGui::Text("%d", parser->totalProcesses - mmu->processes_murdered);
         ImGui::TableNextColumn();
         ImGui::Text("%ds", mmu->time);
         ImGui::TableNextColumn();

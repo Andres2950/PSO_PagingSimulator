@@ -4,6 +4,7 @@
 #include "MMU.h"
 #include "concrete_MMUs/Optimal_MMU.h"
 #include "concrete_MMUs/FIFO_MMU.h"
+#include <cstdio>
 #include <cstring>
 
 class Parser {
@@ -11,6 +12,7 @@ class Parser {
     MMU *optimal_mmu;
     MMU *other_mmu;
     int current_op = 1;
+    int totalProcesses= 0; 
     Parser(int algorithm, const char* filepath) {
       ops.content = (char *) malloc(sizeof(char) * 4090);
       ops.pos = 0;
@@ -25,6 +27,7 @@ class Parser {
         }
       }
       ops.content[ops.pos] = '\0';
+      totalProcesses = getTotalProcesses();
       parse_for_optimal();
       //printf("#########Paginas futuras#############\n");
       //pages.print();
@@ -201,6 +204,23 @@ class Parser {
     ops.pos++; // skip al salto de linea
   }
   void next() { parse_function(); }
+
+  int getTotalProcesses(){
+    if(ops.content == nullptr){
+      return 0;
+    }
+   
+    int i = 0;
+    int total = 0;
+    while(ops.content[i] != '\0'){
+      if(ops.content[i] == 'k'){
+        total++;
+      }
+      i++;
+    }
+    
+    return total;
+  }
 };
 
 #endif // COMPUTER_H
