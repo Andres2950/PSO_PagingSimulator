@@ -103,7 +103,6 @@ class Parser {
     void parse_for_optimal(){
       int i;
       int ptr_size, n_pages, pid, ptr, page_to_load;
-      printf("Contenido:\n%s", ops.content);
       ops.pos = 0;
       while(ops.content[ops.pos] != '\0'){
         i = 0;
@@ -128,8 +127,10 @@ class Parser {
           
           for(int j = 0; j < ptr_pages.size(); ++j){
             if(ptr_pages[j] == ptr){
-              if(ptr_start_pos == -1)
+              if(ptr_start_pos == -1){
                 ptr_start_pos = j;
+                ptr_end_pos = j;
+              }
               else
                 ptr_end_pos = j;
             }
@@ -140,9 +141,14 @@ class Parser {
             pages.push_back(page_to_load);
           }
         }
-        while((c = ops.content[ops.pos++]) != '\n');
+        while((c = ops.content[ops.pos++]) != '\n' && c != '\0');
       }
       ops.pos = 0;
+      /*for(int i = 0; i < pages.size(); i++){
+        printf("%d \t", pages[i]);
+        if(i%10 == 0)
+          printf("\n");
+      }*/
     }
 
   int parse_num() {
