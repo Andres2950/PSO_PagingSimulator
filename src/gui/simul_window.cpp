@@ -1,7 +1,10 @@
+#include "../computer_refactor/Parser.h"
+#include "SDL3/SDL_timer.h"
 #include "imgui.h"
 
 void showSimulWindow(bool *open, ImGuiWindowFlags windowFlags = 0) {
   // State
+  static Parser *parser = new Parser(1, 10, 100);
 
   //  Common Variables
   ImGuiStyle style = ImGui::GetStyle();
@@ -18,9 +21,18 @@ void showSimulWindow(bool *open, ImGuiWindowFlags windowFlags = 0) {
   ImGui::PopFont();
   ImGui::SameLine();
   static bool start = false;
-  if (!start && ImGui::Button("Iniciar", ImVec2(0, text_height))) {
-    start = true;
+  if (!start) {
+    if (ImGui::Button("Iniciar", ImVec2(0, text_height))) {
+      start = true;
+      parser = new Parser(1, 10, 100);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Volver")) {
+      *open = false;
+      start = false;
+    }
   }
+
   if (start) {
     if (ImGui::Button("Terminar", ImVec2(0, text_height))) {
       *open = false;
@@ -29,6 +41,11 @@ void showSimulWindow(bool *open, ImGuiWindowFlags windowFlags = 0) {
   }
   ImGui::Separator();
   ImGui::Dummy(ImVec2(viewportSize.x, 1)); // padding
+
+  if (start) {
+    start = parser->executeInstruction();
+    SDL_Delay(300);
+  }
 
   // RAM Section
 
@@ -45,9 +62,9 @@ void showSimulWindow(bool *open, ImGuiWindowFlags windowFlags = 0) {
                                 ImGuiTableFlags_BordersInnerV)) {
 
         ImGui::TableNextRow(0, 20);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < MEMORY_SIZE; i++) {
           ImGui::TableNextColumn();
-          if (i < 30) {
+          if (parser->optimal_mmu->memory[i] != -1) {
             ImU32 cell_bg_color =
                 ImGui::GetColorU32(ImVec4(1.f, 0.f, 0.f, 1.f));
             ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, cell_bg_color);

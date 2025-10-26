@@ -1,5 +1,4 @@
 #include "SDL3/SDL_video.h"
-#include <set>
 #define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
 #include "./ImGui/backends/imgui_impl_sdl3.h"
 #include "./ImGui/backends/imgui_impl_sdlrenderer3.h"

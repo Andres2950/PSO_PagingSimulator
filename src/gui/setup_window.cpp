@@ -3,12 +3,10 @@
 #include <SDL3/SDL.h>
 #include <cstdlib>
 #include <stdio.h>
-#include "../computer/Parser.h"
 
 // State
 
 char *path;
-Parser *parser;
 // File handling funcitons
 
 static const SDL_DialogFileFilter filters[] = {
@@ -118,7 +116,6 @@ void showSetupWindow(bool *open, ImGuiWindowFlags window_flags = 0) {
     if (generate_pop_btn_pressed) {
       SDL_ShowSaveFileDialog(saveFile, nullptr, window, filters, 2, nullptr);
       ImGui::CloseCurrentPopup();
-      parser = new Parser(algoritmo, procesos, operaciones); // first constructor, generate file
     }
     ImGui::SameLine(0, 10);
     bool cancel_pop_btn_pressed = ImGui::Button("Cancelar", ImVec2(100, 20));
