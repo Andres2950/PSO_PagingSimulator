@@ -6,20 +6,18 @@
 #include "concrete_MMUs/Optimal_MMU.h"
 #include "concrete_MMUs/FIFO_MMU.h"
 
-#include "utils.h"
 
 class Parser {
   public:
     MMU *optimal_mmu;
     MMU *other_mmu;
     int current_op = 1;
-    Parser(int algorithm, int processes, int operations) {
-      unsigned int seed = create_operations(processes, operations);
+    Parser(int algorithm, const char* filepath) {
       ops.content = (char *) malloc(sizeof(char) * 4090);
       ops.pos = 0;
       ops.max_size = 4090;
       // TODO: agregar que use el archivo ingresado por el usuairo
-      FILE *f = fopen("./tmp/data", "r");
+      FILE *f = fopen(filepath, "r");
       while ((c = fgetc(f)) != EOF) {
         ops.content[ops.pos++] = c;
         if(ops.pos == ops.max_size - 1){
@@ -34,17 +32,17 @@ class Parser {
       printf("\n");
       optimal_mmu = new Optimal_MMU(pages);
       switch (algorithm) {
-        case 0: // FIFO
+        case ALG_FIFO:
             other_mmu = new FIFO_MMU();
             printf("Crea fifo\n");
             break; 
-        case 1: // Second chance
+        case ALG_SECOND_CHANCE:
             break;
-        case 2: // MRU
+        case ALG_MRU: 
             break; 
-        case 3: // LRU
+        case ALG_LRU:
             break;
-        case 4: // Random
+        case ALG_RANDOM:
             break;
       }
       /*//other_mmu = new MMU(algorithm, 0);

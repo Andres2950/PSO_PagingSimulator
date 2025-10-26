@@ -73,6 +73,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 bool setup_window = true;
 bool simul_window = false;
 int curr_window = 0;
+int algorithm = 0;
+char *path = nullptr;
 
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate) {
@@ -96,12 +98,15 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
   ImGui_ImplSDL3_NewFrame();
   ImGui::NewFrame();
 
-  // Windows
+  if (path == nullptr) {
+    path = (char *)calloc(sizeof(char), 4096);
+  }
 
+  // Windows
   if (curr_window == 0) {
-    showSetupWindow(&setup_window, main_window_flags);
+    showSetupWindow(&setup_window, &algorithm, path, main_window_flags);
   } else {
-    showSimulWindow(&simul_window, main_window_flags);
+    showSimulWindow(&simul_window, algorithm, path, main_window_flags);
   }
 
   if (!setup_window && curr_window == 0) {

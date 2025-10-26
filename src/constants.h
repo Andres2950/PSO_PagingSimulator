@@ -6,5 +6,11 @@
 #define MEMORY_SIZE 100
 #define PAGE_SIZE 4000
 
-#endif
+// Algorithms
+#define ALG_FIFO 0
+#define ALG_SECOND_CHANCE 1
+#define ALG_MRU 2
+#define ALG_LRU 3
+#define ALG_RANDOM 4
 
+#endif

@@ -2,9 +2,18 @@
 #include "SDL3/SDL_timer.h"
 #include "imgui.h"
 
-void showSimulWindow(bool *open, ImGuiWindowFlags windowFlags = 0) {
-  // State
-  static Parser *parser = new Parser(0, 10, 100);
+// State
+Parser *parser;
+int delay = 0;
+uint last_execution = SDL_GetTicks();
+
+void showSimulWindow(bool *open, int algorithm, const char *filepath,
+                     ImGuiWindowFlags windowFlags = 0) {
+
+  // State Init
+  if (parser == nullptr) {
+    parser = new Parser(algorithm, filepath);
+  }
 
   //  Common Variables
   ImGuiStyle style = ImGui::GetStyle();
@@ -24,10 +33,10 @@ void showSimulWindow(bool *open, ImGuiWindowFlags windowFlags = 0) {
   if (!start) {
     if (ImGui::Button("Iniciar", ImVec2(0, text_height))) {
       start = true;
-      parser = new Parser(0, 10, 100);
+      parser = new Parser(algorithm, filepath);
     }
     ImGui::SameLine();
-    if (ImGui::Button("Volver")) {
+    if (ImGui::Button("Volver", ImVec2(0, text_height))) {
       *open = false;
       start = false;
     }
@@ -35,16 +44,24 @@ void showSimulWindow(bool *open, ImGuiWindowFlags windowFlags = 0) {
 
   if (start) {
     if (ImGui::Button("Terminar", ImVec2(0, text_height))) {
-      *open = false;
+      parser = new Parser(algorithm, filepath);
       start = false;
     }
   }
+  ImGui::SameLine(0, 100);
+  ImGui::Text("Delay (ms):");
+  ImGui::SameLine();
+  ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 100);
+  ImGui::SliderInt("##delay-slider", &delay, 0, 5000);
   ImGui::Separator();
   ImGui::Dummy(ImVec2(viewportSize.x, 1)); // padding
 
+  // Delay controller
   if (start) {
-    start = parser->executeInstruction();
-    SDL_Delay(300);
+    if (SDL_GetTicks() - last_execution > delay) {
+      last_execution = SDL_GetTicks();
+      start = parser->executeInstruction();
+    }
   }
 
   // RAM Section

@@ -1,11 +1,16 @@
+#include "../computer_refactor/utils.h"
+#include "../constants.h"
 #include "SDL3/SDL_video.h"
 #include "imgui.h"
 #include <SDL3/SDL.h>
 #include <cstdlib>
-#include <stdio.h>
-// State
+#include <cstring>
 
-char *path;
+// State
+int semilla = 101;
+int procesos = 5;
+int operaciones = 10;
+
 // File handling funcitons
 
 static const SDL_DialogFileFilter filters[] = {
@@ -14,30 +19,25 @@ static const SDL_DialogFileFilter filters[] = {
 
 void openFile(void *userdata, const char *const *filelist, int filter) {
   if (filelist != nullptr && filelist[0] != nullptr) {
+    char *path = (char *)userdata;
     strncpy(path, filelist[0], 4096);
-    // TODO: conectar esto
   }
 }
 
 void saveFile(void *userdata, const char *const *filelist, int filter) {
   if (filelist != nullptr && filelist[0] != nullptr) {
-    printf("%s", filelist[0]);
-    // TODO:conectar esto
+    create_operations(procesos, operaciones, filelist[0], semilla);
   }
 }
 
 // Window
 
-void showSetupWindow(bool *open, ImGuiWindowFlags window_flags = 0) {
-  // State
-  if (path == nullptr) {
-    path = (char *)calloc(sizeof(char), 4096);
-  }
+void showSetupWindow(bool *open, int *algorithm, char *path,
+                     ImGuiWindowFlags window_flags = 0) {
 
-  static int semilla = 911;
-  static int algoritmo = 0;
-  static int procesos = 101;
-  static int operaciones = 1000;
+  if (operaciones < procesos) {
+    operaciones = procesos;
+  }
 
   // Common Variables
   static SDL_Window *window = SDL_GL_GetCurrentWindow();
@@ -67,15 +67,15 @@ void showSetupWindow(bool *open, ImGuiWindowFlags window_flags = 0) {
   ImGui::AlignTextToFramePadding();
   ImGui::Text("Algoritmo: ");
   ImGui::SameLine(150);
-  ImGui::RadioButton("FIFO", &algoritmo, 0);
+  ImGui::RadioButton("FIFO", algorithm, ALG_FIFO);
   ImGui::SameLine(0, 20);
-  ImGui::RadioButton("Second Chance", &algoritmo, 1);
+  ImGui::RadioButton("Second Chance", algorithm, ALG_SECOND_CHANCE);
   ImGui::SameLine(0, 20);
-  ImGui::RadioButton("MRU", &algoritmo, 2);
+  ImGui::RadioButton("MRU", algorithm, ALG_MRU);
   ImGui::SameLine(0, 20);
-  ImGui::RadioButton("LRU", &algoritmo, 3);
+  ImGui::RadioButton("LRU", algorithm, ALG_LRU);
   ImGui::SameLine(0, 20);
-  ImGui::RadioButton("Random", &algoritmo, 4);
+  ImGui::RadioButton("Random", algorithm, ALG_RANDOM);
 
   ImGui::AlignTextToFramePadding();
   ImGui::Text("Archivo de Instrucciones: ");
@@ -85,7 +85,7 @@ void showSetupWindow(bool *open, ImGuiWindowFlags window_flags = 0) {
   ImGui::SameLine(0, 5);
   bool load_btn_pressed = ImGui::Button("Cargar", ImVec2(100, 20));
   if (load_btn_pressed) {
-    SDL_ShowOpenFileDialog(openFile, nullptr, window, filters, 2, nullptr,
+    SDL_ShowOpenFileDialog(openFile, path, window, filters, 2, nullptr,
                            false); // DEBUG:poner 1 en realese
   }
   ImGui::SameLine(0, 5);
@@ -126,8 +126,23 @@ void showSetupWindow(bool *open, ImGuiWindowFlags window_flags = 0) {
 
   ImGui::Dummy(ImVec2(viewportSize.x, 1)); // padding
   if (ImGui::Button("Iniciar Simulación", ImVec2(180, 20))) {
-    *open = false;
-    // TODO: conectar este boton
+    if (strlen(path) == 0) {
+      ImGui::OpenPopup("##warning-popup");
+    } else {
+      *open = false;
+    }
+  }
+
+  ImGui::SetNextWindowSize(ImVec2(300, 75));
+  ImGui::SetNextWindowPos(
+      ImVec2(viewportSize.x / 2 - 150, viewportSize.y / 2 - 40),
+      ImGuiCond_Always);
+  if (ImGui::BeginPopup("##warning-popup")) {
+    ImGui::SetNextItemWidth(300);
+    ImGui::TextWrapped(
+        ("Error: Debe escoger un archivo de instrucciones para iniciar "
+         "la simulación"));
+    ImGui::EndPopup();
   }
 
   ImGui::Unindent(10);
