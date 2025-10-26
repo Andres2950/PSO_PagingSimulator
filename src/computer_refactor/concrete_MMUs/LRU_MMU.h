@@ -7,7 +7,10 @@
 
 class LRU_MMU: public MMU {
 public:
-    LRU_MMU(){}
+    LRU_MMU(){
+        for (int i = 0; i < MEMORY_SIZE; ++i)
+            memory[i] = -1;
+    }
     void mark_used(Page page) {
         page.mark = time;
     }
