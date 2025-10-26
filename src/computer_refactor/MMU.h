@@ -22,7 +22,7 @@ public:
 
   virtual int paging(Page to_insert_page) = 0;
   virtual void mark_used(Page page){}
-  virtual void mark_inRAM(Page page){}
+  virtual void mark_used_inRAM(Page page){}
 
   void update_times() {
     for (int i = 0; i < MEMORY_SIZE; ++i) {
@@ -62,12 +62,15 @@ public:
       // paginar
       if (!added) {
         int to_remove = paging(page);
+        disk[memory[to_remove]].is_loaded = false;
+        disk[memory[to_remove]].load_t = 0;
         memory[to_remove] = page.id;
         time += FAULT_COST;
         fault_time += FAULT_COST;
       }
       mark_used(page);
       page.timestamp = time;
+      page.is_loaded = true;
       ++current_page;
     }
 
@@ -90,7 +93,7 @@ public:
       Page page = disk.at(pageIds[i]);
       if (page.is_loaded) {
         time += HIT_COST;
-        mark_inRAM(page);
+        mark_used_inRAM(page);
       } else {
         added = false;
         for (int j = 0; j < MEMORY_SIZE; j++) {
@@ -105,14 +108,17 @@ public:
         }
         if (!added) {
           int to_remove = paging(page);
+          disk[memory[to_remove]].is_loaded = false;
+          disk[memory[to_remove]].load_t = 0;
           memory[to_remove] = page.id;
           page.timestamp = time;
           time += FAULT_COST;
           fault_time += FAULT_COST;
         }
-        mark_used(page);
         page.is_loaded = true;
-        }
+        page.timestamp = time;
+      }
+      mark_used(page);
       ++current_page;
     }
     update_times();
@@ -130,6 +136,7 @@ public:
       // Sacar pagina de RAM
       if (page.is_loaded) {
         memory[page.m_addr] = -1;
+        page.is_loaded = 0;
       }
       disk.erase(pageIds[i]);
     }
