@@ -3,7 +3,6 @@
 #include <SDL3/SDL.h>
 #include <cstdlib>
 #include <stdio.h>
-
 // State
 
 char *path;

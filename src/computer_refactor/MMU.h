@@ -4,6 +4,7 @@
 #include "../constants.h"
 #include "Page.h"
 #include <array>
+#include <experimental/filesystem>
 #include <map>
 #include <vector>
 #include <xcb/xproto.h>
@@ -20,6 +21,10 @@ public:
   std::array<int, MEMORY_SIZE> memory;
   std::map<int, Page> disk;
 
+  virtual int paging(Page to_insert_page) = 0;
+  virtual void mark_used(Page page){}
+  virtual void mark_used_inRAM(Page page){}
+
   void update_times() {
     for (int i = 0; i < MEMORY_SIZE; ++i) {
       if (memory[i] != -1) {
@@ -29,9 +34,10 @@ public:
     }
   }
 
-  virtual int paging(Page to_insert_page) = 0;
 
+  //TODO: esto tira IOT de un map::at, pero no se donde esta eso
   int _new(int pid, int size) {
+    printf("new\n");
     int page_ammount =
         ((size % PAGE_SIZE == 0) ? size / PAGE_SIZE : size / PAGE_SIZE + 1);
 
@@ -62,8 +68,10 @@ public:
         time += FAULT_COST;
         fault_time += FAULT_COST;
       }
+      mark_used(page);
+      page.timestamp = time;
+      page.is_loaded = true;
       ++current_page;
-      page.timestamp = time; // TODO:cambiar esto
     }
 
     // Asociar proceso a ptr
@@ -73,17 +81,19 @@ public:
 
     ptr_count++;
     update_times();
-
+    printf("new end\n");
     return ptr_count - 1;
   }
 
   void use(int ptr) {
+    printf("use\n");
     std::vector<int> pageIds = ptr_pageid_map.at(ptr);
     bool added;
     for (int i = 0; i < pageIds.size(); i++) {
       Page page = disk.at(pageIds[i]);
       if (page.is_loaded) {
         time += HIT_COST;
+        mark_used_inRAM(page);
       } else {
         added = false;
         for (int j = 0; j < MEMORY_SIZE; j++) {
@@ -91,23 +101,27 @@ public:
             insertToMemory(j, page.id);
             time += HIT_COST;
             added = true;
-            page.timestamp = time;
             break;
           }
         }
         if (!added) {
           int to_remove = paging(page);
           insertToMemory(to_remove, page.id);
-          page.timestamp = time;
           time += FAULT_COST;
           fault_time += FAULT_COST;
         }
+        page.is_loaded = true;
+        page.timestamp = time;
       }
+      mark_used(page);
+      ++current_page;
     }
     update_times();
+    printf("use end\n");
   };
 
   void _delete(int ptr) {
+    printf("delete\n");
     // Obtener page ids asociados con el puntero
     std::vector<int> pageIds = ptr_pageid_map.at(ptr);
 
@@ -117,6 +131,7 @@ public:
       // Sacar pagina de RAM
       if (page.is_loaded) {
         memory[page.m_addr] = -1;
+        page.is_loaded = 0;
       }
       disk.erase(pageIds[i]);
     }
@@ -127,6 +142,7 @@ public:
     // no da problemas
     time += HIT_COST;
     update_times();
+    printf("delete end\n");
   }
 
   void kill(int pid) {
@@ -137,7 +153,6 @@ public:
       //  no hay nada que borrar
       return;
     }
-
     // Obtener los punteros asociados al vector
     std::vector ptrs = process_ptrs_map.at(pid);
 
@@ -151,6 +166,7 @@ public:
     }
     // Borrar el proceso
     process_ptrs_map.erase(pid);
+    printf("kill end\n");
   }
 
   virtual ~MMU() {};
