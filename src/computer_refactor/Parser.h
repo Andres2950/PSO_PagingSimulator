@@ -8,6 +8,8 @@
 
 class Parser {
   public:
+    MMU *optimal_mmu;
+    MMU *other_mmu;
     Parser(int algorithm, int processes, int operations) {
       unsigned int seed = create_operations(processes, operations);
       ops.content = (char *) malloc(sizeof(char) * 4090);
@@ -62,6 +64,10 @@ class Parser {
       delete optimal_mmu;
       delete other_mmu;
     }
+    bool executeInstruction() {
+      next();
+      return ops.content[ops.pos] != '\0';
+    }
   private:
     typedef struct{
       char *content;
@@ -73,8 +79,6 @@ class Parser {
     char buff[256];
     char token[256];
     char c;
-    MMU *optimal_mmu;
-    MMU *other_mmu;
     std::vector<int> pages;
     std::vector<int> ptr_pages;
     int page_id = 1, ptr_id = 1;
@@ -123,10 +127,6 @@ class Parser {
       }
       ops.pos = 0;
     }
-  bool executeInstruction() {
-    next();
-    return ops.content[ops.pos] != '\0';
-  }
 
   int parse_num() {
     int i = 0;
