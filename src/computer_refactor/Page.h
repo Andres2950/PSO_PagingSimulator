@@ -3,11 +3,11 @@
 
 #include <bits/types/idtype_t.h>
 #include <iostream>
-#include <string.h>
 
 class Page {
     public:
         int id;
+        int pid;
         int m_addr;
         int l_addr;
         int d_addr;

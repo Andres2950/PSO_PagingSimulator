@@ -1,11 +1,10 @@
 #ifndef COMPUTER_H
 #define COMPUTER_H
 
-#include <experimental/filesystem>
 #include "MMU.h"
 #include "concrete_MMUs/Optimal_MMU.h"
 #include "concrete_MMUs/FIFO_MMU.h"
-
+#include <cstring>
 
 class Parser {
   public:

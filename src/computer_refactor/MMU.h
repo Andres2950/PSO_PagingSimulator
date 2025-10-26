@@ -22,8 +22,8 @@ public:
   std::map<int, Page> disk;
 
   virtual int paging(Page to_insert_page) = 0;
-  virtual void mark_used(Page page){}
-  virtual void mark_used_inRAM(Page page){}
+  virtual void mark_used(Page page) {}
+  virtual void mark_used_inRAM(Page page) {}
 
   void update_times() {
     for (int i = 0; i < MEMORY_SIZE; ++i) {
@@ -34,8 +34,7 @@ public:
     }
   }
 
-
-  //TODO: esto tira IOT de un map::at, pero no se donde esta eso
+  // TODO: esto tira IOT de un map::at, pero no se donde esta eso
   int _new(int pid, int size) {
     printf("new(%d, %d)\n", pid, size);
     int page_ammount =
@@ -71,6 +70,7 @@ public:
       mark_used(page);
       page.timestamp = time;
       page.is_loaded = true;
+      page.pid = pid;
       ++current_page;
     }
 
