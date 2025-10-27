@@ -8,6 +8,7 @@ unsigned int create_operations(int num_processes, int num_ops,
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../constants.h"
 
 enum options { NEW, USE, DELETE, KILL };
 
@@ -116,7 +117,7 @@ unsigned int create_operations(int num_processes, int num_ops,
       new_op.arg = ptr_count;
       proc->ops[proc->num_ops++] = new_op;
       proc->ptrs[proc->num_ptrs++] = ptr_count;
-      sprintf(buff, "new(%d, %d)\n", proc_i + 1, (rand() % 100000) + 1);
+      sprintf(buff, "new(%d, %d)\n", proc_i + 1, (rand() % (MEMORY_SIZE/3)) + 1);
       break;
 
     case USE:
