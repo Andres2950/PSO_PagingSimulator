@@ -130,7 +130,7 @@ unsigned int create_operations(int num_processes, int num_ops,
       new_op.op = op;
       new_op.arg = ptr;
       proc->ops[proc->num_ops++] = new_op;
-      int ptr = delete_ptr(proc);
+      ptr = delete_ptr(proc);
       sprintf(buff, "delete(%d)\n", ptr);
       break;
     }
