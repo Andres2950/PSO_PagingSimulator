@@ -22,9 +22,9 @@ public:
   std::map<int, Page> disk;
   std::map<int, int> ptr_fragm;
 
-  virtual int paging(Page to_insert_page) = 0;
-  virtual void mark_used(Page page) {}
-  virtual void mark_used_inRAM(Page page) {}
+  virtual int paging() = 0;
+  virtual void mark_used(int pageId) {};
+  virtual void mark_used_inRAM(int pageId) {};
 
   void update_times() {
     for (int i = 0; i < MEMORY_SIZE; ++i) {
@@ -63,12 +63,13 @@ public:
       }
       // paginar
       if (!added) {
-        int to_remove = paging(page);
+        int to_remove = paging();
         insertToMemory(to_remove, page.id);
         time += FAULT_COST;
+        page.is_loaded = true;
         fault_time += FAULT_COST;
       }
-      mark_used(page);
+      mark_used(page.id);
       disk[page.id].timestamp = time;
       ++current_page;
     }
@@ -94,7 +95,7 @@ public:
       Page *page = &disk.at(pageIds[i]);
       if (page->is_loaded) {
         time += HIT_COST;
-        mark_used_inRAM(*page);
+        mark_used_inRAM(page->id);
       } else {
         added = false;
         for (int j = 0; j < MEMORY_SIZE; j++) {
@@ -106,14 +107,14 @@ public:
           }
         }
         if (!added) {
-          int to_remove = paging(*page);
+          int to_remove = paging();
           insertToMemory(to_remove, page->id);
           time += FAULT_COST;
           fault_time += FAULT_COST;
         }
         page->timestamp = time;
       }
-      mark_used(*page);
+      mark_used(page->id);
       ++current_page;
     }
     update_times();
