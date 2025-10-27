@@ -8,7 +8,6 @@ unsigned int create_operations(int num_processes, int num_ops,
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 enum options { NEW, USE, DELETE, KILL };
 
