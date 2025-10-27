@@ -6,7 +6,6 @@
 #include <cstring>
 
 // State
-int semilla = 101;
 int procesos = 5;
 int operaciones = 10;
 
@@ -25,13 +24,14 @@ void openFile(void *userdata, const char *const *filelist, int filter) {
 
 void saveFile(void *userdata, const char *const *filelist, int filter) {
   if (filelist != nullptr && filelist[0] != nullptr) {
+    int semilla = *(int *)userdata;
     create_operations(procesos, operaciones, filelist[0], semilla);
   }
 }
 
 // Window
 
-void showSetupWindow(bool *open, int *algorithm, char *path,
+void showSetupWindow(bool *open, int *algorithm, int *semilla, char *path,
                      ImGuiWindowFlags window_flags = 0) {
 
   if (operaciones < procesos) {
@@ -61,7 +61,7 @@ void showSetupWindow(bool *open, int *algorithm, char *path,
   ImGui::Text("Semilla: ");
   ImGui::SameLine(150);
   ImGui::SetNextItemWidth(300);
-  ImGui::InputInt("##semilla", &semilla);
+  ImGui::InputInt("##semilla", semilla);
 
   ImGui::AlignTextToFramePadding();
   ImGui::Text("Algoritmo: ");
@@ -112,7 +112,7 @@ void showSetupWindow(bool *open, int *algorithm, char *path,
 
     bool generate_pop_btn_pressed = ImGui::Button("Generar", ImVec2(100, 20));
     if (generate_pop_btn_pressed) {
-      SDL_ShowSaveFileDialog(saveFile, nullptr, window, filters, 2, nullptr);
+      SDL_ShowSaveFileDialog(saveFile, semilla, window, filters, 2, nullptr);
       ImGui::CloseCurrentPopup();
     }
     ImGui::SameLine(0, 10);

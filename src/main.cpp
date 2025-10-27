@@ -75,6 +75,7 @@ bool simul_window = false;
 int curr_window = 0;
 int algorithm = 0;
 char *path = nullptr;
+int seed = 101;
 
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate) {
@@ -104,9 +105,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
   // Windows
   if (curr_window == 0) {
-    showSetupWindow(&setup_window, &algorithm, path, main_window_flags);
+    showSetupWindow(&setup_window, &algorithm, &seed, path, main_window_flags);
   } else {
-    showSimulWindow(&simul_window, algorithm, path, main_window_flags);
+    showSimulWindow(&simul_window, algorithm, seed, path, main_window_flags);
   }
 
   if (!setup_window && curr_window == 0) {

@@ -2,13 +2,14 @@
 #include "../constants.h"
 #include "SDL3/SDL_timer.h"
 #include "imgui.h"
+#include <cstdlib>
 
 // State
 Parser *parser;
 int delay = 0;
 uint last_execution = SDL_GetTicks();
 
-void showSimulWindow(bool *open, int algorithm, const char *filepath,
+void showSimulWindow(bool *open, int algorithm, int seed, const char *filepath,
                      ImGuiWindowFlags windowFlags = 0) {
 
   // State Init
@@ -34,6 +35,7 @@ void showSimulWindow(bool *open, int algorithm, const char *filepath,
   if (!start) {
     if (ImGui::Button("Iniciar", ImVec2(0, text_height))) {
       start = true;
+      srand(seed);
       parser = new Parser(algorithm, filepath);
     }
     ImGui::SameLine();

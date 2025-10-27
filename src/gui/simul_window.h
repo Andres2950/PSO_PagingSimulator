@@ -3,7 +3,7 @@
 
 #include "imgui.h"
 
-void showSimulWindow(bool *open, int algorithm, const char *filepath,
+void showSimulWindow(bool *open, int algorithm, int seed, const char *filepath,
                      ImGuiWindowFlags windowFlags);
 
 #endif // !SIMUL_WINDOW

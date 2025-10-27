@@ -10,7 +10,7 @@ void saveFile(void *userdata, const char *const *filelist, int filter);
 
 // Window
 
-void showSetupWindow(bool *open, int *algorithm, char *path,
+void showSetupWindow(bool *open, int *algorithm, int *semilla, char *path,
                      ImGuiWindowFlags window_flags = 0);
 
 #endif
