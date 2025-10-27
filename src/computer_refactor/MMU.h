@@ -69,8 +69,7 @@ public:
         fault_time += FAULT_COST;
       }
       mark_used(page);
-      page.timestamp = time;
-      page.is_loaded = true;
+      disk[page.id].timestamp = time;
       ++current_page;
     }
 
@@ -92,30 +91,29 @@ public:
     std::vector<int> pageIds = ptr_pageid_map.at(ptr);
     bool added;
     for (int i = 0; i < pageIds.size(); i++) {
-      Page page = disk.at(pageIds[i]);
-      if (page.is_loaded) {
+      Page *page = &disk.at(pageIds[i]);
+      if (page->is_loaded) {
         time += HIT_COST;
-        mark_used_inRAM(page);
+        mark_used_inRAM(*page);
       } else {
         added = false;
         for (int j = 0; j < MEMORY_SIZE; j++) {
           if (memory[j] == -1) {
-            insertToMemory(j, page.id);
+            insertToMemory(j, page->id);
             time += HIT_COST;
             added = true;
             break;
           }
         }
         if (!added) {
-          int to_remove = paging(page);
-          insertToMemory(to_remove, page.id);
+          int to_remove = paging(*page);
+          insertToMemory(to_remove, page->id);
           time += FAULT_COST;
           fault_time += FAULT_COST;
         }
-        page.is_loaded = true;
-        page.timestamp = time;
+        page->timestamp = time;
       }
-      mark_used(page);
+      mark_used(*page);
       ++current_page;
     }
     update_times();
