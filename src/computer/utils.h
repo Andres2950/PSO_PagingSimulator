@@ -33,11 +33,11 @@ int delete_ptr(Process *proc) {
   if (proc->num_ptrs == 0)
     return -1;
   int index = rand() % proc->num_ptrs;
-  proc->num_ptrs--;
   int ptr = proc->ptrs[index];
   for (int i = index; i < proc->num_ptrs; i++) {
     proc->ptrs[i] = proc->ptrs[i + 1];
   }
+  proc->num_ptrs--;
   return ptr;
 }
 
@@ -130,7 +130,7 @@ unsigned int create_operations(int num_processes, int num_ops,
       new_op.op = op;
       new_op.arg = ptr;
       proc->ops[proc->num_ops++] = new_op;
-      delete_ptr(proc);
+      int ptr = delete_ptr(proc);
       sprintf(buff, "delete(%d)\n", ptr);
       break;
     }
