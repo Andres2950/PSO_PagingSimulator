@@ -2,19 +2,26 @@
 #include "../constants.h"
 #include "SDL3/SDL_timer.h"
 #include "imgui.h"
+#include <cstdio>
 #include <cstdlib>
 
 // State
 Parser *parser;
 int delay = 0;
 uint last_execution = SDL_GetTicks();
+char *alg_name = nullptr;
+bool init = false;
+
+char *getAlgName(int algorithm);
 
 void showSimulWindow(bool *open, int algorithm, int seed, const char *filepath,
                      ImGuiWindowFlags windowFlags = 0) {
 
   // State Init
-  if (parser == nullptr) {
+  if (!init) {
     parser = new Parser(algorithm, filepath);
+    alg_name = getAlgName(algorithm);
+    init = true;
   }
 
   //  Common Variables
@@ -35,8 +42,8 @@ void showSimulWindow(bool *open, int algorithm, int seed, const char *filepath,
   if (!start) {
     if (ImGui::Button("Iniciar", ImVec2(0, text_height))) {
       start = true;
-      srand(seed);
       parser = new Parser(algorithm, filepath);
+      srand(seed);
     }
     ImGui::SameLine();
     if (ImGui::Button("Volver", ImVec2(0, text_height))) {
@@ -47,7 +54,6 @@ void showSimulWindow(bool *open, int algorithm, int seed, const char *filepath,
 
   if (start) {
     if (ImGui::Button("Terminar", ImVec2(0, text_height))) {
-      parser = new Parser(algorithm, filepath);
       start = false;
     }
   }
@@ -98,8 +104,9 @@ void showSimulWindow(bool *open, int algorithm, int seed, const char *filepath,
 
   style.CellPadding.x = 0;
   if (ImGui::BeginTable("##ram-algoritmo", 1, ImGuiTableFlags_Borders)) {
-
-    ImGui::TableSetupColumn(" RAM Algoritmo");
+    char str[40];
+    sprintf(str, "RAM %s", alg_name);
+    ImGui::TableSetupColumn(str);
     ImGui::TableHeadersRow();
     style.CellPadding.y = 0;
     ImGui::TableNextColumn();
@@ -143,7 +150,8 @@ void showSimulWindow(bool *open, int algorithm, int seed, const char *filepath,
               ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg |
                   ImGuiTableFlags_ScrollY | ImGuiTableFlags_ScrollX |
                   ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable |
-                  ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedSame,
+                  ImGuiTableFlags_Hideable | ImGuiTableFlags_SizingFixedSame |
+                  ImGuiTableFlags_Sortable,
               ImVec2(0, 270))) {
         ImGui::TableSetupColumn("Page ID");
         ImGui::TableSetupColumn("PID");
@@ -250,7 +258,7 @@ void showSimulWindow(bool *open, int algorithm, int seed, const char *filepath,
     ImGui::TableNextColumn();
     ImGui::TableNextColumn();
     {
-      ImGui::SeparatorText("Algoritmo");
+      ImGui::SeparatorText(alg_name);
       auto mmu = parser->other_mmu;
       auto disk = mmu->disk;
       int loaded_pages = 0;
@@ -364,4 +372,34 @@ void showSimulWindow(bool *open, int algorithm, int seed, const char *filepath,
     ImGui::EndTable();
   }
   ImGui::End();
+
+  if (!*open) {
+    init = false;
+    free(parser);
+    free(alg_name);
+  }
+}
+
+char *getAlgName(int algorithm) {
+  char *str = (char *)calloc(20, sizeof(char));
+  switch (algorithm) {
+  case ALG_FIFO:
+    sprintf(str, "FIFO");
+    break;
+  case ALG_SECOND_CHANCE:
+    sprintf(str, "Second Chance");
+    break;
+  case ALG_MRU:
+    sprintf(str, "MRU");
+    break;
+  case ALG_LRU:
+    sprintf(str, "LRU");
+    break;
+  case ALG_RANDOM:
+    sprintf(str, "Random");
+    break;
+  default:
+    sprintf(str, "N/A");
+  }
+  return str;
 }

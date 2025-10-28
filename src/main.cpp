@@ -80,14 +80,12 @@ int seed = 101;
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate) {
   ImVec2 viewportSize = ImGui::GetMainViewport()->Size;
-  float scalex = 1; // viewportSize.x/640;
-  float scaley = 1; // viewportSize.x/640;
   ImGuiIO io = ImGui::GetIO();
   ImGuiStyle &style = ImGui::GetStyle();
   style.FontSizeBase = 14;
-  style.WindowPadding = ImVec2(30 * scalex, 10 * scaley);
-  style.ItemSpacing = ImVec2(10 * scalex, 12 * scaley);
-  style.FontScaleMain = scaley;
+  style.WindowPadding = ImVec2(30, 10);
+  style.ItemSpacing = ImVec2(10, 12);
+  style.FontScaleMain = 1;
   style.CellPadding = ImVec2(2, 2);
 
   if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) {

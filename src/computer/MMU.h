@@ -36,7 +36,6 @@ public:
 
   // TODO: esto tira IOT de un map::at, pero no se donde esta eso
   int _new(int pid, int size) {
-    printf("new(%d, %d)\n", pid, size);
     int page_ammount =
         ((size % PAGE_SIZE == 0) ? size / PAGE_SIZE : size / PAGE_SIZE + 1);
 
@@ -83,12 +82,10 @@ public:
 
     ptr_count++;
     update_times();
-    printf("new end\n");
     return ptr_count - 1;
   }
 
   void use(int ptr) {
-    printf("use\n");
     std::vector<int> pageIds = ptr_pageid_map.at(ptr);
     bool added;
     for (int i = 0; i < pageIds.size(); i++) {
@@ -118,11 +115,9 @@ public:
       ++current_page;
     }
     update_times();
-    printf("use end\n");
   };
 
   void _delete(int ptr) {
-    printf("delete\n");
     // Obtener page ids asociados con el puntero
     std::vector<int> pageIds = ptr_pageid_map.at(ptr);
 
@@ -145,7 +140,6 @@ public:
     // no da problemas
     time += HIT_COST;
     update_times();
-    printf("delete end\n");
   }
 
   void kill(int pid) {
@@ -169,7 +163,6 @@ public:
     }
     // Borrar el proceso
     process_ptrs_map.erase(pid);
-    printf("kill end\n");
   }
 
   virtual ~MMU() {};

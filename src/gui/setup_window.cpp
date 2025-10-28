@@ -34,14 +34,23 @@ void saveFile(void *userdata, const char *const *filelist, int filter) {
 void showSetupWindow(bool *open, int *algorithm, int *semilla, char *path,
                      ImGuiWindowFlags window_flags = 0) {
 
+  // Restrictions
   if (operaciones < procesos) {
     operaciones = procesos;
+  }
+  if (*semilla < 0) {
+    *semilla = 0;
+  }
+  if (procesos < 1) {
+    procesos = 1;
   }
 
   // Common Variables
   static SDL_Window *window = SDL_GL_GetCurrentWindow();
   ImGuiStyle style = ImGui::GetStyle();
   ImVec2 viewportSize = ImGui::GetMainViewport()->Size;
+
+  ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 20));
 
   // Window
   ImGui::SetNextWindowSize(viewportSize);
@@ -93,19 +102,24 @@ void showSetupWindow(bool *open, int *algorithm, int *semilla, char *path,
     ImGui::OpenPopup("Generar Lista de Instrucciones");
   }
 
-  ImGui::SetNextWindowSize(ImVec2(280, 150));
-  if (ImGui::BeginPopupModal("Generar Lista de Instrucciones")) {
+  ImGui::PopStyleVar();
+  ImGui::SetNextWindowSize(ImVec2(300, 150));
+  ImGui::SetNextWindowPos(
+      ImVec2(viewportSize.x / 2 - 150, viewportSize.y / 2 - 75),
+      ImGuiCond_Once);
+  if (ImGui::BeginPopupModal("Generar Lista de Instrucciones", nullptr,
+                             ImGuiWindowFlags_NoResize)) {
     ImGui::Dummy(ImVec2(viewportSize.x, 1)); // padding
     ImGui::AlignTextToFramePadding();
     ImGui::Text("Procesos: ");
     ImGui::SameLine(150);
-    ImGui::SetNextItemWidth(100);
+    ImGui::SetNextItemWidth(120);
     ImGui::InputInt("##procesos", &procesos);
 
     ImGui::AlignTextToFramePadding();
     ImGui::Text("Operaciones: ");
     ImGui::SameLine(150);
-    ImGui::SetNextItemWidth(100);
+    ImGui::SetNextItemWidth(120);
     ImGui::InputInt("##operaciones", &operaciones);
 
     ImGui::Dummy(ImVec2(viewportSize.x, 1)); // padding
@@ -122,6 +136,8 @@ void showSetupWindow(bool *open, int *algorithm, int *semilla, char *path,
     }
     ImGui::EndPopup();
   }
+
+  ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 20));
 
   ImGui::Dummy(ImVec2(viewportSize.x, 1)); // padding
   if (ImGui::Button("Iniciar Simulación", ImVec2(180, 20))) {
@@ -147,4 +163,6 @@ void showSetupWindow(bool *open, int *algorithm, int *semilla, char *path,
   ImGui::Unindent(10);
 
   ImGui::End();
+
+  ImGui::PopStyleVar();
 }
