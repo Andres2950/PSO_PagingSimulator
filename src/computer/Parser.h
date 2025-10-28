@@ -33,14 +33,10 @@ public:
     ops.content[ops.pos] = '\0';
     totalProcesses = getTotalProcesses();
     parse_for_optimal();
-    // printf("#########Paginas futuras#############\n");
-    // pages.print();
-    printf("\n");
     optimal_mmu = new Optimal_MMU(pages);
     switch (algorithm) {
     case ALG_FIFO:
       other_mmu = new FIFO_MMU();
-      printf("Crea fifo\n");
       break;
     case ALG_SECOND_CHANCE:
       other_mmu = new Second_Chance_MMU();
@@ -55,20 +51,6 @@ public:
       other_mmu = new Random_MMU();
       break;
     }
-    /*//other_mmu = new MMU(algorithm, 0);
-    printf("Tipo %d\n", algorithm);
-    int count = 1;
-    while(ops.content[ops.pos] != '\0'){
-      next();
-      printf("############## CACHE OPS = %d################\n", count++);
-      printf("--- Optimal ---\n");
-      //optimal_mmu->state.memory->print();
-      printf("\ntime: %d\n", optimal_mmu->time);
-      printf("--- Other ---\n");
-      //other_mmu->state.memory->print();
-      printf("\ntime: %d\n", other_mmu->time);
-      printf("\n###############################################\n");
-    }*/
   }
   ~Parser() {
     if (ops.content)
@@ -77,22 +59,7 @@ public:
     delete other_mmu;
   }
   bool executeInstruction() {
-    printf("############## NEXT()################\n");
     next();
-    printf("############## CACHE OPS = %d################\n", current_op++);
-    printf("--- Optimal ---\n");
-    for (int i = 0; i < MEMORY_SIZE; ++i) {
-      printf("%d \t", optimal_mmu->memory[i]);
-      if (i % 10 == 0)
-        printf("\n");
-    }
-    printf("\n--- FIFO ---\n");
-
-    for (int i = 0; i < MEMORY_SIZE; ++i) {
-      printf("%d \t", other_mmu->memory[i]);
-      if ((i + i) % 10 == 0)
-        printf("\n");
-    }
     return ops.content[ops.pos] != '\0';
   }
 
@@ -107,8 +74,8 @@ private:
   char buff[256];
   char token[256];
   char c;
+  std::map<int, std::vector<int>> ptr_to_pages;
   std::vector<int> pages;
-  std::vector<int> ptr_pages;
   int page_id = 1, ptr_id = 1;
 
   void parse_for_optimal() {
@@ -126,39 +93,24 @@ private:
         ptr_size = parse_num();
         n_pages = ((ptr_size % PAGE_SIZE) == 0 ? ptr_size / PAGE_SIZE
                                                : ptr_size / PAGE_SIZE + 1);
+        std::vector<int> pages_for_ptr;
         for (int p = 0; p < n_pages; ++p) {
-          pages.push_back(page_id++);
-          ptr_pages.push_back(ptr_id);
+          pages.push_back(page_id);
+          pages_for_ptr.push_back(page_id);
+          page_id++;
         }
+        ptr_to_pages[ptr_id] = pages_for_ptr;
         ptr_id++;
       } else if (strcmp(token, "use") == 0) {
         ptr = parse_num();
-        int ptr_start_pos = -1, ptr_end_pos;
-
-        for (int j = 0; j < ptr_pages.size(); ++j) {
-          if (ptr_pages[j] == ptr) {
-            if (ptr_start_pos == -1) {
-              ptr_start_pos = j;
-              ptr_end_pos = j;
-            } else
-              ptr_end_pos = j;
-          }
-        }
-        // copia de nuevo todas las paginas a cargar del puntero
-        for (int j = ptr_start_pos; j <= ptr_end_pos; ++j) {
-          page_to_load = pages[j];
-          pages.push_back(page_to_load);
+        for (int page : ptr_to_pages[ptr]) {
+          pages.push_back(page);
         }
       }
       while ((c = ops.content[ops.pos++]) != '\n' && c != '\0')
         ;
     }
     ops.pos = 0;
-    /*for(int i = 0; i < pages.size(); i++){
-      printf("%d \t", pages[i]);
-      if(i%10 == 0)
-        printf("\n");
-    }*/
   }
 
   int parse_num() {
@@ -234,7 +186,6 @@ private:
       }
       i++;
     }
-
     return total;
   }
 };

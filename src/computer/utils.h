@@ -117,7 +117,7 @@ unsigned int create_operations(int num_processes, int num_ops,
       new_op.arg = ptr_count;
       proc->ops[proc->num_ops++] = new_op;
       proc->ptrs[proc->num_ptrs++] = ptr_count;
-      sprintf(buff, "new(%d, %d)\n", proc_i + 1, (rand() % (MEMORY_SIZE/3)) + 1);
+      sprintf(buff, "new(%d, %d)\n", proc_i + 1, (rand() % ((MEMORY_SIZE * PAGE_SIZE)/3)) + 1);
       break;
 
     case USE:
