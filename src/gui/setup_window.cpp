@@ -3,7 +3,10 @@
 #include "SDL3/SDL_video.h"
 #include "imgui.h"
 #include <SDL3/SDL.h>
+#include <cstdlib>
 #include <cstring>
+#include <ctime>
+#include <random>
 
 // State
 int procesos = 5;
@@ -71,6 +74,11 @@ void showSetupWindow(bool *open, int *algorithm, int *semilla, char *path,
   ImGui::SameLine(150);
   ImGui::SetNextItemWidth(300);
   ImGui::InputInt("##semilla", semilla);
+  ImGui::SameLine();
+  if (ImGui::Button("Aleatorio")) {
+    std::srand(std::time(0));
+    *semilla = rand();
+  }
 
   ImGui::AlignTextToFramePadding();
   ImGui::Text("Algoritmo: ");
