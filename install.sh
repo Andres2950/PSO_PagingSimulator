@@ -52,9 +52,9 @@ install_sdl_dependencies
 # Build and run the project
 echo "Building and running the project..."
 su - "$user" -c "
-  export DISPLAY=:0
-  export XDG_RUNTIME_DIR=/run/user/\$(id -u)
-  export XAUTHORITY=/home/$user/.Xauthority
+  #export DISPLAY=:0
+  #export XDG_RUNTIME_DIR=/run/user/\$(id -u)
+  #export XAUTHORITY=/home/$user/.Xauthority
   cd '$DIR'
   cmake -B build -S .
   cmake --build build
