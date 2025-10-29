@@ -4,6 +4,7 @@
 #include "imgui.h"
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 
 // State
 Parser *parser;
@@ -165,21 +166,32 @@ void showSimulWindow(bool *open, int algorithm, int seed, const char *filepath,
 
         ImGui::TableNextColumn();
         for (auto it = disk.begin(); it != disk.end(); it++) {
+          char loaded_str[20];
+          if (it->second.is_loaded) {
+            sprintf(loaded_str, " X ");
+          } else {
+            sprintf(loaded_str, "    ");
+          }
+          char m_addr_str[20];
+          if (it->second.m_addr >= 0) {
+            sprintf(m_addr_str, "%d", it->second.m_addr);
+          } else {
+            sprintf(m_addr_str, "   ");
+          }
           ImGui::TableNextRow(0, 20);
           ImGui::TableNextColumn();
           ImGui::Text("%d", it->second.id);
           ImGui::TableNextColumn();
           ImGui::Text("%d", it->second.pid);
           ImGui::TableNextColumn();
-          const char *str = it->second.is_loaded ? " X " : "  ";
           loaded_pages = it->second.is_loaded ? loaded_pages + 1 : loaded_pages;
-          ImGui::Text("%s", str);
+          ImGui::Text("%s", loaded_str);
           ImGui::TableNextColumn();
           ImGui::Text("%d", it->second.l_addr);
           ImGui::TableNextColumn();
-          ImGui::Text("%d", it->second.m_addr);
+          ImGui::Text("%s", m_addr_str);
           ImGui::TableNextColumn();
-          ImGui::Text("%d", it->second.d_addr);
+          ImGui::Text("   ");
           ImGui::TableNextColumn();
           ImGui::Text("%d", it->second.load_t);
           ImGui::TableNextColumn();
@@ -281,21 +293,31 @@ void showSimulWindow(bool *open, int algorithm, int seed, const char *filepath,
 
         ImGui::TableNextColumn();
         for (auto it = disk.begin(); it != disk.end(); it++) {
+          char loaded_str[20];
+          if (it->second.is_loaded) {
+            sprintf(loaded_str, " X ");
+          } else {
+            sprintf(loaded_str, "    ");
+          }
+          char m_addr_str[20];
+          if (it->second.m_addr >= 0) {
+            sprintf(m_addr_str, "%d", it->second.m_addr);
+          } else {
+            sprintf(m_addr_str, "   ");
+          }
           ImGui::TableNextRow(0, 20);
           ImGui::TableNextColumn();
           ImGui::Text("%d", it->second.id);
           ImGui::TableNextColumn();
           ImGui::Text("%d", it->second.pid);
           ImGui::TableNextColumn();
-          const char *str = it->second.is_loaded ? " X " : "  ";
-          loaded_pages = it->second.is_loaded ? loaded_pages + 1 : loaded_pages;
-          ImGui::Text("%s", str);
+          ImGui::Text("%s", loaded_str);
           ImGui::TableNextColumn();
           ImGui::Text("%d", it->second.l_addr);
           ImGui::TableNextColumn();
-          ImGui::Text("%d", it->second.m_addr);
+          ImGui::Text("%s", m_addr_str);
           ImGui::TableNextColumn();
-          ImGui::Text("%d", it->second.d_addr);
+          ImGui::Text("   ");
           ImGui::TableNextColumn();
           ImGui::Text("%d", it->second.load_t);
           ImGui::TableNextColumn();
