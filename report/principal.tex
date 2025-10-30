@@ -79,7 +79,7 @@ Ambos ofrecen tres modos de ejecución: serial, concurrente y paralelo.
 
 \section {Algoritmos de Paginación}
 \subsection{Óptimo}
-El algoritmo óptimo de paginación es aquel que tiene la capacidad de ver el futuro, es decir, sabe cuales páginas serán utilizadas durante toda la ejecución de la máquina para poder decider a cual mandaar a memoria virtual. Su funcionamiento consiste en buscar dentro de las páginas cargadas en memoria real aquella que nunca se va a volver a utilizar o la que se va a utilizar más tarde para reemplazarla por la que se requiera cargar en dicho momento. \\
+El algoritmo óptimo de paginación es aquel que tiene la capacidad de ver el futuro, es decir, sabe cuales páginas serán utilizadas durante toda la ejecución de la máquina para poder decidir a cual mandar a memoria virtual. Su funcionamiento consiste en buscar dentro de las páginas cargadas en memoria real aquella que nunca se va a volver a utilizar o la que se va a utilizar más tarde para reemplazarla por la que se requiera cargar en dicho momento. \\
 
 
 Para su implementación al leer el archivo de instrucciones a utilizar se llama a la función ``parse\_for\_optimal" (ver figura \ref{fig:parse_optimal})que detecta cada aparición de ``use" o ``new" para registrar las páginas en una lista que contendrá el id de las páginas que son utilizadas en dichas instrucciones. Una vez se lee todo el archivo dicha lista de páginas es pasada al constructor de la MMU concreta que contiene el algoritmo óptimo como implementación de la función ``paging" (ver figura \ref{fig:optimal}).
@@ -103,14 +103,37 @@ Para su implementación al leer el archivo de instrucciones a utilizar se llama 
 
 \subsection{FIFO y Second Chance}
 \subsection{LRU y MRU}
-\subsection{Random}
+Los algoritmos de paginación MRU(Most Recently Used) y LRU(Least Recently Used) funcionan de forma similar.  Ambos utilizan una marca de tiempo que se inserta en las páginas cuando se cargan en RAM y cuando se utilizan.  La página que se escoge para ser reemplazada es la que fue utilizada más recientemente o menos reciente, dependiendo de que algoritmo se utilice.
+
+La implementación del MRU es simple, se trata de un algoritmo que recorre todo el arreglo de memoria para obtener que tan recientemente se usó cada página, y a través de una comparación encuentra la más utilizada recientemente (ver figura \ref{fig:mru}). La implementación del LRU es exactamente igual pero la comparación cambia para encontrar la página menos utilizada recientemente (ver figura \ref{fig:lru}).
 
 \begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\linewidth]{figuras/estructura.png}
-    \caption{Ilustración de la estructura del programa}
-    \label{fig:estructura}
+	\centering
+	\includegraphics[width=0.8\linewidth]{figuras/mru.png}
+	\caption{Imagen del algoritmo MRU}
+	\label{fig:mru}
 \end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\linewidth]{figuras/lru.png}
+	\caption{Imagen del algoritmo LRU }
+	\label{fig:lru}
+\end{figure}
+  
+
+\subsection{Random}
+
+El algoritmo de paginación Random o Aleatorio reemplaza una página en memoria escogida de forma aleatoria, debido a esto su implementación es trivial y se limite a conocer sobre como se consiguen números aleatorios en el lenguaje escogido para implementarlo (ver figura \ref{fig:random}). En está implementación se hace usó de una semilla para poder replicar el comportamiento del algoritmo, está semilla se configura justo antes de crear el objeto Random\_MMU.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\linewidth]{figuras/random.png}
+	\caption{Imagen del algoritmo Random }
+	\label{fig:random}
+\end{figure}
+
+
 
 \section{Instrucciones}
 \subsubsection{Cómo instalar el programa}
@@ -134,27 +157,8 @@ Para su implementación al leer el archivo de instrucciones a utilizar se llama 
 \subsection{Cómo utilizar el programa}
 Una vez terminado el procedimiento de instalar el programa puede utilizar el comando \texttt{./build/app/app} en la carpeta del proyecto descargada para ejecutar el programa de simulación.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\linewidth]{figuras/huff_ayuda.png}
-    \caption{Ilustración del menú de ayuda del comando huff -h}
-    \label{fig:huffayuda}
-\end{figure}
 
-\begin{itemize}
-  \item \textbf{huff -h}\\ \hspace{2cm}
-    Provee una guía de los parámetros requeridos por el programa y su orden de entrada (Véase figura \ref{fig:huffayuda}).
-  \item \textbf{huff [Opción] src dst} o \textbf{dehuff [Opción] src dst}\\
-src es el directorio objetivo a ser comprimido/descomprimido\\
-dst es el archivo de destino
-  \item \textbf{Opciones} 
-    \begin{itemize}
-      \item \textbf{-s} modo de ejecución serial.
-      \item \textbf{-p} modo de ejecución paralela usando fork.
-      \item \textbf{-c} modo de ejecución concurrente usando pthread
-      \item \textbf{-b} modo de Benchmark para comparar los tiempos de ejecuión entre los anteriores modos.
-    \end{itemize}
-\end{itemize}
+
 
 
 \section{Conclusiones}
