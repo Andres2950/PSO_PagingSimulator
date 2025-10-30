@@ -79,8 +79,8 @@ Ambos ofrecen tres modos de ejecución: serial, concurrente y paralelo.
 
 \section {Algoritmos de Paginación}
 \subsection{Óptimo}
-El algoritmo óptimo de paginación es aquel que tiene la capacidad de ver el futuro, es decir, sabe cuales páginas serán utilizadas durante toda la ejecución de la máquina para poder decider a cual mandaar a memoria virtual. Su funcionamiento consiste en buscar dentro de las páginas cargadas en memoria real aquella que nunca se va a volver a utilizar o la que se va a utilizar más tarde para reemplazarla por la que se requiera cargar en dicho momento. \\
 
+El algoritmo óptimo de paginación es aquel que tiene la capacidad de ver el futuro, es decir, sabe cuales páginas serán utilizadas durante toda la ejecución de la máquina para poder decider a cual mandaar a memoria virtual. Su funcionamiento consiste en buscar dentro de las páginas cargadas en memoria real aquella que nunca se va a volver a utilizar o la que se va a utilizar más tarde para reemplazarla por la que se requiera cargar en dicho momento. 
 
 Para su implementación al leer el archivo de instrucciones a utilizar se llama a la función ``parse\_for\_optimal" (ver figura \ref{fig:parse_optimal})que detecta cada aparición de ``use" o ``new" para registrar las páginas en una lista que contendrá el id de las páginas que son utilizadas en dichas instrucciones. Una vez se lee todo el archivo dicha lista de páginas es pasada al constructor de la MMU concreta que contiene el algoritmo óptimo como implementación de la función ``paging" (ver figura \ref{fig:optimal}).
 
