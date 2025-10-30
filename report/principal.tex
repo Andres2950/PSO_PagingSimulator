@@ -78,7 +78,29 @@ Este sistema consiste en dos partes principales,  el programa que comprime y el 
 Ambos ofrecen tres modos de ejecución: serial, concurrente y paralelo.
 
 \section {Algoritmos de Paginación}
-\subsection{Optimo}
+\subsection{Óptimo}
+El algoritmo óptimo de paginación es aquel que tiene la capacidad de ver el futuro, es decir, sabe cuales páginas serán utilizadas durante toda la ejecución de la máquina para poder decider a cual mandaar a memoria virtual. Su funcionamiento consiste en buscar dentro de las páginas cargadas en memoria real aquella que nunca se va a volver a utilizar o la que se va a utilizar más tarde para reemplazarla por la que se requiera cargar en dicho momento. \\
+
+
+Para su implementación al leer el archivo de instrucciones a utilizar se llama a la función ``parse\_for\_optimal" (ver figura \ref{fig:parse_optimal})que detecta cada aparición de ``use" o ``new" para registrar las páginas en una lista que contendrá el id de las páginas que son utilizadas en dichas instrucciones. Una vez se lee todo el archivo dicha lista de páginas es pasada al constructor de la MMU concreta que contiene el algoritmo óptimo como implementación de la función ``paging" (ver figura \ref{fig:optimal}).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\linewidth]{figuras/parse_optimal.png}
+	\caption{Ilustración de la estructura del programa}
+	\label{fig:parse_optimal}
+\end{figure}
+
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\linewidth]{figuras/optimal.png}
+	\caption{Ilustración de la estructura del programa}
+	\label{fig:optimal}
+\end{figure}
+
+
 \subsection{FIFO y Second Chance}
 \subsection{LRU y MRU}
 \subsection{Random}
@@ -95,22 +117,22 @@ Ambos ofrecen tres modos de ejecución: serial, concurrente y paralelo.
 \begin{enumerate}
   \item Descargue el código fuente del programa. Puede hacerlo de las dos siguientes formas:
     \begin{itemize}
-      \item Dirigirse al repositorio de GitHub mediante su navegador a través del siguiente link: \url{https://github.com/Andres2950/SO\_Huffman.git}
+      \item Dirigirse al repositorio de GitHugitb mediante su navegador a través del siguiente link: \url{https://github.com/Andres2950/PSO\_PagingSimulator.git}
       \item Instalarlo directamente con el comando \\
-    \texttt{wget \url{https://github.com/Andres2950/SO\_Huffman/archive/refs/heads/main.zip}}
+    \texttt{wget \url{https://github.com/Andres2950/PSO\_PagingSimulator/archive/refs/heads/main.zip}}
     \end{itemize}
   \item Descomprima el archivo .zip descargado utilizando el comando \texttt{unzip}.
   \item Al extraer el archivo podrá observar la estructura de organización similar a la figura \ref{fig:estructura}.
 \item Ejecute el archivo \texttt{install.sh}, asegúrese de qué tenga permisos de ejecución, puede utilizar el comando \texttt{chmod +x install.sh} en caso de que no los posea y luego ejecute de la siguiente forma \texttt{./install.sh}. \\
-  Este archivo se hará cargo de la instalación del compilador \textit{gcc} necesario para compilar el código fuente. Además hará la instalación del paquete \textit{make} para la ejecución de archivos makefile, dicho archivo posee las instrucciones de compilación de \textit{gcc} para resolver todas las dependencias que se encuentran en el directorio \textit{src/headers}.  
-\item Note que la instalación de dichos paquetes requiere permisos de usuarios root, al ejecutar el archivo \texttt{install.sh} este se volverá a ejecutar con dichos permisos, para esto solicitará la contraseña del usuario root para tener dichos permisos de ejecución (la contraseña es totalmente invisible para el programa) y así poder descargar los paquetes. Mostrará un mensaje como el de la figura N y esperará la entrada correcta.
+  Este archivo se hará cargo de la instalación del compilador \textit{g++} necesario para compilar el código fuente. Además hará la instalación del paquete \textit{cmake} para la ejecución del archivo ``CMakeLists.txt", dicho archivo posee las instrucciones de compilación de \textit{SDL} para resolver todas las dependencias. 
+\item Note que la instalación de dichos paquetes requiere permisos de usuarios root, al ejecutar el archivo \texttt{install.sh} este se volverá a ejecutar con dichos permisos, para esto solicitará la contraseña del usuario root para tener dichos permisos de ejecución (la contraseña es totalmente invisible para el programa) y así poder descargar los paquetes.
 \item La compilación de los archivos se realiza sin permisos root.
-\item Además, el \texttt{install.sh} hará una copia de los binarios \texttt{huff} y \texttt{dehuff} en el directorio \textit{/usr/bin} de la máquina para poner ser accedidos desde cualquier lugar y utilizado en múltiples directorios sin necesidad de mover los archivos a comprimir o descomprimir a una carpeta en particular.
+%\item Además, el \texttt{install.sh} hará una copia de los binarios \texttt{huff} y \%texttt{dehuff} en el directorio \textit{/usr/bin} de la máquina para poner ser %accedidos desde cualquier lugar y utilizado en múltiples directorios sin necesidad %de mover los archivos a comprimir o descomprimir a una carpeta en particular.
 
 \end{enumerate}
 
 \subsection{Cómo utilizar el programa}
-Una vez terminado el procedimiento de instalar el programa puede utilizar el comando huff para comprimir archivos. Dicho comando posee una serie de parámetros para sus distintos modos de ejecución. A continuación se detallan cada uno.
+Una vez terminado el procedimiento de instalar el programa puede utilizar el comando \texttt{./build/app/app} en la carpeta del proyecto descargada para ejecutar el programa de simulación.
 
 \begin{figure}[h]
     \centering
@@ -134,28 +156,6 @@ dst es el archivo de destino
     \end{itemize}
 \end{itemize}
 
-\subsubsection{Tabla de resultados}
-\begin{center}
-	\begin{tabular}{|c|c|c|c|}		
-\hline
-\multicolumn{4}{|c|}{Tiempo de Ejecución (milisegundos)} \\
-\hline
- Subsistema& \multicolumn{3}{|c|}{Versión} \\
- \hline
- & Serial & Concurrente & Paralelo\\
- \hline
-huff(completo) & 5360& 2226 & 2036\\
- \hline
-huff(lectura) &  36 & 25 & 19\\
- \hline
- huff(compresión) &  5168 & 1957 & 1681\\
- \hline
- dehuff(completo) & 5189 & 2092 & 1855\\
- \hline
- dehuff(descompresión y escritura) & 5146 & 1968 & 1629\\
- \hline
-	\end{tabular}
-\end{center}
 
 \section{Conclusiones}
 Los resultados obtenidos muestran una clara mejora en los progamas de compresión y de descompresión, a partir de esto se puede concluir que el algoritmo de Huffman implementado aprovecha mucho de las ventajas que proveen la concurrencia y paralelización. 

@@ -107,8 +107,7 @@ private:
           pages.push_back(page);
         }
       }
-      while ((c = ops.content[ops.pos++]) != '\n' && c != '\0')
-        ;
+      while ((c = ops.content[ops.pos++]) != '\n' && c != '\0');
     }
     ops.pos = 0;
   }
