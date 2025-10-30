@@ -13,7 +13,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Install g++ if not installed
-install_gplusplus(){
+install_gplusplus() {
   if command -v g++ &>/dev/null; then
     echo "G++ is already installed. Version: $(g++ --version | head -n1)"
   else
@@ -26,7 +26,7 @@ install_gplusplus(){
 }
 
 # Install cmake if not installed
-install_cmake(){
+install_cmake() {
   if command -v cmake &>/dev/null; then
     echo "CMake is already installed. Version: $(cmake --version | head -n1)"
   else
@@ -39,9 +39,9 @@ install_cmake(){
 }
 
 # Install SDL dependencies
-install_sdl_dependencies(){
+install_sdl_dependencies() {
   echo "Installing SDL dependencies..."
-  apt-get install -y libsdl2-dev libglm-dev libglfw3 libglew-dev libx11-dev
+  apt install -y libsdl3
 }
 
 # installation
