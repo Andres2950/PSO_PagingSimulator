@@ -74,12 +74,35 @@
 Introduccion perrona
 
 \chapter{Detalles de la implementación}
+\section {Información relevante a los algorimtmos}
+Antes de iniciar con la explicación de cada algoritmo, es importante dar algunos detalles sobre la implementación del sistema para que se pueda explicar correctamente cada algoritmo. 
+La simulación está implementada en C++, para aprovechar sus capacidades de programación orientada a objetos, se decidió crear las siguientes clases:
+
+\begin{itemize}
+    \item Page: la clase que representa a cada página.
+    \item MMU: la clase manejadora de cada algoritmo y la encargada de ejecutar las instrucciones, es una clase que contiene la función  abstracta ``paging()".
+    \item MMU concretas: hay una por cada algoritmo e implementan su propia versión de ``paging()".
+    \item Parser: contiene dos instancias de MMU (La correspondiente al algoritmo óptimo y la otra que contiene el algoritmo seleccionado por el usuario), esta se encarga de leer el archivo de intrucciones dado como entrada y enviar dichas instrucciones a cada MMU, esta clase las mantiene sincronizadas. 
+\end{itemize}
+
+La memoria es representada como un array de enteros dentro de cada instancia de MMU. 
+Dichos enteros son los ID de la página correspondiente. 
+El disco es representado como un mapa de enteros y páginas, siendo los enteros los ID de la página.
+Todas las páginas estaan guardadas en disco y que la memoria solo tiene los ID, es decir que la información real de la página se encuentra en el disco.
+Esto claramente no es fiel a la vida real, ya que la página existe físicamente en memoria y es físicamente movida de disco a memoria y viceversa.
+Aún así, se decidió implementarlo de esta forma por simplicidad, ya que para uso de la simulación funciona perfectamente.
+De esta forma no hay necesidad de manejar intercambiar los valores entre disco y memoria.
+
+El algoritmo de paginación es ejecutado cuando se solicita cargar una nueva página a memoria, esto implica que cada algoritmo se ejecuta solamente en el uso de las instrucciones ``use" y ``new", ya que para ``delete" y ``kill" solo es necesario eliminar la página, no cargarla.
+En el momento que se solicita cargar una página la MMU:
+\begin{enumerate}
+    \item Se revisa si la página ya está cargada, de ser así, se toma como HIT y no se ejecuta el algoritmo.
+    \item Se revisa si hay espacio en memoria, de ser así, también se toma como HIT y no se ejecuta el algoritmo. 
+    \item Si no ocurre ninguno de los anteriores, se toma como FAULT y se ejecuta el algoritmo.
+\end{enumerate}
+
+
 \section {Algoritmos de Paginación}
-En esta sección se explican los algoritmos de paginación implementados en la simulación. 
-Antes de iniciar con la explicación de cada uno, es importante recalcar que internamente la memoria es representada por un array de enteros. 
-Dichos enteros representan el ID de cada página. 
-Por esta estructura, cada algoritmo hace su funcionamiento normal y retorna el índice de la página que debe ser reemplazada.
-Dentro de la MMU se maneja qué ocurre si la página ya está en memoria o si la memoria tiene espacio, por lo que la única responsabilidad de cada algoritmo es decidir cuál página reemplazar.
 
 \subsection{Óptimo}
 [PONER REFERENCIOA]
@@ -121,7 +144,11 @@ Este comportamiento se puede ver en el código mostrado en la Figura \ref{fig:fi
   \caption{Ilustración de el algoritmo FIFO}
   \label{fig:fifo}
 \end{figure}
+
+\subsubsection{Second Chance}
+
 \subsection{LRU y MRU}
+[PONER REFERENCIASSASSASSASAS]
 Los algoritmos de paginación MRU(Most Recently Used) y LRU(Least Recently Used) funcionan de forma similar.  Ambos utilizan una marca de tiempo que se inserta en las páginas cuando se cargan en RAM y cuando se utilizan.  La página que se escoge para ser reemplazada es la que fue utilizada más recientemente o menos reciente, dependiendo de que algoritmo se utilice.
 
 La implementación del MRU es simple, se trata de un algoritmo que recorre todo el arreglo de memoria para obtener que tan recientemente se usó cada página, y a través de una comparación encuentra la más utilizada recientemente (ver figura \ref{fig:mru}). La implementación del LRU es exactamente igual pero la comparación cambia para encontrar la página menos utilizada recientemente (ver figura \ref{fig:lru}).
@@ -183,19 +210,7 @@ El algoritmo de paginación Random o Aleatorio reemplaza una página en memoria 
 \section{Cómo utilizar el programa}
 Una vez terminado el procedimiento de instalar el programa puede utilizar el comando \texttt{./build/app/app} en la carpeta del proyecto descargada para ejecutar el programa de simulación.
 
-\section{Conclusiones}
-Los resultados obtenidos muestran una clara mejora en los progamas de compresión y de descompresión, a partir de esto se puede concluir que el algoritmo de Huffman implementado aprovecha mucho de las ventajas que proveen la concurrencia y paralelización. 
-Esto se debe a que ambos programas manejan distintos archivos independientes entre ellos.
-Esta independencia permite que los archivos puedan ser manejados por separado, sea este procesamiento por medio de hilos o de procesos hijo.
-Por lo que se puede decir que cuando hay muchas subtareas independientes por hacer en un programa, es bueno considerar alguno de los dos. 
-
-A pesar de lo dicho anteriormente, ambos en ambos modos de ejecución, ninguno se acercó al límite teórico que se propuso para cada uno.
-A partir de esto se puede concluir que el overhead que produce el uso de hilos o de subprocesos no es trivial.
-Al usar cualquiera de estos dos siempre es importante tomar en cuenta el overhead que estos causan para determinar si realente vale la pena usar alguna de las técnicas descritas anterormente.
-
-Comparando los resultados que dieron las pruebas de concurrencia y las pruebas de paralelización, se puede concluir que la paralelización es ligeramente mejor que la concurrencia.
-Esto se puede deber a la naturaleza de la paralelización, gracias a que cada proceso puede correr en un procesador distinto. 
-También se puede deber a la necesidad de la concurrencia de cambiar de contexto frecuentemente, lo que también toma recursos de la computadora.
+\chapter{Conclusiones}
 
 
 % Estilo de bibliografía APA
