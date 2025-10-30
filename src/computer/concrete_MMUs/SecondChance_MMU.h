@@ -27,7 +27,6 @@ public:
         for (int i = 0; i < MEMORY_SIZE; ++i)
           vec.push_back(memory[i]);
       }
-
       int time_loaded = -1;
       Page *page;
       // se encuentra la mas vieja de los del vector
@@ -46,7 +45,6 @@ public:
         page->mark = 0; // se expira
         continue;
       }
-
       // si no hay marca encontramos el indice de memory y lo devolvemos
       int victim = vec[to_remove_index];
       for (int i = 0; i < MEMORY_SIZE; ++i) {

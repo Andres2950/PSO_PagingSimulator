@@ -105,8 +105,8 @@ En el momento que se solicita cargar una página la MMU:
 \section {Algoritmos de Paginación}
 
 \subsection{Óptimo}
-[PONER REFERENCIOA]
-El algoritmo óptimo de paginación es aquel que tiene la capacidad de ver el futuro, es decir, sabe cuales páginas serán utilizadas durante toda la ejecución de la máquina para poder decider a cual mandaar a memoria virtual. Su funcionamiento consiste en buscar dentro de las páginas cargadas en memoria real aquella que nunca se va a volver a utilizar o la que se va a utilizar más tarde para reemplazarla por la que se requiera cargar en dicho momento. 
+El algoritmo óptimo de paginación es aquel que tiene la capacidad de ver el futuro, es decir, sabe cuales páginas serán utilizadas durante toda la ejecución de la máquina para poder decider a cual mandar a memoria virtual \cite{ref0}. 
+Su funcionamiento consiste en buscar dentro de las páginas cargadas en memoria real aquella que nunca se va a volver a utilizar o la que se va a utilizar más tarde para reemplazarla por la que se requiera cargar en dicho momento. 
 
 Para su implementación al leer el archivo de instrucciones a utilizar se llama a la función ``parse\_for\_optimal" (ver figura \ref{fig:parse_optimal})que detecta cada aparición de ``use" o ``new" para registrar las páginas en una lista que contendrá el id de las páginas que son utilizadas en dichas instrucciones. Una vez se lee todo el archivo dicha lista de páginas es pasada al constructor de la MMU concreta que contiene el algoritmo óptimo como implementación de la función ``paging" (ver figura \ref{fig:optimal}).
 
@@ -127,10 +127,8 @@ Para su implementación al leer el archivo de instrucciones a utilizar se llama 
 
 \subsection{FIFO y Second Chance}
 \subsubsection{FIFO}
-[PONER REFERENCIOA]
 El algoritmo FIFO es (junto a Random) el algoritmo más simple impementado para manejar paginación en el programa.
-Este algoritmo por sus siglas significa "First in - First Out``, como su nombre lo indica, este consiste en sacar la página que lleva más tiempo en memoria para dar espacio a las demás. \\
-
+Este algoritmo por sus siglas significa "First in - First Out``, como su nombre lo indica, este consiste en sacar la página que lleva más tiempo en memoria para dar espacio a las demás \cite{ref0}. \\
 
 Para implementar esto, se decidió utilizar dos variables "to\_remove\_index``(el índice de la página que se va a remover) y "time\_loaded``(el tiempo que la página lleva cargada). 
 Por defecto ambas se setean en -1, este valor es reescrito en el momento que se ejecuta la lógica del algoritmo.
@@ -146,10 +144,27 @@ Este comportamiento se puede ver en el código mostrado en la Figura \ref{fig:fi
 \end{figure}
 
 \subsubsection{Second Chance}
+El algoritmo Second Chance es una pequeña mejora del algoritmo FIFO, este busca tomar en cuenta información de los usos pasados \cite{ref1}. 
+Este algoritmo utiliza un bit para marcar las páginas cada vez que ocurre un HIT en esta. 
+A la hora de reemplazar una página, esta trata de seleccionar la que lleva más tiempo dentro de memorio, pero si está marcada con el bit encendido, descarta esta página, expira el bit agregando un 0, y luego elige la siguiente que lleva más tiempo, repitiendo el proceso si este también tiene el bit encendido. \\
+
+Para implementar este algoritmo se copia la memoria en un vector, luego se busca la página más reciente dentro del vector. 
+Si la página más reciente no tiene el bit encendido, simplemente se retorna su índice en memoria. 
+Si dicha página está marcada, se expira la marca y se saca la página del vector para no seleccionarla.
+Luego se repite el proceso para seleccionar otra página. 
+Si se que todas las páginas estaban marcadas, se busca la más reciente dentro de memoria.
+El código que implementa esta lógica se puede ver en la Figura \cite{fig:second_chance}.
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figuras/second_chance.png}
+  \caption{Ilustración de el algoritmo Second Chance}
+  \label{fig:second_chance}
+\end{figure}
 
 \subsection{LRU y MRU}
-[PONER REFERENCIASSASSASSASAS]
-Los algoritmos de paginación MRU(Most Recently Used) y LRU(Least Recently Used) funcionan de forma similar.  Ambos utilizan una marca de tiempo que se inserta en las páginas cuando se cargan en RAM y cuando se utilizan.  La página que se escoge para ser reemplazada es la que fue utilizada más recientemente o menos reciente, dependiendo de que algoritmo se utilice.
+Los algoritmos de paginación MRU(Most Recently Used) y LRU(Least Recently Used) funcionan de forma similar.  Ambos utilizan una marca de tiempo que se inserta en las páginas cuando se cargan en RAM y cuando se utilizan.  La página que se escoge para ser reemplazada es la que fue utilizada más recientemente o menos reciente, dependiendo de que algoritmo se utilice \cite{ref0}.
 
 La implementación del MRU es simple, se trata de un algoritmo que recorre todo el arreglo de memoria para obtener que tan recientemente se usó cada página, y a través de una comparación encuentra la más utilizada recientemente (ver figura \ref{fig:mru}). La implementación del LRU es exactamente igual pero la comparación cambia para encontrar la página menos utilizada recientemente (ver figura \ref{fig:lru}).
 
