@@ -71,14 +71,18 @@
 \tableofcontents
 
 \chapter{Introducción}\label{intro}
+Introduccion perrona
 
-Para este proyecto se implementó un compresor (y decompresor) de archivos de texto utilizando el algoritmo de Huffman.
-Este toma un directorio con archivos de texto y los comprime en un solo archivo en binario, al descomprimir, se restaura el directorio y los archivos dentro de este.
-Este sistema consiste en dos partes principales,  el programa que comprime y el programa que descomprime.
-Ambos ofrecen tres modos de ejecución: serial, concurrente y paralelo.
-
+\chapter{Detalles de la implementación}
 \section {Algoritmos de Paginación}
+En esta sección se explican los algoritmos de paginación implementados en la simulación. 
+Antes de iniciar con la explicación de cada uno, es importante recalcar que internamente la memoria es representada por un array de enteros. 
+Dichos enteros representan el ID de cada página. 
+Por esta estructura, cada algoritmo hace su funcionamiento normal y retorna el índice de la página que debe ser reemplazada.
+Dentro de la MMU se maneja qué ocurre si la página ya está en memoria o si la memoria tiene espacio, por lo que la única responsabilidad de cada algoritmo es decidir cuál página reemplazar.
+
 \subsection{Óptimo}
+[PONER REFERENCIOA]
 El algoritmo óptimo de paginación es aquel que tiene la capacidad de ver el futuro, es decir, sabe cuales páginas serán utilizadas durante toda la ejecución de la máquina para poder decider a cual mandaar a memoria virtual. Su funcionamiento consiste en buscar dentro de las páginas cargadas en memoria real aquella que nunca se va a volver a utilizar o la que se va a utilizar más tarde para reemplazarla por la que se requiera cargar en dicho momento. \\
 
 
@@ -87,33 +91,53 @@ Para su implementación al leer el archivo de instrucciones a utilizar se llama 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\linewidth]{figuras/parse_optimal.png}
-	\caption{Ilustración de la estructura del programa}
+    \caption{Ilustración de la función que obtiene todas las páginas que se usarán}
 	\label{fig:parse_optimal}
 \end{figure}
-
-
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\linewidth]{figuras/optimal.png}
-	\caption{Ilustración de la estructura del programa}
+	\caption{Ilustración de el algoritmo óptimo}
 	\label{fig:optimal}
 \end{figure}
 
 
 \subsection{FIFO y Second Chance}
-\subsection{LRU y MRU}
-\subsection{Random}
+\subsubsection{FIFO}
+[PONER REFERENCIOA]
+El algoritmo FIFO es (junto a Random) el algoritmo más simple impementado para manejar paginación en el programa.
+Este algoritmo por sus siglas significa "First in - First Out``, como su nombre lo indica, este consiste en sacar la página que lleva más tiempo en memoria para dar espacio a las demás. \\
+
+
+Para implementar esto, se decidió utilizar dos variables "to\_remove\_index``(el índice de la página que se va a remover) y "time\_loaded``(el tiempo que la página lleva cargada). 
+Por defecto ambas se setean en -1, este valor es reescrito en el momento que se ejecuta la lógica del algoritmo.
+Dentro de un for loop se revisan todas las páginas dentro de memoria, si la cantidad de tiempo que esa página es mayor a la cantidad guardada en "time\_loaded`` se actualiza el índice y dicha variable.
+De esta forma, una vez termina el for loop, se tiene el índice de la página que lleva más tiempo cargada, una vez hecho esto simplemente se retorna este índice.
+Este comportamiento se puede ver en el código mostrado en la Figura \ref{fig:fifo}.
 
 \begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\linewidth]{figuras/estructura.png}
-    \caption{Ilustración de la estructura del programa}
-    \label{fig:estructura}
+	\centering
+	\includegraphics[width=0.8\linewidth]{figuras/fifo.png}
+	\caption{Ilustración de el algoritmo FIFO}
+	\label{fig:fifo}
 \end{figure}
 
-\section{Instrucciones}
-\subsubsection{Cómo instalar el programa}
+\subsubsection{Second Chance}
+[PONER REFERENCIOA]
+
+\subsection{LRU y MRU}
+\subsubsection{LRU}
+[PONER REFERENCIOA]
+\subsubsection{MRU}
+[PONER REFERENCIOA]
+
+\subsection{Random}
+[PONER REFERENCIOA]
+
+
+\chapter{Instrucciones para el uso del programa}
+\section{Cómo instalar el programa}
 \begin{enumerate}
   \item Descargue el código fuente del programa. Puede hacerlo de las dos siguientes formas:
     \begin{itemize}
@@ -131,45 +155,13 @@ Para su implementación al leer el archivo de instrucciones a utilizar se llama 
 
 \end{enumerate}
 
-\subsection{Cómo utilizar el programa}
+
+\section{Cómo utilizar el programa}
 Una vez terminado el procedimiento de instalar el programa puede utilizar el comando \texttt{./build/app/app} en la carpeta del proyecto descargada para ejecutar el programa de simulación.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\linewidth]{figuras/huff_ayuda.png}
-    \caption{Ilustración del menú de ayuda del comando huff -h}
-    \label{fig:huffayuda}
-\end{figure}
-
-\begin{itemize}
-  \item \textbf{huff -h}\\ \hspace{2cm}
-    Provee una guía de los parámetros requeridos por el programa y su orden de entrada (Véase figura \ref{fig:huffayuda}).
-  \item \textbf{huff [Opción] src dst} o \textbf{dehuff [Opción] src dst}\\
-src es el directorio objetivo a ser comprimido/descomprimido\\
-dst es el archivo de destino
-  \item \textbf{Opciones} 
-    \begin{itemize}
-      \item \textbf{-s} modo de ejecución serial.
-      \item \textbf{-p} modo de ejecución paralela usando fork.
-      \item \textbf{-c} modo de ejecución concurrente usando pthread
-      \item \textbf{-b} modo de Benchmark para comparar los tiempos de ejecuión entre los anteriores modos.
-    \end{itemize}
-\end{itemize}
 
 
-\section{Conclusiones}
-Los resultados obtenidos muestran una clara mejora en los progamas de compresión y de descompresión, a partir de esto se puede concluir que el algoritmo de Huffman implementado aprovecha mucho de las ventajas que proveen la concurrencia y paralelización. 
-Esto se debe a que ambos programas manejan distintos archivos independientes entre ellos.
-Esta independencia permite que los archivos puedan ser manejados por separado, sea este procesamiento por medio de hilos o de procesos hijo.
-Por lo que se puede decir que cuando hay muchas subtareas independientes por hacer en un programa, es bueno considerar alguno de los dos. 
-
-A pesar de lo dicho anteriormente, ambos en ambos modos de ejecución, ninguno se acercó al límite teórico que se propuso para cada uno.
-A partir de esto se puede concluir que el overhead que produce el uso de hilos o de subprocesos no es trivial.
-Al usar cualquiera de estos dos siempre es importante tomar en cuenta el overhead que estos causan para determinar si realente vale la pena usar alguna de las técnicas descritas anterormente.
-
-Comparando los resultados que dieron las pruebas de concurrencia y las pruebas de paralelización, se puede concluir que la paralelización es ligeramente mejor que la concurrencia.
-Esto se puede deber a la naturaleza de la paralelización, gracias a que cada proceso puede correr en un procesador distinto. 
-También se puede deber a la necesidad de la concurrencia de cambiar de contexto frecuentemente, lo que también toma recursos de la computadora.
+\chapter{Conclusiones}
 
 
 % Estilo de bibliografía APA
