@@ -3,3 +3,11 @@ build/
 
 .cache/
 
+report/*.out
+report/*.bbl
+report/*.toc
+report/*.synctex.gz
+report/*.aux
+report/*.blg
+report/*.log
+
