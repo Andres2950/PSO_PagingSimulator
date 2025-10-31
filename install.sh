@@ -41,7 +41,7 @@ install_cmake() {
 # Install SDL dependencies
 install_sdl_dependencies() {
   echo "Installing SDL dependencies..."
-  apt install -y libsdl3
+  apt install -y libsdl3-dev
 }
 
 # installation
