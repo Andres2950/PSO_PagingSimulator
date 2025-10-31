@@ -15,7 +15,7 @@ GeeksForGeeks.%
 \end{APACrefauthors}%
 \unskip\
 \newblock
-\APACrefYearMonthDay{2025{\protect \BCnt {1}}}{September}{10}.
+\APACrefYearMonthDay{2025{\protect \BCnt {1}}}{Septiembre}{10}.
 \newblock
 \APACrefbtitle {Page Replacement Algorithms in Operating Systems.} {Page
   replacement algorithms in operating systems.}
@@ -42,7 +42,7 @@ GeeksForGeeks.%
 \end{APACrefauthors}%
 \unskip\
 \newblock
-\APACrefYearMonthDay{2025{\protect \BCnt {2}}}{September}{13}.
+\APACrefYearMonthDay{2025{\protect \BCnt {2}}}{Septiembre}{13}.
 \newblock
 \APACrefbtitle {Second Chance (or Clock) Page Replacement Policy.} {Second
   chance (or clock) page replacement policy.}
@@ -51,6 +51,32 @@ GeeksForGeeks.%
 \newblock
 \begin{APACrefURL}
   \url{https://www.geeksforgeeks.org/operating-systems/second-chance-or-clock-page-replacement-policy/}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Mansi%
+}{%
+Mansi%
+}{%
+{\protect \APACyear {2024}}%
+}]{%
+ref2}
+\APACinsertmetastar {%
+ref2}%
+\begin{APACrefauthors}%
+Mansi, B.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2024}{Abril}{9}.
+\newblock
+\APACrefbtitle {Page Replacement in OS.} {Page replacement in os.}
+\newblock
+\APAChowpublished {Página web}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.scaler.com/topics/operating-system/page-replacement-algorithm/}
   \end{APACrefURL}
 \PrintBackRefs{\CurrentBib}
 
