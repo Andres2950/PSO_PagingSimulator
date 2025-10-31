@@ -1,6 +1,33 @@
 \begin{thebibliography}{}
 
 \bibitem [\protect \citeauthoryear {%
+Eduardo%
+}{%
+Eduardo%
+}{%
+{\protect \APACyear {{\protect \bibnodate {}}}}%
+}]{%
+ref3}
+\APACinsertmetastar {%
+ref3}%
+\begin{APACrefauthors}%
+Eduardo, B.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{{\protect \bibnodate {}}}{}{}.
+\newblock
+\APACrefbtitle {Gestión de Memoria en Computadoras.} {Gestión de memoria en
+  computadoras.}
+\newblock
+\APAChowpublished {Página web}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.scribd.com/document/610256331/Gestion-de-memoria-S-O}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 GeeksForGeeks%
 }{%
 GeeksForGeeks%

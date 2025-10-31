@@ -71,11 +71,18 @@
 \tableofcontents
 
 \chapter{Introducción}\label{intro}
-En un sistema operativo, la paginación ocurre cuando una página en memoria física debe ser remplazada por otra en memoria virtual (páginas guardadas en el disco duro) \cite{ref2}. 
-Esto ocurre ya que a veces, con la gran cantidad de procesos abiertos, a la máquina no le alcanza toda la memoria para el espacio reservado de cada proceso. 
-Es por esto que se guardan páginas en el disco duro, haciendo posible el uso de más memoria reservada.
-Pero esto tiene un problema, las páginas guardadas en el disco duro no pueden ser usadas directamente, estas solo pueden usarse desde memoria, por lo que es necesario reemplazar una página en memoria por la que se va a usar.
+La gestión de memoria en una computadora es el proceso de asignar memoria a los programas que la solicitan, esta es una tarea de gran importancia para el funcionamiento correcto de la computadora y de cada proceso\cite{ref3}.
+En las computadoras modernas, varios procesos pueden correr concurrentemente, usualmente cada proceso tiene su propia memoria que necesita para su funcionamiento, es por esto que es necesario gestionar la memoria, para que todos los procesos tengan la memoria que necesita. La memoria en una computadora está dividida en unidades llamadas páginas, a los procesos se les suele asignar varias de estas.
+En ocasiones, la cantidad de procesos abiertos pueden ser numerosos, lo que puede llevar a que no haya suficiente memoria para todos estos procesos. 
+Es por esto que existe la memoria secundaria, esta no suele ser tan rápida pero tiene mucho espacio, lo que le da un buen lugar como apoyo para la memoria principal.
+El papel de la memoria secundaria usualmente lo tiene  el disco duro.
+
+La memoria secundaria es muy útil, pero tiene un problema, las páginas guardadas en el disco duro no pueden ser usadas directamente debido a la lentitud de acceso. 
+Es preferible que las páginas solo se usen en memoria, por lo que es necesario reemplazar una página en memoria por la que se va a usar que está actualmente en disco duro.
+En un sistema operativo, la paginación ocurre cuando una página en memoria principal debe ser remplazada por otra en memoria secundaria (páginas guardadas en el disco duro) \cite{ref2}. 
+Gracias a la paginación es posible tener una cantidad muy grande de procesos que se ejecutan al mismo tiempo en la computadora.
 Es por esto que existen los algoritmos de paginación, ya que la operación de reemplazar las páginas es bastante cara y por lo tanto se quiere hacer esto lo menos posible.
+Los algoritmos de paginación son importantes, ya que dependiendo de la calidad del algoritmo que se use se va a necesitar reemplazar más o menos páginas.
 En este proyecto se solicitó crear una simulación para comparar algoritmos de paginación, esto para aprender sobre las características de cada uno y para poder apreciar la diferencia que tiene un buen algoritmo de paginación en contra de uno malo. \\
 
 En la  simulación hay dos MMU, las cuales toman un archivo que contiene intrucciones que son parte de un proceso, una MMU ejecuta el algoritmo óptimo de paginación cuando es necesario y la otra ejecuta otro algoritmo seleccionado por el usuario para poder comparar dicho algoritmo con la situación ideal.
