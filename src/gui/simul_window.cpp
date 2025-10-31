@@ -311,6 +311,7 @@ void showSimulWindow(bool *open, int algorithm, int seed, const char *filepath,
           ImGui::TableNextColumn();
           ImGui::Text("%d", it->second.pid);
           ImGui::TableNextColumn();
+          loaded_pages = it->second.is_loaded ? loaded_pages + 1 : loaded_pages;
           ImGui::Text("%s", loaded_str);
           ImGui::TableNextColumn();
           ImGui::Text("%d", it->second.l_addr);
