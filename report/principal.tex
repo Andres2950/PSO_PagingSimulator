@@ -236,6 +236,11 @@ Una vez terminado el procedimiento de instalar el programa puede utilizar el com
 
 \chapter{Conclusiones}
 
+El thrashing llega al 90\% rápidamente con tan solo 500 instrucciones y sin importar que algoritmo de paginación se utilice.  Con 5000 instrucciones el thrashing alcanza un 97\% con el algoritmo óptimo y un 98\% y 99\% con los demás algoritmos. En base a esto podemos concluir que el thrashing aumenta en relación a la cantidad de operaciones ejecutadas sin importar el algoritmo que se utilice.
+
+El algoritmo óptimo puede llegar a ser peor que otros algoritmos. En las pruebas tuvo un peor desempeño que FIFO y el algoritmo aleatorio cuando se utilizaron listas de instrucciones con una densidad de deletes muy alta. Se concluye que esto sucede porque el algoritmo óptimo no toma en cuenta el uso de deletes en el programa y tampoco tiene una estrategia para beneficiarse de los posibles huecos que estos generen.
+
+El algoritmo MRU fue el que peor desempeño tuvo, especialmente con listas de instrucciones grandes (1000-5000 instrucciones), siendo incluso peor que el algoritmo aleatorio. En base a esta información podemos concluir que los algoritmos que no cumplen con el principio de localidad temporal tienen un mal desempeño cuando ejecutan listas de instrucciones aleatorias.
 
 % Estilo de bibliografía APA
 % Si quiere usar el estilo IEEE comente esta línea
