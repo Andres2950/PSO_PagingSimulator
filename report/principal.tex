@@ -217,7 +217,7 @@ El algoritmo de paginación Random o Aleatorio reemplaza una página en memoria 
 \begin{enumerate}
   \item Descargue el código fuente del programa. Puede hacerlo de las dos siguientes formas:
     \begin{itemize}
-      \item Dirigirse al repositorio de GitHugitb mediante su navegador a través del siguiente link: \url{https://github.com/Andres2950/PSO\_PagingSimulator.git}
+      \item Dirigirse al repositorio de GitHub mediante su navegador a través del siguiente link: \url{https://github.com/Andres2950/PSO\_PagingSimulator.git}
       \item Instalarlo directamente con el comando \\
     \texttt{wget \url{https://github.com/Andres2950/PSO\_PagingSimulator/archive/refs/heads/main.zip}}
     \end{itemize}
@@ -238,11 +238,50 @@ El algoritmo de paginación Random o Aleatorio reemplaza una página en memoria 
 	\label{fig:estructura}
 \end{figure}
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.99\linewidth]{figuras/guide/setup_window.png}
+	\caption{Imagen de la ventana principal del programa}
+	\label{fig:setup}
+\end{figure}
+
 \section{Cómo utilizar el programa}
 Una vez terminado el procedimiento de instalar el programa puede utilizar el comando \texttt{./build/app/app} en la carpeta del proyecto descargada para ejecutar el programa de simulación.
 
+\subsection{Ventana principal}
+En la figura  \ref{fig:setup} se pueden observar las funciones iniciales del programa. Se detalla a continuación cada punto.
+
+\begin{enumerate}
+	\item Semilla para aleatorización del algortimo random y generación del archivo para las instrucciones en caso de que se quiera crear uno nuevo. Esta semilla se puede ingresar manualmente para replicar una simulación anterior o mediante el botón \textbf{Aleatorio} se genera una semilla semi-aleatoria.
+	\item Algoritmo para ser simulado y comparado con el óptimo.
+	\item Generación del archivo de instruciones. Presenta una ventana para el ingreso de la cantidad de procesos y operaciones a realizar (note que el minímo de operaciones son la cantidad de procesos puesto que se le deben hacer kill).
+	\item Carga un archivo de instrucciones guardado anteriormente.
+	\item Abre la ventana de simulación con los algoritmos y instrucciones cargadas.
+\end{enumerate}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.99\linewidth]{figuras/guide/simul_window.png}
+	\caption{Imagen de la ventana de simulación del programa}
+	\label{fig:simul}
+\end{figure}
+
+\subsection{Ventana de simulación}
+En la figura  \ref{fig:simul} se pueden observar las funciones de la ventana de simulación. Se detalla a continuación cada punto.
+
+\begin{enumerate}
+	\item Inicia la simulación de los algoritmos de paginación.
+	\item Volver a la pantalla principal para modificar los parámetros.
+	\item Barra para ajustar el delay de las operaciones, útil para seguir la ejecución del programa y analizar su comportamiento.
+\end{enumerate}
+
 \chapter{Conclusiones}
 
+El thrashing llega al 90\% rápidamente con tan solo 500 instrucciones y sin importar que algoritmo de paginación se utilice.  Con 5000 instrucciones el thrashing alcanza un 97\% con el algoritmo óptimo y un 98\% y 99\% con los demás algoritmos. En base a esto podemos concluir que el thrashing aumenta en relación a la cantidad de operaciones ejecutadas sin importar el algoritmo que se utilice.
+
+El algoritmo óptimo puede llegar a ser peor que otros algoritmos. En las pruebas tuvo un peor desempeño que FIFO y el algoritmo aleatorio cuando se utilizaron listas de instrucciones con una densidad de deletes muy alta. Se concluye que esto sucede porque el algoritmo óptimo no toma en cuenta el uso de deletes en el programa y tampoco tiene una estrategia para beneficiarse de los posibles huecos que estos generen.
+
+El algoritmo MRU fue el que peor desempeño tuvo, especialmente con listas de instrucciones grandes (1000-5000 instrucciones), siendo incluso peor que el algoritmo aleatorio. En base a esta información podemos concluir que los algoritmos que no cumplen con el principio de localidad temporal tienen un mal desempeño cuando ejecutan listas de instrucciones aleatorias.
 
 % Estilo de bibliografía APA
 % Si quiere usar el estilo IEEE comente esta línea
