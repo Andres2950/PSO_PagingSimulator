@@ -1,3 +1,57 @@
 \begin{thebibliography}{}
 
+\bibitem [\protect \citeauthoryear {%
+GeeksForGeeks%
+}{%
+GeeksForGeeks%
+}{%
+{\protect \APACyear {2025}}%
+{\protect \APACexlab {{\protect \BCnt {1}}}}}]{%
+ref0}
+\APACinsertmetastar {%
+ref0}%
+\begin{APACrefauthors}%
+GeeksForGeeks.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2025{\protect \BCnt {1}}}{September}{10}.
+\newblock
+\APACrefbtitle {Page Replacement Algorithms in Operating Systems.} {Page
+  replacement algorithms in operating systems.}
+\newblock
+\APAChowpublished {Página web}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.geeksforgeeks.org/operating-systems/page-replacement-algorithms-in-operating-systems/}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+GeeksForGeeks%
+}{%
+GeeksForGeeks%
+}{%
+{\protect \APACyear {2025}}%
+{\protect \APACexlab {{\protect \BCnt {2}}}}}]{%
+ref1}
+\APACinsertmetastar {%
+ref1}%
+\begin{APACrefauthors}%
+GeeksForGeeks.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2025{\protect \BCnt {2}}}{September}{13}.
+\newblock
+\APACrefbtitle {Second Chance (or Clock) Page Replacement Policy.} {Second
+  chance (or clock) page replacement policy.}
+\newblock
+\APAChowpublished {Página web}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.geeksforgeeks.org/operating-systems/second-chance-or-clock-page-replacement-policy/}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
 \end{thebibliography}

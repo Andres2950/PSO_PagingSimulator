@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.9.23)  30 OCT 2025 16:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.9.23)  30 OCT 2025 18:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -333,7 +333,7 @@ e
 ))
 \c@lstlisting=\count304
  (./portada.tex
-<figuras/logo_tec.jpg, id=52, 1445.4pt x 336.25626pt>
+<figuras/logo_tec.jpg, id=56, 1445.4pt x 336.25626pt>
 File: figuras/logo_tec.jpg Graphic file (type jpg)
 <use figuras/logo_tec.jpg>
 Package pdftex.def Info: figuras/logo_tec.jpg  used on input line 5.
@@ -372,112 +372,171 @@ Cap\'{\i }tulo 1.
 
 ]
 Cap\'{\i }tulo 2.
-<figuras/parse_optimal.png, id=85, 572.89032pt x 561.59813pt>
-File: figuras/parse_optimal.png Graphic file (type png)
-<use figuras/parse_optimal.png>
-Package pdftex.def Info: figuras/parse_optimal.png  used on input line 92.
-(pdftex.def)             Requested size: 276.00105pt x 270.56664pt.
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-<figuras/optimal.png, id=86, 572.1375pt x 445.665pt>
-File: figuras/optimal.png Graphic file (type png)
-<use figuras/optimal.png>
-Package pdftex.def Info: figuras/optimal.png  used on input line 99.
-(pdftex.def)             Requested size: 276.00105pt x 214.99121pt.
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 107--110
-
- []
-
 
 
 [3
 
 ]
-<figuras/fifo.png, id=95, 280.04625pt x 163.3603pt>
+<figuras/parse_optimal.png, id=96, 572.89032pt x 561.59813pt>
+File: figuras/parse_optimal.png Graphic file (type png)
+<use figuras/parse_optimal.png>
+Package pdftex.def Info: figuras/parse_optimal.png  used on input line 115.
+(pdftex.def)             Requested size: 276.00105pt x 270.56664pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<figuras/optimal.png, id=97, 572.1375pt x 445.665pt>
+File: figuras/optimal.png Graphic file (type png)
+<use figuras/optimal.png>
+Package pdftex.def Info: figuras/optimal.png  used on input line 122.
+(pdftex.def)             Requested size: 276.00105pt x 214.99121pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 130--132
+
+ []
+
+
+
+[4]
+<figuras/fifo.png, id=112, 280.04625pt x 163.3603pt>
 File: figuras/fifo.png Graphic file (type png)
 <use figuras/fifo.png>
-Package pdftex.def Info: figuras/fifo.png  used on input line 120.
+Package pdftex.def Info: figuras/fifo.png  used on input line 141.
 (pdftex.def)             Requested size: 276.00105pt x 161.0068pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
+Underfull \hbox (badness 10000) in paragraph at lines 147--150
 
-[4 <./figuras/parse_optimal.png (PNG copy)>]
-<figuras/mru.png, id=105, 345.54094pt x 188.20313pt>
-File: figuras/mru.png Graphic file (type png)
-<use figuras/mru.png>
-Package pdftex.def Info: figuras/mru.png  used on input line 131.
-(pdftex.def)             Requested size: 276.00105pt x 150.33008pt.
+ []
+
+
+
+[5 <./figuras/parse_optimal.png (PNG copy)>]
+<figuras/second_chance.png, id=124, 492.33937pt x 536.0025pt>
+File: figuras/second_chance.png Graphic file (type png)
+<use figuras/second_chance.png>
+Package pdftex.def Info: figuras/second_chance.png  used on input line 161.
+(pdftex.def)             Requested size: 276.00105pt x 300.4865pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<figuras/lru.png, id=106, 351.56343pt x 185.94469pt>
+<figuras/mru.png, id=129, 345.54094pt x 188.20313pt>
+File: figuras/mru.png Graphic file (type png)
+<use figuras/mru.png>
+Package pdftex.def Info: figuras/mru.png  used on input line 173.
+(pdftex.def)             Requested size: 276.00105pt x 150.33008pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<figuras/lru.png, id=130, 351.56343pt x 185.94469pt>
 File: figuras/lru.png Graphic file (type png)
 <use figuras/lru.png>
-Package pdftex.def Info: figuras/lru.png  used on input line 138.
+Package pdftex.def Info: figuras/lru.png  used on input line 180.
 (pdftex.def)             Requested size: 276.00105pt x 145.97823pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<figuras/random.png, id=108, 382.42876pt x 24.09pt>
+
+
+[6 <./figuras/optimal.png (PNG copy)>]
+<figuras/random.png, id=140, 382.42876pt x 24.09pt>
 File: figuras/random.png Graphic file (type png)
 <use figuras/random.png>
-Package pdftex.def Info: figuras/random.png  used on input line 150.
+Package pdftex.def Info: figuras/random.png  used on input line 192.
 (pdftex.def)             Requested size: 276.00105pt x 17.38667pt.
+
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
-[5 <./figuras/optimal.png (PNG copy)>]
+[7 <./figuras/fifo.png>]
 
-[6 <./figuras/fifo.png> <./figuras/mru.png> <./figuras/lru.png>]
+[8 <./figuras/second_chance.png> <./figuras/mru.png>]
 
-[7 <./figuras/random.png>]
+[9 <./figuras/lru.png> <./figuras/random.png>]
 Cap\'{\i }tulo 3.
 
-Overfull \hbox (34.50014pt too wide) in paragraph at lines 162--163
+Overfull \hbox (34.50014pt too wide) in paragraph at lines 204--205
 \OT1/cmr/m/n/10 del si-guien-te link: []$\OT1/cmtt/m/n/10 https :// github [] .
 com / Andres2950 / PSO [] []PagingSimulator []
  []
 
 
-Overfull \hbox (31.27715pt too wide) in paragraph at lines 163--165
+Overfull \hbox (31.27715pt too wide) in paragraph at lines 205--207
 \OT1/cmtt/m/n/10 wget []$https :// github [] .com / Andres2950 / PSO [] []Pagin
 gSimulator / archive /
  []
 
-<figuras/estructura.png, id=132, 239.39438pt x 435.12563pt>
+<figuras/estructura.png, id=163, 239.39438pt x 435.12563pt>
 File: figuras/estructura.png Graphic file (type png)
 <use figuras/estructura.png>
-Package pdftex.def Info: figuras/estructura.png  used on input line 178.
+Package pdftex.def Info: figuras/estructura.png  used on input line 220.
 (pdftex.def)             Requested size: 276.00105pt x 501.69855pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
-[8
+[10
 
-] (./principal.bbl
+]
 
-[9]
+[11]
 
-[10 <./figuras/estructura.png>]
+[12 <./figuras/estructura.png>]
+Cap\'{\i }tulo 4.
+(./principal.bbl
 
-LaTeX Warning: Empty `thebibliography' environment on input line 3.
+[13
+
+]
+Underfull \hbox (badness 3954) in paragraph at lines 14--29
+[]\OT1/cmr/m/n/10 GeeksForGeeks.  (2025a, 10 de Sep-tem-ber).  \OT1/cmr/m/it/10
+ Pa-ge re-pla-ce-ment al-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 14--29
+\OT1/cmr/m/it/10 go-rithms in ope-ra-ting sys-tems.  \OT1/cmr/m/n/10 P^^Sagi-na
+ web.  Des-car-ga-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 14--29
+\OT1/cmr/m/n/10 do de []$\OT1/cmtt/m/n/10 https :// www [] .geeksforgeeks [] .o
+rg / operating [] -systems /
+ []
+
+
+Underfull \hbox (badness 6510) in paragraph at lines 41--56
+[]\OT1/cmr/m/n/10 GeeksForGeeks.  (2025b, 13 de Sep-tem-ber).  \OT1/cmr/m/it/10
+ Se-cond chan-ce (or
+ []
+
+
+Underfull \hbox (badness 3895) in paragraph at lines 41--56
+\OT1/cmr/m/it/10 clock) pa-ge re-pla-ce-ment po-licy.  \OT1/cmr/m/n/10 P^^Sagi-
+na web.  Des-car-ga-do de
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 41--56
+[]$\OT1/cmtt/m/n/10 https :// www [] .geeksforgeeks [] .org / operating [] -sys
+tems / second []
+ []
 
 )
 
-[11
+[14
 
 ] (./principal.aux
 LaTeX Info: Redefining \. on input line 11.
@@ -488,27 +547,26 @@ LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `principal.out' has not changed.
-(rerunfilecheck)             Checksum: AABB6F711C6702B03292084CCF57D529;1662.
+(rerunfilecheck)             Checksum: FCA545DAA095139B5789C6FB780D66AC;1916.
  ) 
 Here is how much of TeX's memory you used:
- 11966 strings out of 475109
- 185418 string characters out of 5765325
- 777133 words of memory out of 5000000
- 34815 multiletter control sequences out of 15000+600000
+ 11995 strings out of 475109
+ 185918 string characters out of 5765325
+ 779133 words of memory out of 5000000
+ 34833 multiletter control sequences out of 15000+600000
  562380 words of font info for 48 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
- 75i,6n,79p,569b,463s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,6n,79p,573b,473s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public
 /amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-r17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/sh
-are/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on principal.pdf (12 pages, 462666 bytes).
+r17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/
+share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on principal.pdf (15 pages, 663159 bytes).
 PDF statistics:
- 209 PDF objects out of 1000 (max. 8388607)
- 164 compressed objects within 2 object streams
- 39 named destinations out of 1000 (max. 500000)
- 137 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 246 PDF objects out of 1000 (max. 8388607)
+ 198 compressed objects within 2 object streams
+ 50 named destinations out of 1000 (max. 500000)
+ 150 words of extra memory for PDF output out of 10000 (max. 10000000)
 

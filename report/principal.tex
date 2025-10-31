@@ -75,12 +75,12 @@ Introduccion perrona
 
 \chapter{Detalles de la implementación}
 \section {Información relevante a los algorimtmos}
-Antes de iniciar con la explicación de cada algoritmo, es importante dar algunos detalles sobre la implementación del sistema para que se pueda explicar correctamente cada algoritmo. 
+Antes de iniciar con la explicación de cada algoritmo, es importante dar algunos detalles sobre la implementación del sistema. 
 La simulación está implementada en C++, para aprovechar sus capacidades de programación orientada a objetos, se decidió crear las siguientes clases:
 
 \begin{itemize}
     \item Page: la clase que representa a cada página.
-    \item MMU: la clase manejadora de cada algoritmo y la encargada de ejecutar las instrucciones, es una clase que contiene la función  abstracta ``paging()".
+    \item MMU: la clase manejadora de cada algoritmo y de ejecutar las instrucciones, es una clase que contiene la función  abstracta ``paging()".
     \item MMU concretas: hay una por cada algoritmo e implementan su propia versión de ``paging()".
     \item Parser: contiene dos instancias de MMU (La correspondiente al algoritmo óptimo y la otra que contiene el algoritmo seleccionado por el usuario), esta se encarga de leer el archivo de intrucciones dado como entrada y enviar dichas instrucciones a cada MMU, esta clase las mantiene sincronizadas. 
 \end{itemize}
@@ -88,12 +88,12 @@ La simulación está implementada en C++, para aprovechar sus capacidades de pro
 La memoria es representada como un array de enteros dentro de cada instancia de MMU. 
 Dichos enteros son los ID de la página correspondiente. 
 El disco es representado como un mapa de enteros y páginas, siendo los enteros los ID de la página.
-Todas las páginas estaan guardadas en disco y que la memoria solo tiene los ID, es decir que la información real de la página se encuentra en el disco.
+Todas las páginas estan guardadas en disco y que la memoria solo tiene los ID, es decir que la información real de la página se encuentra en el disco.
 Esto claramente no es fiel a la vida real, ya que la página existe físicamente en memoria y es físicamente movida de disco a memoria y viceversa.
 Aún así, se decidió implementarlo de esta forma por simplicidad, ya que para uso de la simulación funciona perfectamente.
 De esta forma no hay necesidad de manejar intercambiar los valores entre disco y memoria.
 
-El algoritmo de paginación es ejecutado cuando se solicita cargar una nueva página a memoria, esto implica que cada algoritmo se ejecuta solamente en el uso de las instrucciones ``use" y ``new", ya que para ``delete" y ``kill" solo es necesario eliminar la página, no cargarla.
+El algoritmo de paginación es ejecutado cuando se solicita cargar una nueva página a memoria, esto implica que cada algoritmo se ejecuta solamente en el uso de las instrucciones ``use''  y ``new'', ya que para ``delete''  y ``kill'' solo es necesario eliminar la página, no cargarla.
 En el momento que se solicita cargar una página la MMU:
 \begin{enumerate}
     \item Se revisa si la página ya está cargada, de ser así, se toma como HIT y no se ejecuta el algoritmo.
@@ -105,10 +105,10 @@ En el momento que se solicita cargar una página la MMU:
 \section {Algoritmos de Paginación}
 
 \subsection{Óptimo}
-El algoritmo óptimo de paginación es aquel que tiene la capacidad de ver el futuro, es decir, sabe cuales páginas serán utilizadas durante toda la ejecución de la máquina para poder decider a cual mandar a memoria virtual \cite{ref0}. 
+El algoritmo óptimo de paginación es aquel que tiene la capacidad de ver el futuro, es decir, sabe cuales páginas serán utilizadas durante toda la ejecución de la máquina para poder decidir a cual mandar a memoria virtual \cite{ref0}. 
 Su funcionamiento consiste en buscar dentro de las páginas cargadas en memoria real aquella que nunca se va a volver a utilizar o la que se va a utilizar más tarde para reemplazarla por la que se requiera cargar en dicho momento. 
 
-Para su implementación al leer el archivo de instrucciones a utilizar se llama a la función ``parse\_for\_optimal" (ver figura \ref{fig:parse_optimal})que detecta cada aparición de ``use" o ``new" para registrar las páginas en una lista que contendrá el id de las páginas que son utilizadas en dichas instrucciones. Una vez se lee todo el archivo dicha lista de páginas es pasada al constructor de la MMU concreta que contiene el algoritmo óptimo como implementación de la función ``paging" (ver figura \ref{fig:optimal}).
+Para su implementación al leer el archivo de instrucciones a utilizar se llama a la función ``parse\_for\_optimal'' (ver figura \ref{fig:parse_optimal}) que detecta cada aparición de ``use'' o ``new'' para registrar las páginas en una lista que contendrá el id de las páginas que son utilizadas en dichas instrucciones. Una vez se lee todo el archivo dicha lista de páginas es pasada al constructor de la MMU concreta que contiene el algoritmo óptimo como implementación de la función ``paging'' (ver figura \ref{fig:optimal}).
 
 \begin{figure}[h]
 	\centering
@@ -128,11 +128,11 @@ Para su implementación al leer el archivo de instrucciones a utilizar se llama 
 \subsection{FIFO y Second Chance}
 \subsubsection{FIFO}
 El algoritmo FIFO es (junto a Random) el algoritmo más simple impementado para manejar paginación en el programa.
-Este algoritmo por sus siglas significa "First in - First Out``, como su nombre lo indica, este consiste en sacar la página que lleva más tiempo en memoria para dar espacio a las demás \cite{ref0}. \\
+Este algoritmo por sus siglas significa ``First in First Out'', como su nombre lo indica, este consiste en sacar la página que lleva más tiempo en memoria para dar espacio a las demás \cite{ref0}. \\
 
-Para implementar esto, se decidió utilizar dos variables "to\_remove\_index``(el índice de la página que se va a remover) y "time\_loaded``(el tiempo que la página lleva cargada). 
+Para implementar esto, se decidió utilizar dos variables ``to\_remove\_index'' (el índice de la página que se va a remover) y ``time\_loaded'' (el tiempo que la página lleva cargada). 
 Por defecto ambas se setean en -1, este valor es reescrito en el momento que se ejecuta la lógica del algoritmo.
-Dentro de un for loop se revisan todas las páginas dentro de memoria, si la cantidad de tiempo que esa página es mayor a la cantidad guardada en "time\_loaded`` se actualiza el índice y dicha variable.
+Dentro de un for loop se revisan todas las páginas dentro de memoria, si la cantidad de tiempo que esa página es mayor a la cantidad guardada en ``time\_loaded'' se actualiza el índice y dicha variable.
 De esta forma, una vez termina el for loop, se tiene el índice de la página que lleva más tiempo cargada, una vez hecho esto simplemente se retorna este índice.
 Este comportamiento se puede ver en el código mostrado en la Figura \ref{fig:fifo}.
 
@@ -146,14 +146,14 @@ Este comportamiento se puede ver en el código mostrado en la Figura \ref{fig:fi
 \subsubsection{Second Chance}
 El algoritmo Second Chance es una pequeña mejora del algoritmo FIFO, este busca tomar en cuenta información de los usos pasados \cite{ref1}. 
 Este algoritmo utiliza un bit para marcar las páginas cada vez que ocurre un HIT en esta. 
-A la hora de reemplazar una página, esta trata de seleccionar la que lleva más tiempo dentro de memorio, pero si está marcada con el bit encendido, descarta esta página, expira el bit agregando un 0, y luego elige la siguiente que lleva más tiempo, repitiendo el proceso si este también tiene el bit encendido. \\
+A la hora de reemplazar una página, esta trata de seleccionar la que lleva más tiempo dentro de memoria, pero si está marcada con el bit encendido, descarta esta página, expira el bit agregando un 0, y luego elige la siguiente que lleva más tiempo, repitiendo el proceso si este también tiene el bit encendido. \\
 
 Para implementar este algoritmo se copia la memoria en un vector, luego se busca la página más reciente dentro del vector. 
 Si la página más reciente no tiene el bit encendido, simplemente se retorna su índice en memoria. 
 Si dicha página está marcada, se expira la marca y se saca la página del vector para no seleccionarla.
 Luego se repite el proceso para seleccionar otra página. 
 Si se que todas las páginas estaban marcadas, se busca la más reciente dentro de memoria.
-El código que implementa esta lógica se puede ver en la Figura \cite{fig:second_chance}.
+El código que implementa esta lógica se puede ver en la Figura \ref{fig:second_chance}.
 
 
 \begin{figure}[h]
