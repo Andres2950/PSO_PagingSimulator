@@ -222,8 +222,42 @@ El algoritmo de paginación Random o Aleatorio reemplaza una página en memoria 
 	\label{fig:estructura}
 \end{figure}
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.99\linewidth]{figuras/guide/setup_window.png}
+	\caption{Imagen de la ventana principal del programa}
+	\label{fig:setup}
+\end{figure}
+
 \section{Cómo utilizar el programa}
 Una vez terminado el procedimiento de instalar el programa puede utilizar el comando \texttt{./build/app/app} en la carpeta del proyecto descargada para ejecutar el programa de simulación.
+
+\subsection{Ventana principal}
+En la figura  \ref{fig:setup} se pueden observar las funciones iniciales del programa. Se detalla a continuación cada punto.
+
+\begin{enumerate}
+	\item Semilla para aleatorización del algortimo random y generación del archivo para las instrucciones en caso de que se quiera crear uno nuevo. Esta semilla se puede ingresar manualmente para replicar una simulación anterior o mediante el botón \textbf{Aleatorio} se genera una semilla semi-aleatoria.
+	\item Algoritmo para ser simulado y comparado con el óptimo.
+	\item Generación del archivo de instruciones. Presenta una ventana para el ingreso de la cantidad de procesos y operaciones a realizar (note que el minímo de operaciones son la cantidad de procesos puesto que se le deben hacer kill).
+	\item Carga un archivo de instrucciones guardado anteriormente.
+	\item Abre la ventana de simulación con los algoritmos y instrucciones cargadas.
+\end{enumerate}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.99\linewidth]{figuras/guide/simul_window.png}
+	\caption{Imagen de la ventana de simulación del programa}
+	\label{fig:simul}
+\end{figure}
+
+\subsection{Ventana de simulación}
+En la figura  \ref{fig:simul} se pueden observar las funciones de la ventana de simulación. Se detalla a continuación cada punto.
+
+\begin{enumerate}
+	\item Inicia la simulación de los algoritmos de paginación.
+	\item Volver a la pantalla principal para modificar los parámetros.
+	\item Barra para ajustar el delay de las operaciones, útil para seguir la ejecución del programa y analizar su comportamiento.
+\end{enumerate}
 
 \chapter{Conclusiones}
 
